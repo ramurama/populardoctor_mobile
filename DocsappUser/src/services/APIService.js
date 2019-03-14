@@ -6,8 +6,8 @@ import {
 } from "../constants/userType";
 import { isStringsEqual } from "../commons/utils";
 
-// const HOST = "https://docsappdev.herokuapp.com/api/v1";
-const HOST = "http://192.168.1.36:5000/api/v1";
+const HOST = "https://docsappdev.herokuapp.com/api/v1";
+// const HOST = "http://192.168.1.36:5000/api/v1";
 
 const URL_CUST_AUTH = "/auth/customer";
 const URL_DR_AUTH = "/auth/doctor";
