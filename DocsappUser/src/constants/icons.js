@@ -1,0 +1,20 @@
+export const icons = {
+  menu: "menu",
+  close: "close",
+  backIos: "ios-arrow-back",
+  backAndroid: "md-arrow-back",
+  cake: "cake",
+  bag: "shopping-basket",
+  cart: "shopping-cart",
+  history: "history",
+  profile: "person",
+  location: "location-on",
+  time: "access-time",
+  eye: "ios-eye",
+  eyeLine: "ios-eye-off",
+  mobile: "mobile",
+  lock: "lock-open-outline",
+  arrowForward: "arrow-forward",
+  menu2: "appstore1",
+  send: "send"
+};
