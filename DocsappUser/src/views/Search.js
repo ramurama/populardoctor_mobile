@@ -187,13 +187,13 @@ class Search extends React.Component {
     );
   }
 
-  _handleFindMyLocation() {
+  _handleFindMyLocation = () => {
     //close modal on click detect button is temproary
     // modal has to be closed only after getting the location from google api
     this._getGeoLocation(locationCoords =>
       this.setState({ locationCoords, isLocationModalOpen: false })
     );
-  }
+  };
 
   _renderModalLocationButton() {
     return (
