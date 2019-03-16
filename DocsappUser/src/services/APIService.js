@@ -7,7 +7,7 @@ import {
 import { isStringsEqual } from "../commons/utils";
 
 const HOST = "https://docsappdev.herokuapp.com/api/v1";
-// const HOST = "http://192.168.1.36:5000/api/v1";
+// const HOST = "http://192.168.0.110:5000/api/v1";
 
 const URL_CUST_AUTH = "/auth/customer";
 const URL_DR_AUTH = "/auth/doctor";
@@ -28,6 +28,7 @@ const URL_BLOCK_TOKEN = "/customer/blockToken";
 const URL_ADD_FAVORITE = "/customer/addFavorite";
 const URL_REMOVE_FAVORITE = "/customer/removeFavorite";
 const URL_GET_FAVORITES = "/customer/getFavorites";
+const URL_BOOK_TOKEN = "/customer/bookToken";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -187,7 +188,6 @@ export default (APIService = {
   },
 
   getFavorites(token, favorites, callback) {
-    console.log({favorites})
     axios
       .post(
         HOST + URL_GET_FAVORITES,
@@ -196,6 +196,13 @@ export default (APIService = {
       )
       .then(res => callback(res.data))
       .catch(err => console.log("***** Error fetching favorites. " + err));
+  },
+
+  bookToken(token, data, callback) {
+    axios
+      .post(HOST + URL_BOOK_TOKEN, data, { headers: buildAuthHeader(token) })
+      .then(res => callback(res.data))
+      .catch(err => console.log("***** Error booking token. " + err));
   }
 });
 

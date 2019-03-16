@@ -6,11 +6,43 @@ import * as Actions from "../actions";
 import { SECONDARY, PRIMARY } from "../config/colors";
 import { FONT_L } from "../config/fontSize";
 import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
+import APIService from "../services/APIService";
 
 class Payment extends React.Component {
+  _handlePayButton = async () => {
+    const { token, bookingData } = this.props;
+    const { doctorId, scheduleId, tokenDate, tokenNumber } = bookingData;
+    const location = await this._getGeoLocation();
+    const latLng = [location.latitude, location.longitude];
+    const data = {
+      doctorId,
+      scheduleId,
+      tokenDate,
+      tokenNumber,
+      latLng
+    };
+    APIService.bookToken(token, data, res => {
+      if (res.status) {
+        alert(res.bookingId);
+      } else {
+        alert("null");
+      }
+    });
+  };
+
+  _getGeoLocation() {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        position => resolve(position.coords),
+        err => reject(err),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+  }
+
   _renderFooterPayButton() {
     return (
-      <TouchableOpacity onPress={this._handleConfirmButton}>
+      <TouchableOpacity onPress={this._handlePayButton}>
         <Footer style={styles.footerStyle}>
           <View style={styles.bookView}>
             <Text style={styles.bookText}>Pay</Text>
