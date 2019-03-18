@@ -127,7 +127,7 @@ class UserBooking extends React.Component {
       <View>
         <Text style={styles.headerStyle}>Booking details</Text>
         <View style={{ flexDirection: "column", paddingLeft: 32 }}>
-          {this.props.enableQR && (
+          {this.props.bookingId !== "" && (
             <View style={styles.bookingItemList}>
               <Text style={styles.primaryTextStyle}>Booking Id </Text>
               <Text

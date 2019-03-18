@@ -39,7 +39,8 @@ class BookingHistory extends React.Component {
       hospitalDetails,
       doctorDetails,
       startTime,
-      endTime
+      endTime,
+      bookingOtp
     } = item;
     let historyDetailData = {
       bookingId,
@@ -59,7 +60,7 @@ class BookingHistory extends React.Component {
       <HistoryCard
         doctorName={doctorDetails.fullName}
         specialization={doctorDetails.specialization}
-        otp={"1223"}
+        otp={bookingOtp.otp}
         otpVisible={true}
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
@@ -89,7 +90,8 @@ class BookingHistory extends React.Component {
       hospitalDetails,
       doctorDetails,
       startTime,
-      endTime
+      endTime,
+      bookingOtp
     } = item;
     let historyDetailData = {
       bookingId,
