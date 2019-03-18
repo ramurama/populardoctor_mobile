@@ -1,109 +1,129 @@
 import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Container, Content, Text } from "native-base";
-import commonStyles from "../commons/styles";
 import HistoryCard from "../components/UserHistoryCard";
-import { BACKGROUND_1, HELPER_TEXT_COLOR } from "../config/colors";
+import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from "../config/colors";
 import { VIEW_BOOKING_HISTORY_DETAIL } from "../constants/viewNames";
 import { FONT_L } from "../config/fontSize";
-
-const tempCurrentBookingsData = [
-  {
-    doctorName: "Ramu Ramasamy",
-    specialization: "Neurologist",
-    otp: "5597",
-    otpVisible: true,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "PSG Multi Speciality Hospital",
-    hospitalAddress: "Karapakkam, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "11:00 AM to 12:00 PM",
-    tokenNumber: "13"
-  },
-  {
-    doctorName: "Santhoshsivan Balanagarajan",
-    specialization: "Orthologist",
-    otp: "4283",
-    otpVisible: true,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "Apollo Hospital",
-    hospitalAddress: "Kandhanchavadi, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "07:00 PM to 08:00 PM",
-    tokenNumber: "4"
-  }
-];
-
-const tempPreviousBookingsData = [
-  {
-    doctorName: "Ramu Ramasamy",
-    specialization: "Neurologist",
-    otp: "5597",
-    otpVisible: false,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "PSG Multi Speciality Hospital",
-    hospitalAddress: "Karapakkam, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "11:00 AM to 12:00 PM",
-    tokenNumber: "24"
-  },
-  {
-    doctorName: "Santhoshsivan Balanagarajan",
-    specialization: "Orthologist",
-    otp: "4283",
-    otpVisible: false,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "Apollo Hospital",
-    hospitalAddress: "Kandhanchavadi, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "07:00 PM to 08:00 PM",
-    tokenNumber: "7"
-  }
-];
+import Spinner from "react-native-loading-spinner-overlay";
+import APIService from "../services/APIService";
+import { connect } from "react-redux";
+import { getDateString } from "../commons/utils";
 
 class BookingHistory extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      spinner: false,
+      currentBookings: [],
+      pastBookings: []
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ spinner: true }, () => {
+      APIService.getBookingHistory(this.props.token, data => {
+        const { currentBookings, pastBookings } = data;
+        this.setState({ spinner: false, currentBookings, pastBookings });
+      });
+    });
+  }
+
   _renderCurrentBookingsListItem(item) {
+    const {
+      bookingId,
+      tokenDate,
+      token,
+      status,
+      scheduleDetails,
+      hospitalDetails,
+      doctorDetails,
+      startTime,
+      endTime
+    } = item;
+    let historyDetailData = {
+      bookingId,
+      tokenDate: getDateString(new Date(tokenDate)),
+      hospital: { ...hospitalDetails },
+      startTime,
+      endTime,
+      doctorName: doctorDetails.fullName,
+      specialization: doctorDetails.specialization,
+      tokenNumber: token.number,
+      tokenTime: token.time,
+      tokenType: token.type,
+      enableQR: true,
+      enableDoneButton: false
+    };
     return (
       <HistoryCard
-        doctorName={item.doctorName}
-        specialization={item.specialization}
-        otp={item.otp}
-        otpVisible={item.otpVisible}
-        imageURL={item.imageURL}
-        hospitalName={item.hospitalName}
-        hospitalAddress={item.hospitalAddress}
-        bookingDate={item.bookingDate}
-        bookingTime={item.bookingTime}
-        tokenNumber={item.tokenNumber}
+        doctorName={doctorDetails.fullName}
+        specialization={doctorDetails.specialization}
+        otp={"1223"}
+        otpVisible={true}
+        imageURL={doctorDetails.profileImage}
+        hospitalName={hospitalDetails.name}
+        hospitalAddress={
+          hospitalDetails.address + " " + hospitalDetails.pincode
+        }
+        bookingDate={getDateString(new Date(tokenDate))}
+        bookingTime={token.time}
+        tokenNumber={token.number}
         isCurrent={true}
-        onPress={this._handleHistoryCardPress}
+        onPress={() => {
+          this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
+            ...historyDetailData
+          });
+        }}
       />
     );
   }
 
-  _handleHistoryCardPress = () => {
-    this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL);
-  };
-
   _renderPreviousBookingsListItem(item) {
+    const {
+      bookingId,
+      tokenDate,
+      token,
+      status,
+      scheduleDetails,
+      hospitalDetails,
+      doctorDetails,
+      startTime,
+      endTime
+    } = item;
+    let historyDetailData = {
+      bookingId,
+      tokenDate: getDateString(new Date(tokenDate)),
+      hospital: { ...hospitalDetails },
+      startTime,
+      endTime,
+      doctorName: doctorDetails.fullName,
+      specialization: doctorDetails.specialization,
+      tokenNumber: token.number,
+      tokenTime: token.time,
+      tokenType: token.type,
+      enableQR: false,
+      enableDoneButton: false
+    };
     return (
       <HistoryCard
-        doctorName={item.doctorName}
-        specialization={item.specialization}
-        otp={item.otp}
-        otpVisible={item.otpVisible}
-        imageURL={item.imageURL}
-        hospitalName={item.hospitalName}
-        hospitalAddress={item.hospitalAddress}
-        bookingDate={item.bookingDate}
-        bookingTime={item.bookingTime}
-        tokenNumber={item.tokenNumber}
+        doctorName={doctorDetails.fullName}
+        specialization={doctorDetails.specialization}
+        otpVisible={false}
+        imageURL={doctorDetails.profileImage}
+        hospitalName={hospitalDetails.name}
+        hospitalAddress={
+          hospitalDetails.address + " " + hospitalDetails.pincode
+        }
+        bookingDate={getDateString(new Date(tokenDate))}
+        bookingTime={token.time}
+        tokenNumber={token.number}
         isCurrent={false}
-        onPress={this._handleHistoryCardPress}
+        onPress={() => {
+          this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
+            ...historyDetailData
+          });
+        }}
       />
     );
   }
@@ -111,7 +131,9 @@ class BookingHistory extends React.Component {
   _renderCurrentBookingsList() {
     return (
       <FlatList
-        data={tempCurrentBookingsData}
+        data={this.state.currentBookings}
+        extraData={this.state}
+        keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderCurrentBookingsListItem(item)}
       />
     );
@@ -120,7 +142,9 @@ class BookingHistory extends React.Component {
   _renderPreviousBookingsList() {
     return (
       <FlatList
-        data={tempPreviousBookingsData}
+        data={this.state.pastBookings}
+        extraData={this.state}
+        keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderPreviousBookingsListItem(item)}
       />
     );
@@ -152,19 +176,28 @@ class BookingHistory extends React.Component {
     );
   }
 
+  _renderSpinner() {
+    return (
+      <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
+    );
+  }
+
   render() {
     return (
       <Container>
         <Content padder style={styles.contentStyle}>
           {this._renderCurrentBookingsView()}
           {this._renderPreviousBookingsView()}
+          {this._renderSpinner()}
         </Content>
       </Container>
     );
   }
 }
 
-export default BookingHistory;
+const mapStateToProps = state => ({ token: state.token });
+
+export default connect(mapStateToProps)(BookingHistory);
 
 const styles = StyleSheet.create({
   contentStyle: {

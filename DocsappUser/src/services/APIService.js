@@ -6,8 +6,8 @@ import {
 } from "../constants/userType";
 import { isStringsEqual } from "../commons/utils";
 
-const HOST = "https://docsappdev.herokuapp.com/api/v1";
-// const HOST = "http://192.168.0.110:5000/api/v1";
+// const HOST = "https://docsappdev.herokuapp.com/api/v1";
+const HOST = "http://192.168.0.110:5000/api/v1";
 
 const URL_CUST_AUTH = "/auth/customer";
 const URL_DR_AUTH = "/auth/doctor";
@@ -29,6 +29,7 @@ const URL_ADD_FAVORITE = "/customer/addFavorite";
 const URL_REMOVE_FAVORITE = "/customer/removeFavorite";
 const URL_GET_FAVORITES = "/customer/getFavorites";
 const URL_BOOK_TOKEN = "/customer/bookToken";
+const URL_GET_BOOKING_HISTORY = "/customer/getBookingHistory";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -203,6 +204,15 @@ export default (APIService = {
       .post(HOST + URL_BOOK_TOKEN, data, { headers: buildAuthHeader(token) })
       .then(res => callback(res.data))
       .catch(err => console.log("***** Error booking token. " + err));
+  },
+
+  getBookingHistory(token, callback) {
+    axios
+      .get(HOST + URL_GET_BOOKING_HISTORY, { headers: buildAuthHeader(token) })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching booking history. " + err)
+      );
   }
 });
 

@@ -11,6 +11,7 @@ import { VIEW_PAYMENT } from "../constants/viewNames";
 import Spinner from "react-native-loading-spinner-overlay";
 import APIService from "../services/APIService";
 import { isNullOrEmpty } from "../commons/utils";
+import commonStyles from "../commons/styles";
 
 class BookingConfirmation extends React.Component {
   constructor(props) {
@@ -55,9 +56,9 @@ class BookingConfirmation extends React.Component {
   _renderFooterConfirmButton() {
     return (
       <TouchableOpacity onPress={this._handleConfirmButton}>
-        <Footer style={styles.footerStyle}>
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Confirm</Text>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Confirm</Text>
           </View>
         </Footer>
       </TouchableOpacity>
@@ -116,19 +117,4 @@ export default connect(
   Actions
 )(BookingConfirmation);
 
-const styles = StyleSheet.create({
-  footerStyle: {
-    backgroundColor: SECONDARY
-  },
-  bookView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  bookText: {
-    fontSize: FONT_L,
-    fontWeight: FONT_WEIGHT_BOLD,
-    padding: 10,
-    color: PRIMARY
-  }
-});
+const styles = StyleSheet.create({});

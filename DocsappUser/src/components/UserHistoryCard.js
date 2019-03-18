@@ -109,6 +109,7 @@ class UserHistoryCard extends Component {
   }
 
   _renderDateTimeContainer(bookingDate, bookingTime) {
+    const isFastTrack = this.props.tokenNumber === 0;
     const colorStyle = this.props.isCurrent
       ? styles.currentColorStyle
       : styles.previousColorStyle;
@@ -120,12 +121,14 @@ class UserHistoryCard extends Component {
           type="MaterialIcons"
         />
         {this._renderBookingDate(bookingDate)}
-        <Icon
-          style={[styles.iconStyle, colorStyle]}
-          name="watch-later"
-          type="MaterialIcons"
-        />
-        {this._renderBookingTime(bookingTime)}
+        {!isFastTrack && (
+          <Icon
+            style={[styles.iconStyle, colorStyle]}
+            name="watch-later"
+            type="MaterialIcons"
+          />
+        )}
+        {!isFastTrack && this._renderBookingTime(bookingTime)}
       </View>
     );
   }

@@ -23,6 +23,7 @@ import APIService from "../services/APIService";
 import { connect } from "react-redux";
 import * as Actions from "../actions";
 import { TOKEN_OPEN } from "../constants/tokenStatus";
+import commonStyles from "../commons/styles";
 
 class BookAppointment extends React.Component {
   constructor(props) {
@@ -157,11 +158,11 @@ class BookAppointment extends React.Component {
           style={
             this.state.selectedTokenNumber === ""
               ? styles.footerDisabledStyle
-              : styles.footerEnabledStyle
+              : commonStyles.footerButtonStyle
           }
         >
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Book Now</Text>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Book Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>

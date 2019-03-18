@@ -1,40 +1,48 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Container, Content, Text } from "native-base";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Container, Content, Text, Footer } from "native-base";
 import UserBooking from "../components/UserBooking";
-import { TOKEN_FASTTRACK } from '../constants/tokenTypes';
-
-const hospitalName = "XYZ Hospital";
-const hospitalAddress = "XYZ Addres, Coimbatore 600 003";
-const bookingDay = "Fri 24, Dec";
-const hospitalTime = "06:00 PM - 11:00 PM";
-const bookingId = "B20190216";
-const dataObject = {
-  doctor: {
-    name: "Loganathan",
-    specialist: "Neuro Surgeon"
-  }
-};
+import commonStyles from "../commons/styles";
+import { VIEW_SEARCH, VIEW_NAV_USER } from "../constants/viewNames";
 
 class BookingHistoryDetail extends React.Component {
+  _renderFooterDoneButton() {
+    return (
+      <TouchableOpacity onPress={this._handleDoneButton}>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Done</Text>
+          </View>
+        </Footer>
+      </TouchableOpacity>
+    );
+  }
+
+  _handleDoneButton = () => {
+    this.props.navigation.navigate(VIEW_SEARCH);
+  };
+
   render() {
+    const { getParam } = this.props.navigation;
+    const { name, address, pincode } = getParam("hospital");
     return (
       <Container>
         <Content>
           <UserBooking
-            hospitalName={hospitalName}
-            hospitalAddress={hospitalAddress}
-            bookingDay={bookingDay}
-            availableTime={hospitalTime}
-            doctorName={dataObject.doctor.name}
-            specialization={dataObject.doctor.specialist}
-            tokenNumber={"17"}
-            bookingTime={"07:15 AM"}
-            enableQR={true}
-            tokenType={TOKEN_FASTTRACK}
-            bookingId={bookingId}
+            hospitalName={name}
+            hospitalAddress={address + " " + pincode}
+            bookingDay={getParam("tokenDate")}
+            availableTime={getParam("startTime") + " - " + getParam("endTime")}
+            doctorName={getParam("doctorName")}
+            specialization={getParam("specialization")}
+            tokenNumber={getParam("tokenNumber")}
+            bookingTime={getParam("tokenTime")}
+            enableQR={getParam("enableQR")}
+            tokenType={getParam("tokenType")}
+            bookingId={getParam("bookingId")}
           />
         </Content>
+        {getParam("enableDoneButton") && this._renderFooterDoneButton()}
       </Container>
     );
   }
