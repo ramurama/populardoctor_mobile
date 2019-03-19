@@ -100,7 +100,7 @@ class Schedule extends React.Component {
       isStringsEqual(schedule._id, scheduleId)
     );
     let tempSchedules = schedules;
-    tempSchedules.splice(removeIndex, removeIndex + 1);
+    tempSchedules.splice(removeIndex, 1);
     this.props.setScheduleConfirmations({
       ...this.props.scheduleConfirmations,
       schedules: tempSchedules
