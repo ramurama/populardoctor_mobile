@@ -9,17 +9,20 @@ import { isStringsEqual } from "../commons/utils";
 // const HOST = "https://docsappdev.herokuapp.com/api/v1";
 const HOST = "http://192.168.0.110:5000/api/v1";
 
+//auth
 const URL_CUST_AUTH = "/auth/customer";
 const URL_DR_AUTH = "/auth/doctor";
 const URL_FD_AUTH = "/auth/frontdesk";
 
+//general
 const URL_CHANGE_PASSWORD = "/user/changePassword";
 const URL_UPDATE_DEVICE_TOKEN = "/user/updateDeviceToken";
-const URL_CUSTOMER_SIGNUP = "/customer/signup";
 const URL_SEND_OTP = "/messages/sendOtp";
 const URL_VERIFY_OTP = "/user/verifyOtp";
 const URL_MOBILE_NUMBER_EXISTS = "/user/isMobileNumberExists/";
 
+//customer
+const URL_CUSTOMER_SIGNUP = "/customer/signup";
 const URL_GET_SEARCH_CRITERIA = "/customer/getSearchCriteria";
 const URL_GET_DOCTORS_LIST = "/customer/getDoctorsList";
 const URL_GET_SCHEDULES = "/customer/getSchedules";
@@ -30,6 +33,10 @@ const URL_REMOVE_FAVORITE = "/customer/removeFavorite";
 const URL_GET_FAVORITES = "/customer/getFavorites";
 const URL_BOOK_TOKEN = "/customer/bookToken";
 const URL_GET_BOOKING_HISTORY = "/customer/getBookingHistory";
+
+//doctor
+const URL_DR_GET_SCHEDULE_CONFIRMATIONS = "/doctor/getNextDayConfirmations";
+const URL_DR_CONFIRM_SCHEDULE = "/doctor/confirmSchedule";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -213,6 +220,26 @@ export default (APIService = {
       .catch(err =>
         console.log("***** Error fetching booking history. " + err)
       );
+  },
+
+  getNextDayScheduleConfirmations(token, callback) {
+    axios
+      .get(HOST + URL_DR_GET_SCHEDULE_CONFIRMATIONS, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching schedule confirmations. " + err)
+      );
+  },
+
+  confirmSchedule(token, data, callback) {
+    axios
+      .post(HOST + URL_DR_CONFIRM_SCHEDULE, data, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data.status))
+      .catch(err => console.log("***** Error confirming schedule. " + err));
   }
 });
 

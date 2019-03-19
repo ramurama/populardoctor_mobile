@@ -17,7 +17,7 @@ class ConfirmationCard extends Component{
         return(
             <View style={styles.cardStyle}>
                 <Text style={styles.contentStyle}
-                numberOfLines={2}
+                numberOfLines={5}
                 ellipsizeMode="tail">{content}</Text>
 
                 <View style={styles.buttonLayoutStyle}>
