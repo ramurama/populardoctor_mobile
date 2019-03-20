@@ -98,6 +98,7 @@ class BookingConfirmation extends React.Component {
             enableQR={false}
             tokenType={tokenType}
             bookingId={null}
+            showBookingId={false}
           />
           {this._renderSpinner()}
         </Content>

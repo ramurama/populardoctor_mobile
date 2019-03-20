@@ -27,7 +27,8 @@ const propTypes = {
   doctorName: PropTypes.string.isRequired,
   specialization: PropTypes.string.isRequired,
   enableQR: PropTypes.bool.isRequired,
-  bookingId: PropTypes.string
+  bookingId: PropTypes.string,
+  showBookingId: PropTypes.bool.isRequired
 };
 
 class UserBooking extends React.Component {
@@ -127,7 +128,7 @@ class UserBooking extends React.Component {
       <View>
         <Text style={styles.headerStyle}>Booking details</Text>
         <View style={{ flexDirection: "column", paddingLeft: 32 }}>
-          {this.props.bookingId !== "" && (
+          {this.props.showBookingId && (
             <View style={styles.bookingItemList}>
               <Text style={styles.primaryTextStyle}>Booking Id </Text>
               <Text

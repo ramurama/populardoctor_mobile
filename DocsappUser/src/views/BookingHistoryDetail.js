@@ -40,6 +40,7 @@ class BookingHistoryDetail extends React.Component {
             enableQR={getParam("enableQR")}
             tokenType={getParam("tokenType")}
             bookingId={getParam("bookingId")}
+            showBookingId={true}
           />
         </Content>
         {getParam("enableDoneButton") && this._renderFooterDoneButton()}
