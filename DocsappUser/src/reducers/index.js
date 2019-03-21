@@ -7,6 +7,7 @@ import SearchCriteriaReducer from "./SearchCriteriaReducer";
 import BookingDateReducer from "./BookingDataReducer";
 import FavoritesReducer from "./FavoritesReducer";
 import ScheduleConfirmationReducer from "./ScheduleConfirmationReducer";
+import DrBookingHistoryReducer from "./DrBookingHistoryReducer";
 
 export default combineReducers({
   isNetworkConnected: NetworkReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
   searchCriteria: SearchCriteriaReducer,
   bookingData: BookingDateReducer,
   favorites: FavoritesReducer,
-  scheduleConfirmations: ScheduleConfirmationReducer
+  scheduleConfirmations: ScheduleConfirmationReducer,
+  drBookingHistory: DrBookingHistoryReducer
 });

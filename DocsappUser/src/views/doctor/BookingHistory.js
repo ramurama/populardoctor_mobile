@@ -7,58 +7,65 @@ import { DR_BOOKING_HISTORY } from "../../constants/strings";
 import commonStyles from "../../commons/styles";
 import VisitorHistoryCard from "../../components/VisitorHistoryCard";
 import { VIEW_DR_BOOKING_HISTORY_DETAIL } from "../../constants/viewNames";
-
-const tempData = [
-  {
-    visitorName: "Santhoshsiban",
-    mobile: "9876543210",
-    hospitalName: "ABC Hospital",
-    hostpitalAddress: "Thondamuthur Road, Coimbatore",
-    bookingDate: "Dec 23, 2018",
-    bookingId: "B123445"
-  },
-  {
-    visitorName: "Ramu Ramasamy",
-    mobile: "9876543210",
-    hospitalName: "XYZ Hospital",
-    hostpitalAddress: "Thondamuthur Road, Coimbatore",
-    bookingDate: "Dec 23, 2018",
-    bookingId: "B123446"
-  },
-  {
-    visitorName: "Loganathan",
-    mobile: "9876543210",
-    hospitalName: "ABC Hospital",
-    hostpitalAddress: "Thondamuthur Road, Coimbatore",
-    bookingDate: "Dec 23, 2018",
-    bookingId: "B123447"
-  }
-];
+import { WHITE } from "../../config/colors";
+import Spinner from "react-native-loading-spinner-overlay";
+import { connect } from "react-redux";
+import * as Actions from "../../actions";
+import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
+import APIService from "../../services/APIService";
 
 class BookingHistory extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      spinner: false
+    };
+  }
+
+  componentDidMount() {
+    const { drBookingHistory, setDoctorBookingHistory } = this.props;
+    if (isNullOrEmpty(drBookingHistory)) {
+      this.setState({ spinner: true }, () => {
+        APIService.getDoctorBookingHistory(this.props.token, bookings => {
+          this.setState({ spinner: false }, () => {
+            setDoctorBookingHistory(bookings);
+          });
+        });
+      });
+    }
+  }
+
   _renderBookingHistoryList() {
     return (
       <FlatList
-        data={tempData}
+        data={this.props.drBookingHistory}
         renderItem={({ item }) => this._renderBookingHistoryListItem(item)}
+        keyExtractor={(item, index) => item.bookingId}
       />
     );
   }
 
   _renderBookingHistoryListItem(item) {
+    const { bookingId, tokenDate, userDetails, hospitalDetails } = item;
     return (
       <VisitorHistoryCard
-        visitorName={item.visitorName}
-        mobile={item.mobile}
-        hospitalName={item.hospitalName}
-        hospitalAddress={item.hostpitalAddress}
-        bookingDate={item.bookingDate}
+        visitorName={userDetails.fullName}
+        mobile={userDetails.username}
+        hospitalName={hospitalDetails.name}
+        hospitalAddress={hospitalDetails.address}
+        bookingDate={getDateStringIndian(new Date(tokenDate))}
         onPress={() =>
           this.props.navigation.navigate(VIEW_DR_BOOKING_HISTORY_DETAIL, {
-            bookingId: item.bookingId
+            bookingDetails: item
           })
         }
       />
+    );
+  }
+
+  _renderSpinner() {
+    return (
+      <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
     );
   }
 
@@ -68,6 +75,7 @@ class BookingHistory extends React.Component {
         <Header title={DR_BOOKING_HISTORY} {...this.props} />
         <Content style={commonStyles.contentBg}>
           <View>{this._renderBookingHistoryList()}</View>
+          {this._renderSpinner()}
         </Content>
         <Footer {...this.props} activeButton={DR_BOOKING_HISTORY} />
       </Container>
@@ -75,6 +83,14 @@ class BookingHistory extends React.Component {
   }
 }
 
-export default BookingHistory;
+const mapStateToProps = state => ({
+  token: state.token,
+  drBookingHistory: state.drBookingHistory
+});
+
+export default connect(
+  mapStateToProps,
+  Actions
+)(BookingHistory);
 
 const styles = StyleSheet.create({});

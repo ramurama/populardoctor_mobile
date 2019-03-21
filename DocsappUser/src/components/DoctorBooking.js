@@ -20,7 +20,8 @@ const propTypes = {
   visiorMobile: PropTypes.string.isRequired,
   tokenNumber: PropTypes.string.isRequired,
   tokenTime: PropTypes.string.isRequired,
-  tokenType: PropTypes.string.isRequired
+  tokenType: PropTypes.string.isRequired,
+  hospitalName: PropTypes.string.isRequired
 };
 
 const SCREEN_W = Dimensions.get("window").width;
@@ -30,7 +31,11 @@ class DoctorBooking extends React.Component {
     return (
       <View style={styles.bookingItemList}>
         <Text style={styles.primaryTextStyle}>{contentTitle}</Text>
-        <Text style={[{ paddingLeft: 10 }, styles.secondaryTextStyle]}>
+        <Text
+          style={[{ paddingLeft: 10 }, styles.secondaryTextStyle]}
+          numberOfLines={4}
+          ellipsizeMode="tail"
+        >
           {":   " + contentValue}
         </Text>
       </View>
@@ -55,17 +60,22 @@ class DoctorBooking extends React.Component {
       bookingId,
       tokenNumber,
       tokenTime,
+      tokenType,
       visitorName,
-      visitorMobile
+      visitorMobile,
+      hospitalName
     } = this.props;
     return (
       <View style={{ flexDirection: "column", paddingLeft: 32 }}>
         {this._renderBookingId(bookingId)}
         {this._renderDataContent("Appointment Date", bookingDate)}
-        {this._renderDataContent("Token Number", tokenNumber)}
-        {this._renderDataContent("Token Time", tokenTime)}
+        {tokenNumber !== 0 &&
+          this._renderDataContent("Token Number", tokenNumber)}
+        {this._renderDataContent("Token Type", tokenType)}
+        {tokenNumber !== 0 && this._renderDataContent("Token Time", tokenTime)}
         {this._renderDataContent("Visitor Name", visitorName)}
         {this._renderDataContent("Visitor Mobile", visitorMobile)}
+        {this._renderDataContent("Hospital", hospitalName)}
       </View>
     );
   }

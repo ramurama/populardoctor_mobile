@@ -54,3 +54,13 @@ export const getDateString = date => {
     ("0" + date.getDate()).slice(-2)
   );
 };
+
+export const getDateStringIndian = date => {
+  return (
+    date.getDate() +
+    "-" +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    "-" +
+    date.getFullYear()
+  );
+};

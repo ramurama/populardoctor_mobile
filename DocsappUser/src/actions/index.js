@@ -7,7 +7,8 @@ import {
   ACTION_SET_SEARCH_CRITERIA,
   ACTION_SET_BOOKING_DATA,
   ACTION_SET_FAVORITES,
-  ACTION_SET_SCHEDULE_CONFIRMATION_DATA
+  ACTION_SET_SCHEDULE_CONFIRMATION_DATA,
+  ACTION_SET_DR_BOOKING_HISTORY
 } from "../constants/actionTypes";
 
 export const setNetworkConnStatus = isNetworkConnected => ({
@@ -53,4 +54,9 @@ export const setFavorites = favorites => ({
 export const setScheduleConfirmations = scheduleConfirmations => ({
   type: ACTION_SET_SCHEDULE_CONFIRMATION_DATA,
   scheduleConfirmations
+});
+
+export const setDoctorBookingHistory = drBookingHistory => ({
+  type: ACTION_SET_DR_BOOKING_HISTORY,
+  drBookingHistory
 });
