@@ -167,13 +167,14 @@ class UserBooking extends React.Component {
   }
 
   _renderQRView() {
+    const { bookingId } = this.props;
     return (
       <View style={styles.qrView}>
         <QRCode
-          value={this.props.bookingId}
+          value={`${bookingId}`}
           size={100}
           bgColor="transparent"
-          fgColor={BACKGROUND_1}
+          fgColor={WHITE}
         />
       </View>
     );

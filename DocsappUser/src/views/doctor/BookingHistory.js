@@ -23,10 +23,10 @@ class BookingHistory extends React.Component {
   }
 
   componentDidMount() {
-    const { drBookingHistory, setDoctorBookingHistory } = this.props;
+    const { drBookingHistory, setDoctorBookingHistory , token} = this.props;
     if (isNullOrEmpty(drBookingHistory)) {
       this.setState({ spinner: true }, () => {
-        APIService.getDoctorBookingHistory(this.props.token, bookings => {
+        APIService.getDoctorBookingHistory(token, bookings => {
           this.setState({ spinner: false }, () => {
             setDoctorBookingHistory(bookings);
           });

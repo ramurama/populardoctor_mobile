@@ -7,7 +7,7 @@ import {
 import { isStringsEqual } from "../commons/utils";
 
 // const HOST = "https://docsappdev.herokuapp.com/api/v1";
-const HOST = "http://192.168.0.110:5000/api/v1";
+const HOST = "http://192.168.1.8:5000/api/v1";
 
 //auth
 const URL_CUST_AUTH = "/auth/customer";
@@ -37,6 +37,10 @@ const URL_GET_BOOKING_HISTORY = "/customer/getBookingHistory";
 //doctor
 const URL_DR_GET_SCHEDULE_CONFIRMATIONS = "/doctor/getNextDayConfirmations";
 const URL_DR_CONFIRM_SCHEDULE = "/doctor/confirmSchedule";
+const URL_DR_GET_TODAYS_BOOKINGS = "/doctor/getTodaysBookings";
+const URL_DR_GET_BOOKING_HISTORY = "/doctor/getBookingHistory";
+const URL_DR_GET_BOOKING_DETAIL = "/doctor/getBookingDetail";
+const URL_DR_CONFIRM_VISIT = "/doctor/confirmVisit";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -240,6 +244,49 @@ export default (APIService = {
       })
       .then(res => callback(res.data.status))
       .catch(err => console.log("***** Error confirming schedule. " + err));
+  },
+
+  getTodaysBookings(token, callback) {
+    axios
+      .get(HOST + URL_DR_GET_TODAYS_BOOKINGS, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching todays bookings. " + err)
+      );
+  },
+
+  getDoctorBookingHistory(token, callback) {
+    axios
+      .get(HOST + URL_DR_GET_BOOKING_HISTORY, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching doctor's booking history. " + err)
+      );
+  },
+
+  getDoctorBookingDetail(token, bookingId, callback) {
+    console.log(HOST + URL_DR_GET_BOOKING_DETAIL + "/" + bookingId);
+    axios
+      .get(HOST + URL_DR_GET_BOOKING_DETAIL + "/" + bookingId, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err => console.log("***** Error fetching booking detail. " + err));
+  },
+
+  confirmVisitByDoctor(token, bookingId, callback) {
+    axios
+      .put(
+        HOST + URL_DR_CONFIRM_VISIT + "/" + bookingId,
+        {},
+        { headers: buildAuthHeader(token) }
+      )
+      .then(res => callback(res.data.status))
+      .catch(err => console.log("***** Error confirming visit. " + err));
   }
 });
 

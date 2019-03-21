@@ -14,15 +14,15 @@ class VisitConfirmation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userBookingId: ""
+      bookingId: ""
     };
   }
 
   _onQRRead = event => {
-    console.log(event.data);
-    this.setState({ userBookingId: event.data, isScanComplete: true }, () =>
+    console.log(event);
+    this.setState({ isScanComplete: true }, () =>
       this.props.navigation.navigate(VIEW_DR_VISIT_CONFIRMATION_DETAIL, {
-        bookingId: this.state.userBookingId
+        bookingId: event.data
       })
     );
   };
