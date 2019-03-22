@@ -8,7 +8,7 @@ import commonStyles from "../../commons/styles";
 import { VIEW_DR_SCHEDULE } from "../../constants/viewNames";
 import ConfirmationCard from "../../components/ConfirmationCard";
 import Spinner from "react-native-loading-spinner-overlay";
-import { WHITE } from "../../config/colors";
+import { WHITE, HELPER_TEXT_COLOR } from "../../config/colors";
 import APIService from "../../services/APIService";
 import { connect } from "react-redux";
 import * as Actions from "../../actions";
@@ -120,11 +120,23 @@ class Schedule extends React.Component {
     );
   }
 
+  _renderNoScheduleConfirmations() {
+    return (
+      <View style={styles.noConfirmationsView}>
+        <Text style={styles.noConfirmationsText}>
+          Your schedules for tomorrow are confirmed.
+        </Text>
+      </View>
+    );
+  }
+
   render() {
+    const { schedules } = this.props.scheduleConfirmations;
     return (
       <Container>
         {this._renderHeader()}
         <Content style={commonStyles.contentBg}>
+          {isNullOrEmpty(schedules) && this._renderNoScheduleConfirmations()}
           <View>{this._renderScheduleConfirmationList()}</View>
           {this._renderSpinner()}
         </Content>
@@ -144,4 +156,7 @@ export default connect(
   Actions
 )(Schedule);
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  noConfirmationsText: { alignSelf: "center", color: HELPER_TEXT_COLOR },
+  noConfirmationsView: { marginTop: 30 }
+});

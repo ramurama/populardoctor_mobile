@@ -31,14 +31,8 @@ class DoctorSupport extends React.Component {
       <Container>
         <Header title={DR_SUPPORT} {...this.props} />
         <Content style={commonStyles.contentBg}>
-          <View style={{ flex: 1, marginTop: 30, flexDirection: "column" }}>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: HELPER_TEXT_COLOR,
-                fontSize: FONT_M
-              }}
-            >
+          <View style={styles.mainTextView}>
+            <Text style={styles.mainText}>
               Click call to call our doctor support executive.
             </Text>
           </View>
@@ -53,4 +47,11 @@ const mapStateToProps = state => ({ userSupport: state.userSupport });
 
 export default connect(mapStateToProps)(DoctorSupport);
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  mainText: {
+    alignSelf: "center",
+    color: HELPER_TEXT_COLOR,
+    fontSize: FONT_M
+  },
+  mainTextView: { flex: 1, marginTop: 30, flexDirection: "column" }
+});

@@ -28,14 +28,8 @@ class CustomerSupport extends React.Component {
     return (
       <Container>
         <Content>
-          <View style={{ flex: 1, marginTop: 30, flexDirection: "column" }}>
-            <Text
-              style={{
-                alignSelf: "center",
-                color: HELPER_TEXT_COLOR,
-                fontSize: FONT_M
-              }}
-            >
+          <View style={styles.mainTextView}>
+            <Text style={styles.mainText}>
               Click call to call our customer support executive.
             </Text>
           </View>
@@ -50,4 +44,11 @@ const mapStateToProps = state => ({ userSupport: state.userSupport });
 
 export default connect(mapStateToProps)(CustomerSupport);
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  mainText: {
+    alignSelf: "center",
+    color: HELPER_TEXT_COLOR,
+    fontSize: FONT_M
+  },
+  mainTextView: { flex: 1, marginTop: 30, flexDirection: "column" }
+});
