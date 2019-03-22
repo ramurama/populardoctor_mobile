@@ -77,15 +77,18 @@ class Search extends React.Component {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
     // this._getGeoLocation(locationCoords => this.setState({ locationCoords }));
     this.setState({ spinner: true }, () => {
-      APIService.getSearchCriteria(this.props.token, data => {
-        const { locations, specializations, favorites } = data;
+      APIService.getInitialData(this.props.token, data => {
+        const { locations, specializations, favorites, support } = data;
         this.setState(
           {
             locations,
             specializations,
             spinner: false
           },
-          () => this.props.setFavorites(favorites)
+          () => {
+            this.props.setFavorites(favorites);
+            this.props.setUserSupport(support);
+          }
         );
       });
     });

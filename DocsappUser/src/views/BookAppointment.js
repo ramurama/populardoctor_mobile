@@ -1,6 +1,12 @@
 import { Container, Content, Footer, Icon, Text } from "native-base";
 import React from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Linking
+} from "react-native";
 import { isStringsEqual } from "../commons/utils";
 import TokenTimePanel from "../components/TokenTimePanel";
 import TouchableToken from "../components/TouchableToken";
@@ -172,14 +178,19 @@ class BookAppointment extends React.Component {
   _renderCallNowButton() {
     return (
       <TouchableOpacity onPress={this._handleCallNow}>
-        <Footer style={styles.footerEnabledStyle}>
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Call Now</Text>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Call Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>
     );
   }
+
+  _handleCallNow = () => {
+    const { contact_number } = this.props.userSupport;
+    Linking.openURL(`tel:${contact_number}`);
+  };
 
   _handleBookNow = () => {
     const {
@@ -195,8 +206,6 @@ class BookAppointment extends React.Component {
     });
     return this.props.navigation.navigate(VIEW_BOOKING_CONFIRMATION);
   };
-
-  __handleCallNow = () => {};
 
   _renderTokenTimePanel() {
     return (
@@ -234,7 +243,8 @@ class BookAppointment extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  bookingData: state.bookingData
+  bookingData: state.bookingData,
+  userSupport: state.userSupport
 });
 
 export default connect(
@@ -262,11 +272,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center"
   },
-  bookView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   headContainerStyle: {
     // flex: 1,
     alignItems: "center",
@@ -280,12 +285,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center"
-  },
-  bookText: {
-    fontSize: FONT_L,
-    fontWeight: FONT_WEIGHT_BOLD,
-    padding: 10,
-    color: PRIMARY
   },
   bookingContent: {
     padding: 12

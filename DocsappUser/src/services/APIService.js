@@ -6,8 +6,8 @@ import {
 } from "../constants/userType";
 import { isStringsEqual } from "../commons/utils";
 
-const HOST = "https://docsappdev.herokuapp.com/api/v1";
-// const HOST = "http://192.168.0.110:5000/api/v1";
+// const HOST = "https://docsappdev.herokuapp.com/api/v1";
+const HOST = "http://192.168.0.110:5000/api/v1";
 
 //auth
 const URL_CUST_AUTH = "/auth/customer";
@@ -20,10 +20,11 @@ const URL_UPDATE_DEVICE_TOKEN = "/user/updateDeviceToken";
 const URL_SEND_OTP = "/messages/sendOtp";
 const URL_VERIFY_OTP = "/user/verifyOtp";
 const URL_MOBILE_NUMBER_EXISTS = "/user/isMobileNumberExists/";
+const URL_GET_SUPPORT_DETAILS = "/user/getSupportDetails";
 
 //customer
 const URL_CUSTOMER_SIGNUP = "/customer/signup";
-const URL_GET_SEARCH_CRITERIA = "/customer/getSearchCriteria";
+const URL_GET_INITIAL_DATA = "/customer/getInitialData";
 const URL_GET_DOCTORS_LIST = "/customer/getDoctorsList";
 const URL_GET_SCHEDULES = "/customer/getSchedules";
 const URL_GET_TOKENS = "/customer/getTokens";
@@ -123,9 +124,9 @@ export default (APIService = {
       );
   },
 
-  getSearchCriteria(token, callback) {
+  getInitialData(token, callback) {
     axios
-      .get(HOST + URL_GET_SEARCH_CRITERIA, {
+      .get(HOST + URL_GET_INITIAL_DATA, {
         headers: buildAuthHeader(token)
       })
       .then(res => callback(res.data))
@@ -287,6 +288,15 @@ export default (APIService = {
       )
       .then(res => callback(res.data.status))
       .catch(err => console.log("***** Error confirming visit. " + err));
+  },
+
+  getSupportDetails(callback) {
+    axios
+      .get(HOST + URL_GET_SUPPORT_DETAILS)
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching support details. " + err)
+      );
   }
 });
 
