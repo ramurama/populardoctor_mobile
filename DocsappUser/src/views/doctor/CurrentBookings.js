@@ -11,6 +11,13 @@ import {
   VIEW_DR_CURRENT_BOOKING_DETAIL
 } from "../../constants/viewNames";
 import CurrentBookingList from "../../components/CurrentBookingList";
+import Spinner from "react-native-loading-spinner-overlay";
+import { WHITE } from "../../config/colors";
+import { connect } from "react-redux";
+import * as Actions from "../../actions";
+import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
+import APIService from "../../services/APIService";
+import _ from "underscore";
 
 const tempData = [
   {
@@ -72,6 +79,24 @@ const tempData = [
 class CurrentBookings extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      spinner: false,
+      bookings: []
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ spinner: true }, () => {
+      APIService.getTodaysBookings(this.props.token, bookings => {
+        this.setState({ spinner: false, bookings }, () => {});
+      });
+    });
+  }
+
+  _findHospitals(hospitals, hospitalDetail) {
+    return hospitals.find(hospital => {
+      return _.isEqual(hospital, hospitalDetail);
+    });
   }
 
   _renderCurrentBookingListItem(item) {
@@ -80,8 +105,11 @@ class CurrentBookings extends React.Component {
         hospitalName={item.hospitalName}
         hospitalTime={item.hospitalTime}
         visitorList={item.visitorsList}
-        onItemPress={() =>
-          this.props.navigation.navigate(VIEW_DR_CURRENT_BOOKING_DETAIL)
+        onItemPress={(bookingId) =>
+          this.props.navigation.navigate(VIEW_DR_CURRENT_BOOKING_DETAIL, {
+            bookingDetails: item,
+            bookingId
+          })
         }
       />
     );
@@ -90,9 +118,16 @@ class CurrentBookings extends React.Component {
   _renderCurrentBookingList() {
     return (
       <FlatList
-        data={tempData}
+        data={this.state.bookings}
         renderItem={({ item }) => this._renderCurrentBookingListItem(item)}
+        keyExtractor={(item, index) => item.hospitalTime}
       />
+    );
+  }
+
+  _renderSpinner() {
+    return (
+      <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
     );
   }
 
@@ -102,6 +137,7 @@ class CurrentBookings extends React.Component {
         <Header title={DR_CURRENT_BOOKINGS} {...this.props} />
         <Content style={commonStyles.contentBg}>
           {this._renderCurrentBookingList()}
+          {this._renderSpinner()}
         </Content>
         <Footer {...this.props} activeButton={DR_CURRENT_BOOKINGS} />
       </Container>
@@ -109,6 +145,14 @@ class CurrentBookings extends React.Component {
   }
 }
 
-export default CurrentBookings;
+const mapStateToProps = state => ({
+  token: state.token,
+  currentBookings: state.currentBookings
+});
+
+export default connect(
+  mapStateToProps,
+  Actions
+)(CurrentBookings);
 
 const styles = StyleSheet.create({});
