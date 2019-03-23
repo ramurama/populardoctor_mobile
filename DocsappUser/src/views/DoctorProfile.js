@@ -80,7 +80,7 @@ class DoctorProfile extends React.Component {
 
   _handleProfileIconPress = () => {
     this.props.navigation.navigate(VIEW_DOCTOR_DESCRIPTION, {
-      // doctorId: this.props.navigation.getParam("doctorId")
+      profileContent: this.state.doctorDetails.profileContent
     });
   };
 
