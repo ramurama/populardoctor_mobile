@@ -51,13 +51,15 @@ class CurrentBookingDetail extends React.Component {
     const bookingId = this.props.navigation.getParam("bookingId");
     this.setState({ spinner: true }, () => {
       APIService.getBookingStatus(this.props.token, bookingId, bookedStatus => {
-        this.setState({ spinner: false }, () =>
-          setTimeout(() => {
-            if (isStringsEqual(bookedStatus, TOKEN_VISITED)) {
-              this.setState({ showFooterButton: false });
-            }
-          }, 100)
-        );
+        this.setState({ spinner: false }, () => {
+          if (!isNullOrEmpty(bookedStatus)) {
+            setTimeout(() => {
+              if (isStringsEqual(bookedStatus, TOKEN_VISITED)) {
+                this.setState({ showFooterButton: false });
+              }
+            }, 100);
+          }
+        });
       });
     });
   }
