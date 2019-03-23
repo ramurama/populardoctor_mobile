@@ -22,6 +22,7 @@ export const SHADOW_COLOR = "grey";
 export const DISABLED_GREY = "lightgrey";
 export const BACKGROUND_DARK_GREY = "#424242";
 export const FASTTRACK_COLOR = "#ff9800";
+export const PREMIUM_COLOR = "#e57373";
 export const STATUS_AVAILABLE_COLOR = "#00c853";
 export const STATUS_NOT_AVAILABLE_COLOR = "#ff1744";
 export const DARK_WHITE = "#eeeeee";

@@ -7,7 +7,8 @@ import {
   WHITE,
   FASTTRACK,
   FASTTRACK_COLOR,
-  DISABLED_GREY
+  DISABLED_GREY,
+  PREMIUM_COLOR
 } from "../config/colors";
 import {
   TOKEN_REGULAR,
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     borderColor: SECONDARY
   },
   borderPremium: {
-    borderColor: SECONDARY
+    borderColor: PREMIUM_COLOR
   },
   borderFastTrack: {
     borderColor: FASTTRACK_COLOR
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: SECONDARY
   },
   selectedPremium: {
-    backgroundColor: SECONDARY
+    backgroundColor: PREMIUM_COLOR
   },
   selectedFastTrack: {
     backgroundColor: FASTTRACK_COLOR
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     color: SECONDARY
   },
   textNotSelectedPremium: {
-    color: SECONDARY
+    color: PREMIUM_COLOR
   },
   textNotSelectedFastTrack: {
     color: FASTTRACK_COLOR
