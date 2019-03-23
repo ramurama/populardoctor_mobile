@@ -47,7 +47,12 @@ class CurrentBookingCard extends Component {
 
   _renderToken(tokenNumber) {
     return (
-      <Token isCurrent={true} number={tokenNumber} dimension={"default"} />
+      <Token
+        isCurrent={true}
+        number={tokenNumber}
+        dimension={"default"}
+        type={this.props.tokenType}
+      />
     );
   }
 

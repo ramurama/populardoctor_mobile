@@ -19,63 +19,6 @@ import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
 import APIService from "../../services/APIService";
 import _ from "underscore";
 
-const tempData = [
-  {
-    hospitalName: "ABC Hospital",
-    hospitalTime: "08:00 AM to 12:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  },
-  {
-    hospitalName: "EFG Hospital",
-    hospitalTime: "02:00 PM to 06:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  },
-  {
-    hospitalName: "XYZ Hospital",
-    hospitalTime: "07:00 PM to 10:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  }
-];
-
 class CurrentBookings extends React.Component {
   constructor(props) {
     super(props);

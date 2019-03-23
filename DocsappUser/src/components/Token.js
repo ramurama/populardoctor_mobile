@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { SECONDARY } from "../config/colors";
+import { SECONDARY, PREMIUM_COLOR } from "../config/colors";
 import { FONT_XXS, FONT_L } from "../config/fontSize";
 import { FONT_WEIGHT_XXBOLD } from "../config/fontWeight";
+import { isStringsEqual } from "../commons/utils";
+import { TOKEN_PREMIUM } from "../constants/tokenTypes";
 
 const styles = StyleSheet.create({
   tokenStyle: {
@@ -26,9 +28,13 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingTop: 0
   },
-  currentColorStyle: {
+  currentRegularColorStyle: {
     color: SECONDARY,
     borderColor: SECONDARY
+  },
+  currentPremiumColorStyle: {
+    color: PREMIUM_COLOR,
+    borderColor: PREMIUM_COLOR
   },
   previousColorStyle: {
     color: "grey",
@@ -50,10 +56,13 @@ class Token extends React.Component {
   }
 
   _renderToken() {
-    const { number, isCurrent } = this.props;
+    const { number, isCurrent, type } = this.props;
 
+    const currentColorStyle = isStringsEqual(type, TOKEN_PREMIUM)
+      ? styles.currentPremiumColorStyle
+      : styles.currentRegularColorStyle;
     const colorStyle = isCurrent
-      ? styles.currentColorStyle
+      ? currentColorStyle
       : styles.previousColorStyle;
     return (
       <View style={[styles.tokenStyle, colorStyle]}>

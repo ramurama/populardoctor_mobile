@@ -137,14 +137,12 @@ class UserBooking extends React.Component {
               <Chip title={bookingId} />
             </View>
           )}
-          {this._isFasttrackTokenType() && (
-            <View style={styles.bookingItemList}>
-              <Text style={styles.primaryTextStyle}>Token type</Text>
-              <Text
-                style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
-              >{` :  ${this.props.tokenType}`}</Text>
-            </View>
-          )}
+          <View style={styles.bookingItemList}>
+            <Text style={styles.primaryTextStyle}>Token type</Text>
+            <Text
+              style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
+            >{` :  ${this.props.tokenType}`}</Text>
+          </View>
           {!this._isFasttrackTokenType() && (
             <View>
               <View style={styles.bookingItemList}>

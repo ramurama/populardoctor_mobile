@@ -70,6 +70,7 @@ class BookingHistory extends React.Component {
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
         tokenNumber={token.number}
+        tokenType={token.type}
         isCurrent={true}
         onPress={() => {
           this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
@@ -120,6 +121,7 @@ class BookingHistory extends React.Component {
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
         tokenNumber={token.number}
+        tokenType={token.type}
         isCurrent={false}
         onPress={() => {
           this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {

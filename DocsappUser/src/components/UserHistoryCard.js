@@ -16,6 +16,7 @@ const propTypes = {
   hospitalName: PropTypes.string.isRequired,
   hospitalAddress: PropTypes.string.isRequired,
   tokenNumber: PropTypes.string.isRequired,
+  tokenType: PropTypes.string.isRequired,
   isCurrent: PropTypes.bool.isRequired,
   onPress: PropTypes.func
 };
@@ -88,6 +89,7 @@ class UserHistoryCard extends Component {
         number={tokenNumber}
         isCurrent={this.props.isCurrent}
         dimension={"default"}
+        type={this.props.tokenType}
       />
     );
   }
