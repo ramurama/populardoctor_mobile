@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Container, Content, Text } from "native-base";
+import { Container, Content } from "native-base";
 import commonStyles from "../../commons/styles";
 import DoctorBooking from "../../components/DoctorBooking";
 import { getDateStringIndian } from "../../commons/utils";

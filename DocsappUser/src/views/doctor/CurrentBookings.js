@@ -31,7 +31,9 @@ class CurrentBookings extends React.Component {
   componentDidMount() {
     this.setState({ spinner: true }, () => {
       APIService.getTodaysBookings(this.props.token, bookings => {
-        this.setState({ spinner: false, bookings }, () => {});
+        this.setState({ spinner: false }, () => {
+          this.props.setCurrentBookings(bookings);
+        });
       });
     });
   }
@@ -48,7 +50,7 @@ class CurrentBookings extends React.Component {
         hospitalName={item.hospitalName}
         hospitalTime={item.hospitalTime}
         visitorList={item.visitorsList}
-        onItemPress={(bookingId) =>
+        onItemPress={bookingId =>
           this.props.navigation.navigate(VIEW_DR_CURRENT_BOOKING_DETAIL, {
             bookingDetails: item,
             bookingId
@@ -61,9 +63,10 @@ class CurrentBookings extends React.Component {
   _renderCurrentBookingList() {
     return (
       <FlatList
-        data={this.state.bookings}
+        data={this.props.currentBookings}
         renderItem={({ item }) => this._renderCurrentBookingListItem(item)}
         keyExtractor={(item, index) => item.hospitalTime}
+        extraData={this.props}
       />
     );
   }

@@ -43,6 +43,8 @@ const URL_DR_GET_TODAYS_BOOKINGS = "/doctor/getTodaysBookings";
 const URL_DR_GET_BOOKING_HISTORY = "/doctor/getBookingHistory";
 const URL_DR_GET_BOOKING_DETAIL = "/doctor/getBookingDetail";
 const URL_DR_CONFIRM_VISIT = "/doctor/confirmVisit";
+const URL_DR_VERIFY_BOOKING_OTP = "/doctor/verifyBookingOtp";
+const URL_DR_GET_BOOKING_STATUS = "/doctor/getBookingStatus";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -309,6 +311,26 @@ export default (APIService = {
       .catch(err =>
         console.log("***** Error fetching support details. " + err)
       );
+  },
+
+  verifyBookingOtp(token, bookingId, otp, callback) {
+    axios
+      .post(
+        HOST + URL_DR_VERIFY_BOOKING_OTP,
+        { bookingId, otp },
+        { headers: buildAuthHeader(token) }
+      )
+      .then(res => callback(res.data))
+      .catch(err => console.log("***** Error verifying booking OTP. " + err));
+  },
+
+  getBookingStatus(token, bookingId, callback) {
+    axios
+      .get(HOST + URL_DR_GET_BOOKING_STATUS + "/" + bookingId, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data.status))
+      .catch(err => console.log("***** Error fetching booking status. " + err));
   }
 });
 
