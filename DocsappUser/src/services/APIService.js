@@ -7,7 +7,7 @@ import {
 import { isStringsEqual } from "../commons/utils";
 
 // const HOST = "https://docsappdev.herokuapp.com/api/v1";
-const HOST = "http://192.168.0.110:5000/api/v1";
+const HOST = "http://192.168.43.57:5000/api/v1";
 
 //auth
 const URL_CUST_AUTH = "/auth/customer";
@@ -21,6 +21,7 @@ const URL_SEND_OTP = "/messages/sendOtp";
 const URL_VERIFY_OTP = "/user/verifyOtp";
 const URL_MOBILE_NUMBER_EXISTS = "/user/isMobileNumberExists/";
 const URL_GET_SUPPORT_DETAILS = "/user/getSupportDetails";
+const URL_RESET_PASSWORD = "/user/resetPassword";
 
 //customer
 const URL_CUSTOMER_SIGNUP = "/customer/signup";
@@ -91,6 +92,17 @@ export default (APIService = {
       .catch(err => {
         console.log("***** Error fetching change password response.");
         console.log(err);
+      });
+  },
+
+  resetPassword(mobile, password, callback) {
+    axios
+      .put(HOST + URL_RESET_PASSWORD, { mobile, password })
+      .then(res => {
+        callback(res.data.status, res.data.message);
+      })
+      .catch(err => {
+        console.log("***** Error reseting password. " + err);
       });
   },
 

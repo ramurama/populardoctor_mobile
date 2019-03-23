@@ -25,6 +25,7 @@ export const CUSTOMER_SUPPORT = "Customer Support";
 export const LOGOUT = "Logout";
 export const VISITOR_DETAILS = "Visitor Details";
 export const PAYMENT = "Payment";
+export const RESET_PASSWORD = "Reset Password";
 
 export const DR_SCHEDULE = "Schedule";
 export const DR_CURRENT_BOOKINGS = "Today's Appointments";

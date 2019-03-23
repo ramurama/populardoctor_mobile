@@ -35,7 +35,8 @@ import {
   PRIMARY,
   SECONDARY,
   SECONDARY_DARK,
-  WHITE
+  WHITE,
+  DISABLED_GREY
 } from "../config/colors";
 import { FONT_L, FONT_S, FONT_XL, FONT_XXL } from "../config/fontSize";
 import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
@@ -56,7 +57,8 @@ import {
   VIEW_NAV_DRAWER_DR,
   VIEW_NAV_DRAWER_FD,
   VIEW_NAV_USER,
-  VIEW_REGISTER
+  VIEW_REGISTER,
+  VIEW_LOGIN
 } from "../constants/viewNames";
 import APIService from "../services/APIService";
 import { AsyncDataService } from "../services/AsyncDataService";
@@ -73,7 +75,8 @@ class Login extends React.Component {
       spinner: false,
       showPassword: false,
       isForgotPasswordModalOpen: false,
-      selectedUserType: USER_CUSTOMER
+      selectedUserType: USER_CUSTOMER,
+      mobileForgotPassword: ""
     };
   }
 
@@ -289,6 +292,11 @@ class Login extends React.Component {
   }
 
   _renderForgotPasswordModalDialog() {
+    const isDisabled = this.state.mobileForgotPassword.length !== 10;
+    const otpStyle = [styles.sendOtpText];
+    if (isDisabled) {
+      otpStyle.push({ color: DISABLED_GREY });
+    }
     return (
       <ModalDialog
         style={[styles.forgotPasswordModal, styles.forgotPasswordDialogModal]}
@@ -317,10 +325,13 @@ class Login extends React.Component {
               keyboardType={Platform.OS === "ios" ? "number-pad" : "numeric"}
               autoFocus
               maxLength={10}
+              onChangeText={value =>
+                this.setState({ mobileForgotPassword: value })
+              }
             />
           </Item>
-          <TouchableOpacity onPress={this._handleSendOtp}>
-            <Text style={styles.sendOtpText}>Send OTP</Text>
+          <TouchableOpacity onPress={this._handleSendOtp} disabled={isDisabled}>
+            <Text style={otpStyle}>Send OTP</Text>
           </TouchableOpacity>
         </View>
       </ModalDialog>
@@ -328,9 +339,19 @@ class Login extends React.Component {
   }
 
   _handleSendOtp = () => {
-    this.setState({ isForgotPasswordModalOpen: false }, () => {
-      this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION);
-    });
+    const { mobileForgotPassword } = this.state;
+
+    this.setState({ isForgotPasswordModalOpen: false }, () =>
+      setTimeout(() => {
+        this.setState({ spinner: true }, () => {
+          const { mobileForgotPassword } = this.state;
+          this.props.setCustomerSignUpData({ mobile: mobileForgotPassword });
+          this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION, {
+            sourceScreen: VIEW_LOGIN
+          });
+        });
+      }, 100)
+    );
   };
 
   _renderRegisterView() {
