@@ -10,14 +10,8 @@ class DoctorProfileDescription extends React.Component {
     return (
       <Container>
         <Content padder>
-          <View style={{ marginTop: 15 }}>
-            <Text
-              style={{
-                color: HELPER_TEXT_COLOR,
-                fontSize: FONT_L,
-                textAlign: "justify"
-              }}
-            >
+          <View style={styles.textViewStyle}>
+            <Text style={styles.textStyle}>
               {this.props.navigation.getParam("profileContent")}
             </Text>
           </View>
@@ -29,4 +23,11 @@ class DoctorProfileDescription extends React.Component {
 
 export default DoctorProfileDescription;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  textStyle: {
+    color: HELPER_TEXT_COLOR,
+    fontSize: FONT_L,
+    textAlign: "justify"
+  },
+  textViewStyle: { marginTop: 15 }
+});
