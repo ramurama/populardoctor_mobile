@@ -30,6 +30,7 @@ import { connect } from "react-redux";
 import * as Actions from "../actions";
 import { TOKEN_OPEN } from "../constants/tokenStatus";
 import commonStyles from "../commons/styles";
+import { TOKEN_PREMIUM } from "../constants/tokenTypes";
 
 class BookAppointment extends React.Component {
   constructor(props) {
@@ -50,8 +51,18 @@ class BookAppointment extends React.Component {
         const { token, bookingData } = this.props;
         const { doctorId, scheduleId } = bookingData;
         APIService.getTokens(token, doctorId, scheduleId, data => {
+          //sort tokens based on token number
           data.tokens.sort((a, b) => a.number - b.number);
-          this.setState({ tokens: data.tokens, spinner: false });
+          //filter premium tokens if user is not premium
+          let tokens = data.tokens;
+          if (!this.props.isPremiumUser) {
+            tokens = tokens.filter(token => {
+              if (!isStringsEqual(token.type, TOKEN_PREMIUM)) {
+                return token;
+              }
+            });
+          }
+          this.setState({ tokens, spinner: false });
         });
       });
     }
@@ -244,7 +255,8 @@ class BookAppointment extends React.Component {
 const mapStateToProps = state => ({
   token: state.token,
   bookingData: state.bookingData,
-  userSupport: state.userSupport
+  userSupport: state.userSupport,
+  isPremiumUser: state.isPremiumUser
 });
 
 export default connect(

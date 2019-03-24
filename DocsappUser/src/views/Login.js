@@ -40,7 +40,12 @@ import {
 } from "../config/colors";
 import { FONT_L, FONT_S, FONT_XL, FONT_XXL } from "../config/fontSize";
 import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
-import { KEY_USER_DATA, KEY_FCM_TOKEN } from "../constants/AsyncDataKeys";
+import {
+  KEY_USER_DATA,
+  KEY_FCM_TOKEN,
+  KEY_IS_PREMIUM_USER,
+  KEY_INSTALLED_DATE
+} from "../constants/AsyncDataKeys";
 import { icons } from "../constants/icons";
 import {
   MSG_NO_CONNECTIVITY_CONTENT,
@@ -63,6 +68,8 @@ import {
 import APIService from "../services/APIService";
 import { AsyncDataService } from "../services/AsyncDataService";
 import { DBService } from "../services/DBService";
+import { isNullOrEmpty, getDateString } from "../commons/utils";
+import Moment from "moment";
 
 const SCREEN_W = Dimensions.get("window").width;
 
@@ -99,7 +106,7 @@ class Login extends React.Component {
     }
   }
 
-  _initLogin() {
+  async _initLogin() {
     this.setState({
       spinner: false
     });
@@ -115,7 +122,57 @@ class Login extends React.Component {
         console.log("***** token not available");
       }
     });
-    // DBService.printUsers();
+    this._checkAndUpdatePremiumStatus();
+  }
+
+  async _checkAndUpdatePremiumStatus() {
+    try {
+      //isPremiumUser
+      //if null then add false
+      let isPremiumUser;
+      isPremiumUser = await AsyncDataService.getItem(KEY_IS_PREMIUM_USER, true);
+      if (isNullOrEmpty(isPremiumUser)) {
+        isPremiumUser = false;
+        await AsyncDataService.setItem(
+          KEY_IS_PREMIUM_USER,
+          isPremiumUser,
+          true
+        );
+      }
+      //installedDate
+      //if null set current date (first opening of app)
+      let installedDate = await AsyncDataService.getItem(
+        KEY_INSTALLED_DATE,
+        false
+      );
+      if (isNullOrEmpty(installedDate)) {
+        installedDate = getDateString(new Date());
+        const saveStatus = await AsyncDataService.setItem(
+          KEY_INSTALLED_DATE,
+          installedDate,
+          false
+        );
+      } else {
+        const installedDateMoment = new Moment(installedDate);
+        const nowMoment = new Moment(new Date());
+        const diff = nowMoment.diff(installedDateMoment, "days");
+        console.log("*********************************************");
+        //difference is greater than or equal to 30 days.
+        if (diff >= 1) {
+          isPremiumUser = true;
+          await AsyncDataService.setItem(
+            KEY_IS_PREMIUM_USER,
+            isPremiumUser,
+            true
+          );
+        }
+        //set isPremium to redux state
+        console.log(isPremiumUser);
+        this.props.setIsPremiumUser(isPremiumUser);
+      }
+    } catch (err) {
+      console.log("***** Error " + err);
+    }
   }
 
   _handleLogin = () => {
