@@ -123,7 +123,7 @@ class Schedule extends React.Component {
   _renderNoScheduleConfirmations() {
     return (
       <View style={styles.noConfirmationsView}>
-        <Text style={styles.noConfirmationsText}>
+        <Text style={styles.noConfirmationsText} numberOfLines={2}>
           Your schedules for tomorrow are confirmed.
         </Text>
       </View>
@@ -135,7 +135,7 @@ class Schedule extends React.Component {
     return (
       <Container>
         {this._renderHeader()}
-        <Content style={commonStyles.contentBg}>
+        <Content style={commonStyles.contentBg} padder>
           {isNullOrEmpty(schedules) && this._renderNoScheduleConfirmations()}
           <View>{this._renderScheduleConfirmationList()}</View>
           {this._renderSpinner()}
@@ -157,6 +157,10 @@ export default connect(
 )(Schedule);
 
 const styles = StyleSheet.create({
-  noConfirmationsText: { alignSelf: "center", color: HELPER_TEXT_COLOR },
+  noConfirmationsText: {
+    alignSelf: "center",
+    color: HELPER_TEXT_COLOR,
+    textAlign: "center"
+  },
   noConfirmationsView: { marginTop: 30 }
 });
