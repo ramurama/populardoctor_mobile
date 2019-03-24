@@ -23,16 +23,20 @@ class BookingHistory extends React.Component {
   }
 
   componentDidMount() {
-    const { drBookingHistory, setDoctorBookingHistory , token} = this.props;
-    if (isNullOrEmpty(drBookingHistory)) {
-      this.setState({ spinner: true }, () => {
-        APIService.getDoctorBookingHistory(token, bookings => {
-          this.setState({ spinner: false }, () => {
-            setDoctorBookingHistory(bookings);
-          });
+    if (isNullOrEmpty(this.props.drBookingHistory)) {
+      this._refreshHistory();
+    }
+  }
+
+  _refreshHistory() {
+    const { setDoctorBookingHistory, token } = this.props;
+    this.setState({ spinner: true }, () => {
+      APIService.getDoctorBookingHistory(token, bookings => {
+        this.setState({ spinner: false }, () => {
+          setDoctorBookingHistory(bookings);
         });
       });
-    }
+    });
   }
 
   _renderBookingHistoryList() {
@@ -72,7 +76,12 @@ class BookingHistory extends React.Component {
   render() {
     return (
       <Container>
-        <Header title={DR_BOOKING_HISTORY} {...this.props} />
+        <Header
+          title={DR_BOOKING_HISTORY}
+          {...this.props}
+          showRefresh="true"
+          onRefresh={() => this._refreshHistory()}
+        />
         <Content style={commonStyles.contentBg}>
           <View>{this._renderBookingHistoryList()}</View>
           {this._renderSpinner()}
