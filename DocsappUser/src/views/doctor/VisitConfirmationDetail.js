@@ -12,6 +12,7 @@ import { WHITE } from "../../config/colors";
 import APIService from "../../services/APIService";
 import { connect } from "react-redux";
 import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
+import { USER_DOCTOR } from "../../constants/userType";
 
 class VisitConfirmationDetail extends React.Component {
   constructor(props) {
@@ -27,21 +28,26 @@ class VisitConfirmationDetail extends React.Component {
     const bookingId = this.props.navigation.getParam("bookingId");
     console.log(bookingId);
     this.setState({ spinner: true }, () => {
-      APIService.getDoctorBookingDetail(this.props.token, bookingId, data => {
-        console.log(data);
-        const { status, message, bookingDetail } = data;
-        this.setState({ spinner: false }, () =>
-          setTimeout(() => {
-            if (status) {
-              this.setState({ bookingDetail });
-            } else {
-              Alert.alert("Sorry!", message, [
-                { text: "Ok!", onPress: () => this.props.navigation.goBack() }
-              ]);
-            }
-          }, 100)
-        );
-      });
+      APIService.getDoctorBookingDetail(
+        this.props.token,
+        bookingId,
+        USER_DOCTOR,
+        data => {
+          console.log(data);
+          const { status, message, bookingDetail } = data;
+          this.setState({ spinner: false }, () =>
+            setTimeout(() => {
+              if (status) {
+                this.setState({ bookingDetail });
+              } else {
+                Alert.alert("Sorry!", message, [
+                  { text: "Ok!", onPress: () => this.props.navigation.goBack() }
+                ]);
+              }
+            }, 100)
+          );
+        }
+      );
     });
   }
 
@@ -54,9 +60,14 @@ class VisitConfirmationDetail extends React.Component {
   _handleConfirmButton = () => {
     const bookingId = this.props.navigation.getParam("bookingId");
     this.setState({ spinner: true }, () => {
-      APIService.confirmVisitByDoctor(this.props.token, bookingId, status => {
-        this.setState({ spinner: false, isConfirmed: true });
-      });
+      APIService.confirmVisit(
+        this.props.token,
+        bookingId,
+        USER_DOCTOR,
+        status => {
+          this.setState({ spinner: false, isConfirmed: true });
+        }
+      );
     });
   };
 

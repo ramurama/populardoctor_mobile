@@ -33,6 +33,7 @@ import * as Actions from "../../actions";
 import VisitConfirmedIcon from "../../components/VisitConfirmedIcon";
 import Toast from "react-native-simple-toast";
 import { TOKEN_BOOKED, TOKEN_VISITED } from "../../constants/tokenStatus";
+import { USER_DOCTOR, USER_FRONT_DESK } from "../../constants/userType";
 
 const SCREEN_W = Dimensions.get("window").width;
 
@@ -50,17 +51,22 @@ class CurrentBookingDetail extends React.Component {
   componentDidMount() {
     const bookingId = this.props.navigation.getParam("bookingId");
     this.setState({ spinner: true }, () => {
-      APIService.getBookingStatus(this.props.token, bookingId, bookedStatus => {
-        this.setState({ spinner: false }, () => {
-          if (!isNullOrEmpty(bookedStatus)) {
-            setTimeout(() => {
-              if (isStringsEqual(bookedStatus, TOKEN_VISITED)) {
-                this.setState({ showFooterButton: false });
-              }
-            }, 100);
-          }
-        });
-      });
+      APIService.getBookingStatus(
+        this.props.token,
+        bookingId,
+        USER_DOCTOR,
+        bookedStatus => {
+          this.setState({ spinner: false }, () => {
+            if (!isNullOrEmpty(bookedStatus)) {
+              setTimeout(() => {
+                if (isStringsEqual(bookedStatus, TOKEN_VISITED)) {
+                  this.setState({ showFooterButton: false });
+                }
+              }, 100);
+            }
+          });
+        }
+      );
     });
   }
 
@@ -134,18 +140,24 @@ class CurrentBookingDetail extends React.Component {
 
     this.setState({ isVerifyModalOpen: false, spinner: true }, () => {
       setTimeout(() => {
-        APIService.verifyBookingOtp(this.props.token, bookingId, otp, data => {
-          const { status, message } = data;
-          this.setState({ spinner: false }, () => {
-            if (status) {
-              this.setState({ showFooterButton: false });
-            } else {
-              setTimeout(() => {
-                Toast.show(message);
-              }, 100);
-            }
-          });
-        });
+        APIService.verifyBookingOtp(
+          this.props.token,
+          bookingId,
+          otp,
+          USER_FRONT_DESK,
+          data => {
+            const { status, message } = data;
+            this.setState({ spinner: false }, () => {
+              if (status) {
+                this.setState({ showFooterButton: false });
+              } else {
+                setTimeout(() => {
+                  Toast.show(message);
+                }, 100);
+              }
+            });
+          }
+        );
       }, 300);
     });
   };

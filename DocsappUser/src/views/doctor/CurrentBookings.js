@@ -15,32 +15,24 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { WHITE } from "../../config/colors";
 import { connect } from "react-redux";
 import * as Actions from "../../actions";
-import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
 import APIService from "../../services/APIService";
-import _ from "underscore";
+import { USER_DOCTOR } from "../../constants/userType";
 
 class CurrentBookings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false,
-      bookings: []
+      spinner: false
     };
   }
 
   componentDidMount() {
     this.setState({ spinner: true }, () => {
-      APIService.getTodaysBookings(this.props.token, bookings => {
+      APIService.getTodaysBookings(this.props.token, USER_DOCTOR, bookings => {
         this.setState({ spinner: false }, () => {
           this.props.setCurrentBookings(bookings);
         });
       });
-    });
-  }
-
-  _findHospitals(hospitals, hospitalDetail) {
-    return hospitals.find(hospital => {
-      return _.isEqual(hospital, hospitalDetail);
     });
   }
 

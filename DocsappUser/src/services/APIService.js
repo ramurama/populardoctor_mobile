@@ -46,6 +46,13 @@ const URL_DR_CONFIRM_VISIT = "/doctor/confirmVisit";
 const URL_DR_VERIFY_BOOKING_OTP = "/doctor/verifyBookingOtp";
 const URL_DR_GET_BOOKING_STATUS = "/doctor/getBookingStatus";
 
+//frontdesk
+const URL_FD_GET_TODAYS_BOOKINGS = "/frontdesk/getTodaysBookings";
+const URL_FD_GET_BOOKING_STATUS = "/frontdesk/getBookingStatus";
+const URL_FD_CONFIRM_VISIT = "/frontdesk/confirmVisit";
+const URL_FD_VERIFY_BOOKING_OTP = "/frontdesk/verifyBookingOtp";
+const URL_FD_GET_BOOKING_DETAIL = "/frontdesk/getBookingDetail";
+
 export default (APIService = {
   login(username, password, userType, callback) {
     let authURL = "";
@@ -261,9 +268,15 @@ export default (APIService = {
       .catch(err => console.log("***** Error confirming schedule. " + err));
   },
 
-  getTodaysBookings(token, callback) {
+  getTodaysBookings(token, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_GET_TODAYS_BOOKINGS;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_GET_TODAYS_BOOKINGS;
+    }
     axios
-      .get(HOST + URL_DR_GET_TODAYS_BOOKINGS, {
+      .get(HOST + url, {
         headers: buildAuthHeader(token)
       })
       .then(res => callback(res.data))
@@ -283,20 +296,31 @@ export default (APIService = {
       );
   },
 
-  getDoctorBookingDetail(token, bookingId, callback) {
-    console.log(HOST + URL_DR_GET_BOOKING_DETAIL + "/" + bookingId);
+  getDoctorBookingDetail(token, bookingId, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_GET_BOOKING_DETAIL;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_GET_BOOKING_DETAIL;
+    }
     axios
-      .get(HOST + URL_DR_GET_BOOKING_DETAIL + "/" + bookingId, {
+      .get(HOST + url + "/" + bookingId, {
         headers: buildAuthHeader(token)
       })
       .then(res => callback(res.data))
       .catch(err => console.log("***** Error fetching booking detail. " + err));
   },
 
-  confirmVisitByDoctor(token, bookingId, callback) {
+  confirmVisit(token, bookingId, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_CONFIRM_VISIT;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_CONFIRM_VISIT;
+    }
     axios
       .put(
-        HOST + URL_DR_CONFIRM_VISIT + "/" + bookingId,
+        HOST + url + "/" + bookingId,
         {},
         { headers: buildAuthHeader(token) }
       )
@@ -313,20 +337,28 @@ export default (APIService = {
       );
   },
 
-  verifyBookingOtp(token, bookingId, otp, callback) {
+  verifyBookingOtp(token, bookingId, otp, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_VERIFY_BOOKING_OTP;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_VERIFY_BOOKING_OTP;
+    }
     axios
-      .post(
-        HOST + URL_DR_VERIFY_BOOKING_OTP,
-        { bookingId, otp },
-        { headers: buildAuthHeader(token) }
-      )
+      .post(HOST + url, { bookingId, otp }, { headers: buildAuthHeader(token) })
       .then(res => callback(res.data))
       .catch(err => console.log("***** Error verifying booking OTP. " + err));
   },
 
-  getBookingStatus(token, bookingId, callback) {
+  getBookingStatus(token, bookingId, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_GET_BOOKING_STATUS;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_GET_BOOKING_STATUS;
+    }
     axios
-      .get(HOST + URL_DR_GET_BOOKING_STATUS + "/" + bookingId, {
+      .get(HOST + url + "/" + bookingId, {
         headers: buildAuthHeader(token)
       })
       .then(res => callback(res.data.status))
