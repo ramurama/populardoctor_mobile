@@ -26,3 +26,4 @@ export const PREMIUM_COLOR = "#e57373";
 export const STATUS_AVAILABLE_COLOR = "#00c853";
 export const STATUS_NOT_AVAILABLE_COLOR = "#ff1744";
 export const DARK_WHITE = "#eeeeee";
+export const BLOCK_COLOR = "#e53935";

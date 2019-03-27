@@ -11,7 +11,8 @@ import {
   ACTION_SET_DR_BOOKING_HISTORY,
   ACTION_SET_USER_SUPPORT,
   ACTION_SET_CURRENT_BOOKINGS,
-  ACTION_SET_IS_PREMIUM_USER
+  ACTION_SET_IS_PREMIUM_USER,
+  ACTION_SET_CONFIRMED_SCHEDULES
 } from "../constants/actionTypes";
 
 export const setNetworkConnStatus = isNetworkConnected => ({
@@ -77,4 +78,9 @@ export const setCurrentBookings = currentBookings => ({
 export const setIsPremiumUser = isPremiumUser => ({
   type: ACTION_SET_IS_PREMIUM_USER,
   isPremiumUser
+});
+
+export const setConfirmedSchedules = confirmedSchedules => ({
+  type: ACTION_SET_CONFIRMED_SCHEDULES,
+  confirmedSchedules
 });

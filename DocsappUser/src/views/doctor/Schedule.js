@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Alert } from "react-native";
 import { Container, Content, Text } from "native-base";
 import Header from "../../components/HeaderDoctor";
 import Footer from "../../components/FooterDoctor";
@@ -13,6 +13,9 @@ import APIService from "../../services/APIService";
 import { connect } from "react-redux";
 import * as Actions from "../../actions";
 import { isNullOrEmpty, isStringsEqual } from "../../commons/utils";
+import StausAvailability from "../../components/StatusAvailability";
+import Toast from "react-native-simple-toast";
+import { USER_DOCTOR } from "../../constants/userType";
 
 class Schedule extends React.Component {
   constructor(props) {
@@ -23,6 +26,13 @@ class Schedule extends React.Component {
   }
 
   componentDidMount() {
+    //get confirmed schedules
+    const { token, confirmedSchedules, setConfirmedSchedules } = this.props;
+    APIService.getConfirmedSchedules(token, USER_DOCTOR, schedules => {
+      this.props.setConfirmedSchedules(schedules);
+    });
+
+    //get schedule confirmations
     if (isNullOrEmpty(this.props.scheduleConfirmations)) {
       this.setState({ spinner: true }, () => {
         APIService.getNextDayScheduleConfirmations(this.props.token, data => {
@@ -120,6 +130,59 @@ class Schedule extends React.Component {
     );
   }
 
+  _renderConfirmedSchedulesList() {
+    return (
+      <FlatList
+        data={this.props.confirmedSchedules}
+        renderItem={({ item }) => this._renderConfirmedScheduleListItem(item)}
+        keyExtractor={(item, index) => item.tokenTableId}
+        extraData={this.props}
+      />
+    );
+  }
+
+  _renderConfirmedScheduleListItem(item) {
+    const {
+      hospitalName,
+      hospitalLocation,
+      startTime,
+      endTime,
+      tokenTableId
+    } = item;
+    return (
+      <StausAvailability
+        hospital={hospitalName + ", " + hospitalLocation}
+        time={startTime + " - " + endTime}
+        onBlockPress={() => {
+          Alert.alert(
+            "Warning!",
+            "Blocking a schedule cannot be undone! Are you sure?",
+            [
+              { text: "No" },
+              {
+                text: "Yes",
+                onPress: () => {
+                  APIService.blockSchedule(
+                    this.props.token,
+                    tokenTableId,
+                    USER_DOCTOR,
+                    status => {
+                      if (status) {
+                        Toast.show("Schedule has been blocked");
+                      } else {
+                        Toast.show("Unknown error!");
+                      }
+                    }
+                  );
+                }
+              }
+            ]
+          );
+        }}
+      />
+    );
+  }
+
   _renderNoScheduleConfirmations() {
     return (
       <View style={styles.noConfirmationsView}>
@@ -136,8 +199,11 @@ class Schedule extends React.Component {
       <Container>
         {this._renderHeader()}
         <Content style={commonStyles.contentBg} padder>
-          {isNullOrEmpty(schedules) && this._renderNoScheduleConfirmations()}
-          <View>{this._renderScheduleConfirmationList()}</View>
+          {isNullOrEmpty(schedules) &&
+            isNullOrEmpty(this.props.confirmedSchedules) &&
+            this._renderNoScheduleConfirmations()}
+          {this._renderConfirmedSchedulesList()}
+          {this._renderScheduleConfirmationList()}
           {this._renderSpinner()}
         </Content>
         <Footer {...this.props} activeButton={DR_SCHEDULE} />
@@ -148,7 +214,8 @@ class Schedule extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  scheduleConfirmations: state.scheduleConfirmations
+  scheduleConfirmations: state.scheduleConfirmations,
+  confirmedSchedules: state.confirmedSchedules
 });
 
 export default connect(

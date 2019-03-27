@@ -11,6 +11,7 @@ import DrBookingHistoryReducer from "./DrBookingHistoryReducer";
 import UserSupportReducer from "./UserSupportReducer";
 import CurrentBookingsReducer from "./CurrentBookingsReducer";
 import IsPremiumUserReducer from "./IsPremiumUserReducer";
+import ConfirmedSchedulesReducer from "./ConfirmedSchedulesReducer";
 
 export default combineReducers({
   isNetworkConnected: NetworkReducer,
@@ -24,5 +25,6 @@ export default combineReducers({
   drBookingHistory: DrBookingHistoryReducer,
   userSupport: UserSupportReducer,
   currentBookings: CurrentBookingsReducer,
-  isPremiumUser: IsPremiumUserReducer
+  isPremiumUser: IsPremiumUserReducer,
+  confirmedSchedules: ConfirmedSchedulesReducer
 });

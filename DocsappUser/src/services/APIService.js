@@ -45,6 +45,8 @@ const URL_DR_GET_BOOKING_DETAIL = "/doctor/getBookingDetail";
 const URL_DR_CONFIRM_VISIT = "/doctor/confirmVisit";
 const URL_DR_VERIFY_BOOKING_OTP = "/doctor/verifyBookingOtp";
 const URL_DR_GET_BOOKING_STATUS = "/doctor/getBookingStatus";
+const URL_DR_GET_CONFIRMED_SCHEDULES = "/doctor/getConfirmedSchedules";
+const URL_DR_BLOCK_SCHEDULE = "/doctor/blockSchedule";
 
 //frontdesk
 const URL_FD_GET_TODAYS_BOOKINGS = "/frontdesk/getTodaysBookings";
@@ -52,6 +54,8 @@ const URL_FD_GET_BOOKING_STATUS = "/frontdesk/getBookingStatus";
 const URL_FD_CONFIRM_VISIT = "/frontdesk/confirmVisit";
 const URL_FD_VERIFY_BOOKING_OTP = "/frontdesk/verifyBookingOtp";
 const URL_FD_GET_BOOKING_DETAIL = "/frontdesk/getBookingDetail";
+const URL_FD_GET_CONFIRMED_SCHEDULES = "/frontdesk/getConfirmedSchedules";
+const URL_FD_BLOCK_SCHEDULE = "/frontdesk/blockSchedule";
 
 export default (APIService = {
   login(username, password, userType, callback) {
@@ -363,6 +367,38 @@ export default (APIService = {
       })
       .then(res => callback(res.data.status))
       .catch(err => console.log("***** Error fetching booking status. " + err));
+  },
+
+  getConfirmedSchedules(token, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_GET_CONFIRMED_SCHEDULES;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_GET_CONFIRMED_SCHEDULES;
+    }
+    axios
+      .get(HOST + url, { headers: buildAuthHeader(token) })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log("***** Error fetching confirmed schedules. " + err)
+      );
+  },
+
+  blockSchedule(token, tokenTableId, userType, callback) {
+    let url = "";
+    if (isStringsEqual(userType, USER_DOCTOR)) {
+      url = URL_DR_BLOCK_SCHEDULE;
+    } else if (isStringsEqual(userType, USER_FRONT_DESK)) {
+      url = URL_FD_BLOCK_SCHEDULE;
+    }
+    axios
+      .put(
+        HOST + url + "/" + tokenTableId,
+        {},
+        { headers: buildAuthHeader(token) }
+      )
+      .then(res => callback(res.data.status))
+      .catch(err => console.log("***** Error blocking schedule. " + err));
   }
 });
 
