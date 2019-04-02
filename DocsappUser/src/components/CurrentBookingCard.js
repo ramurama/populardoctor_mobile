@@ -23,7 +23,11 @@ class CurrentBookingCard extends Component {
 
   _rendervisitorName(name) {
     return (
-      <Text style={styles.visitorNameStyle} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={styles.visitorNameStyle}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
         {name}
       </Text>
     );
@@ -43,7 +47,12 @@ class CurrentBookingCard extends Component {
 
   _renderToken(tokenNumber) {
     return (
-      <Token isCurrent={true} number={tokenNumber} dimension={"default"} />
+      <Token
+        isCurrent={true}
+        number={tokenNumber}
+        dimension={"default"}
+        type={this.props.tokenType}
+      />
     );
   }
 
@@ -63,9 +72,12 @@ class CurrentBookingCard extends Component {
   }
 
   render() {
-    const { name, number, tokenNumber, onPress } = this.props;
+    const { name, number, tokenNumber, onPress, bookingId } = this.props;
     return (
-      <TouchableOpacity style={styles.containerStyle} onPress={onPress}>
+      <TouchableOpacity
+        style={styles.containerStyle}
+        onPress={() => onPress(bookingId)}
+      >
         {this._renderCaseInfoContainer(name, number, tokenNumber)}
       </TouchableOpacity>
     );

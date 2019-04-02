@@ -27,7 +27,8 @@ const propTypes = {
   doctorName: PropTypes.string.isRequired,
   specialization: PropTypes.string.isRequired,
   enableQR: PropTypes.bool.isRequired,
-  bookingId: PropTypes.string
+  bookingId: PropTypes.string,
+  showBookingId: PropTypes.bool.isRequired
 };
 
 class UserBooking extends React.Component {
@@ -127,7 +128,7 @@ class UserBooking extends React.Component {
       <View>
         <Text style={styles.headerStyle}>Booking details</Text>
         <View style={{ flexDirection: "column", paddingLeft: 32 }}>
-          {this.props.enableQR && (
+          {this.props.showBookingId && (
             <View style={styles.bookingItemList}>
               <Text style={styles.primaryTextStyle}>Booking Id </Text>
               <Text
@@ -136,14 +137,12 @@ class UserBooking extends React.Component {
               <Chip title={bookingId} />
             </View>
           )}
-          {this._isFasttrackTokenType() && (
-            <View style={styles.bookingItemList}>
-              <Text style={styles.primaryTextStyle}>Token type</Text>
-              <Text
-                style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
-              >{` :  ${this.props.tokenType}`}</Text>
-            </View>
-          )}
+          <View style={styles.bookingItemList}>
+            <Text style={styles.primaryTextStyle}>Token type</Text>
+            <Text
+              style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
+            >{` :  ${this.props.tokenType}`}</Text>
+          </View>
           {!this._isFasttrackTokenType() && (
             <View>
               <View style={styles.bookingItemList}>
@@ -166,13 +165,14 @@ class UserBooking extends React.Component {
   }
 
   _renderQRView() {
+    const { bookingId } = this.props;
     return (
       <View style={styles.qrView}>
         <QRCode
-          value={this.props.bookingId}
+          value={`${bookingId}`}
           size={100}
           bgColor="transparent"
-          fgColor={BACKGROUND_1}
+          fgColor={WHITE}
         />
       </View>
     );

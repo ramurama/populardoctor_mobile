@@ -7,6 +7,8 @@ import {
   BACKGROUND_2
 } from "../config/colors";
 import { Dimensions } from "react-native";
+import { FONT_L } from "../config/fontSize";
+import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
 
 export default (commonStyles = StyleSheet.create({
   headerBody: {
@@ -44,5 +46,19 @@ export default (commonStyles = StyleSheet.create({
     color: PRIMARY,
     fontSize: 18,
     fontWeight: "800"
+  },
+  footerButtonStyle: {
+    backgroundColor: SECONDARY
+  },
+  footerButtonView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  footerButtonText: {
+    fontSize: FONT_L,
+    fontWeight: FONT_WEIGHT_BOLD,
+    padding: 10,
+    color: PRIMARY
   }
 }));

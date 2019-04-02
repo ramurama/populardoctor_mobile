@@ -35,11 +35,17 @@ import {
   PRIMARY,
   SECONDARY,
   SECONDARY_DARK,
-  WHITE
+  WHITE,
+  DISABLED_GREY
 } from "../config/colors";
 import { FONT_L, FONT_S, FONT_XL, FONT_XXL } from "../config/fontSize";
 import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
-import { KEY_USER_DATA, KEY_FCM_TOKEN } from "../constants/AsyncDataKeys";
+import {
+  KEY_USER_DATA,
+  KEY_FCM_TOKEN,
+  KEY_IS_PREMIUM_USER,
+  KEY_INSTALLED_DATE
+} from "../constants/AsyncDataKeys";
 import { icons } from "../constants/icons";
 import {
   MSG_NO_CONNECTIVITY_CONTENT,
@@ -56,11 +62,14 @@ import {
   VIEW_NAV_DRAWER_DR,
   VIEW_NAV_DRAWER_FD,
   VIEW_NAV_USER,
-  VIEW_REGISTER
+  VIEW_REGISTER,
+  VIEW_LOGIN
 } from "../constants/viewNames";
 import APIService from "../services/APIService";
 import { AsyncDataService } from "../services/AsyncDataService";
 import { DBService } from "../services/DBService";
+import { isNullOrEmpty, getDateString } from "../commons/utils";
+import Moment from "moment";
 
 const SCREEN_W = Dimensions.get("window").width;
 
@@ -73,7 +82,8 @@ class Login extends React.Component {
       spinner: false,
       showPassword: false,
       isForgotPasswordModalOpen: false,
-      selectedUserType: USER_CUSTOMER
+      selectedUserType: USER_CUSTOMER,
+      mobileForgotPassword: ""
     };
   }
 
@@ -96,7 +106,7 @@ class Login extends React.Component {
     }
   }
 
-  _initLogin() {
+  async _initLogin() {
     this.setState({
       spinner: false
     });
@@ -112,7 +122,57 @@ class Login extends React.Component {
         console.log("***** token not available");
       }
     });
-    // DBService.printUsers();
+    this._checkAndUpdatePremiumStatus();
+  }
+
+  async _checkAndUpdatePremiumStatus() {
+    try {
+      //isPremiumUser
+      //if null then add false
+      let isPremiumUser;
+      isPremiumUser = await AsyncDataService.getItem(KEY_IS_PREMIUM_USER, true);
+      if (isNullOrEmpty(isPremiumUser)) {
+        isPremiumUser = false;
+        await AsyncDataService.setItem(
+          KEY_IS_PREMIUM_USER,
+          isPremiumUser,
+          true
+        );
+      }
+      //installedDate
+      //if null set current date (first opening of app)
+      let installedDate = await AsyncDataService.getItem(
+        KEY_INSTALLED_DATE,
+        false
+      );
+      if (isNullOrEmpty(installedDate)) {
+        installedDate = getDateString(new Date());
+        const saveStatus = await AsyncDataService.setItem(
+          KEY_INSTALLED_DATE,
+          installedDate,
+          false
+        );
+      } else {
+        const installedDateMoment = new Moment(installedDate);
+        const nowMoment = new Moment(new Date());
+        const diff = nowMoment.diff(installedDateMoment, "days");
+        console.log("*********************************************");
+        //difference is greater than or equal to 30 days.
+        if (diff >= 1) {
+          isPremiumUser = true;
+          await AsyncDataService.setItem(
+            KEY_IS_PREMIUM_USER,
+            isPremiumUser,
+            true
+          );
+        }
+        //set isPremium to redux state
+        console.log(isPremiumUser);
+        this.props.setIsPremiumUser(isPremiumUser);
+      }
+    } catch (err) {
+      console.log("***** Error " + err);
+    }
   }
 
   _handleLogin = () => {
@@ -289,6 +349,11 @@ class Login extends React.Component {
   }
 
   _renderForgotPasswordModalDialog() {
+    const isDisabled = this.state.mobileForgotPassword.length !== 10;
+    const otpStyle = [styles.sendOtpText];
+    if (isDisabled) {
+      otpStyle.push({ color: DISABLED_GREY });
+    }
     return (
       <ModalDialog
         style={[styles.forgotPasswordModal, styles.forgotPasswordDialogModal]}
@@ -317,10 +382,13 @@ class Login extends React.Component {
               keyboardType={Platform.OS === "ios" ? "number-pad" : "numeric"}
               autoFocus
               maxLength={10}
+              onChangeText={value =>
+                this.setState({ mobileForgotPassword: value })
+              }
             />
           </Item>
-          <TouchableOpacity onPress={this._handleSendOtp}>
-            <Text style={styles.sendOtpText}>Send OTP</Text>
+          <TouchableOpacity onPress={this._handleSendOtp} disabled={isDisabled}>
+            <Text style={otpStyle}>Send OTP</Text>
           </TouchableOpacity>
         </View>
       </ModalDialog>
@@ -328,9 +396,19 @@ class Login extends React.Component {
   }
 
   _handleSendOtp = () => {
-    this.setState({ isForgotPasswordModalOpen: false }, () => {
-      this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION);
-    });
+    const { mobileForgotPassword } = this.state;
+
+    this.setState({ isForgotPasswordModalOpen: false }, () =>
+      setTimeout(() => {
+        this.setState({ spinner: true }, () => {
+          const { mobileForgotPassword } = this.state;
+          this.props.setCustomerSignUpData({ mobile: mobileForgotPassword });
+          this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION, {
+            sourceScreen: VIEW_LOGIN
+          });
+        });
+      }, 100)
+    );
   };
 
   _renderRegisterView() {

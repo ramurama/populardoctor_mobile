@@ -11,6 +11,8 @@ import { FONT_WEIGHT_MEDIUM } from "../config/fontWeight";
 
 const propTypes = {
   title: PropTypes.string.isRequired,
+  showRefresh: PropTypes.bool,
+  onRefresh: PropTypes.func
 };
 
 class HeaderDoctor extends React.Component {
@@ -22,6 +24,14 @@ class HeaderDoctor extends React.Component {
     return (
       <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
         <Icon name="appstore1" type="AntDesign" style={[styles.menuIcon]} />
+      </TouchableOpacity>
+    );
+  }
+
+  _renderRefreshButton() {
+    return (
+      <TouchableOpacity onPress={() => this.props.onRefresh()}>
+        <Icon name="refresh" type="SimpleLineIcons" style={[styles.menuIcon]} />
       </TouchableOpacity>
     );
   }
@@ -44,7 +54,7 @@ class HeaderDoctor extends React.Component {
             {this.props.title}
           </Text>
         </Body>
-        <Right />
+        <Right>{this.props.showRefresh && this._renderRefreshButton()}</Right>
       </Header>
     );
   }

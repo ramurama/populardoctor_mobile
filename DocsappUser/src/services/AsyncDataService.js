@@ -6,21 +6,29 @@ export const AsyncDataService = {
     if (isJSON) {
       value = JSON.stringify(value);
     }
-    let status = await AsyncStorage.setItem(key, value);
-    if (!status) {
+    try {
+      let status = await AsyncStorage.setItem(key, value);
+      if (!status) {
+        return false;
+      }
+      return true;
+    } catch (err) {
       return false;
     }
-    return true;
   },
 
   async getItem(key, isJSON) {
-    let value = await AsyncStorage.getItem(key);
-    if (isNullOrEmpty(value)) {
+    try {
+      let value = await AsyncStorage.getItem(key);
+      if (isNullOrEmpty(value)) {
+        return null;
+      }
+      if (isJSON) {
+        return JSON.parse(value);
+      }
+      return value;
+    } catch (err) {
       return null;
     }
-    if (isJSON) {
-      return JSON.parse(value);
-    }
-    return value;
   }
 };

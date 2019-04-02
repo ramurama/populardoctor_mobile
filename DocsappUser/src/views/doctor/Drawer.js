@@ -18,8 +18,11 @@ import {
 } from "../../constants/strings";
 import { DBService } from "../../services/DBService";
 import { connect } from "react-redux";
+import * as Actions from "../../actions";
 import { FONT_M, FONT_L, FONT_XL, FONT_XXXL } from "../../config/fontSize";
 import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_XBOLD } from "../../config/fontWeight";
+import { isNullOrEmpty } from "../../commons/utils";
+import APIService from "../../services/APIService";
 
 class Drawer extends React.Component {
   constructor(props) {
@@ -31,6 +34,10 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
+    const { userSupport, setUserSupport } = this.props;
+    if (isNullOrEmpty(userSupport)) {
+      APIService.getSupportDetails(support => setUserSupport(support));
+    }
   }
 
   componentWillUnmount() {
@@ -132,9 +139,15 @@ class Drawer extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ userData: state.userData });
+const mapStateToProps = state => ({
+  userData: state.userData,
+  userSupport: state.userSupport
+});
 
-export default connect(mapStateToProps)(Drawer);
+export default connect(
+  mapStateToProps,
+  Actions
+)(Drawer);
 
 const styles = StyleSheet.create({
   flex1: {

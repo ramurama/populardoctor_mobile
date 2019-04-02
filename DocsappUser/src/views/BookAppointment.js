@@ -1,6 +1,12 @@
 import { Container, Content, Footer, Icon, Text } from "native-base";
 import React from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Linking
+} from "react-native";
 import { isStringsEqual } from "../commons/utils";
 import TokenTimePanel from "../components/TokenTimePanel";
 import TouchableToken from "../components/TouchableToken";
@@ -23,6 +29,8 @@ import APIService from "../services/APIService";
 import { connect } from "react-redux";
 import * as Actions from "../actions";
 import { TOKEN_OPEN } from "../constants/tokenStatus";
+import commonStyles from "../commons/styles";
+import { TOKEN_PREMIUM } from "../constants/tokenTypes";
 
 class BookAppointment extends React.Component {
   constructor(props) {
@@ -43,8 +51,18 @@ class BookAppointment extends React.Component {
         const { token, bookingData } = this.props;
         const { doctorId, scheduleId } = bookingData;
         APIService.getTokens(token, doctorId, scheduleId, data => {
+          //sort tokens based on token number
           data.tokens.sort((a, b) => a.number - b.number);
-          this.setState({ tokens: data.tokens, spinner: false });
+          //filter premium tokens if user is not premium
+          let tokens = data.tokens;
+          if (!this.props.isPremiumUser) {
+            tokens = tokens.filter(token => {
+              if (!isStringsEqual(token.type, TOKEN_PREMIUM)) {
+                return token;
+              }
+            });
+          }
+          this.setState({ tokens, spinner: false });
         });
       });
     }
@@ -157,11 +175,11 @@ class BookAppointment extends React.Component {
           style={
             this.state.selectedTokenNumber === ""
               ? styles.footerDisabledStyle
-              : styles.footerEnabledStyle
+              : commonStyles.footerButtonStyle
           }
         >
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Book Now</Text>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Book Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>
@@ -171,14 +189,19 @@ class BookAppointment extends React.Component {
   _renderCallNowButton() {
     return (
       <TouchableOpacity onPress={this._handleCallNow}>
-        <Footer style={styles.footerEnabledStyle}>
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Call Now</Text>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Call Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>
     );
   }
+
+  _handleCallNow = () => {
+    const { contact_number } = this.props.userSupport;
+    Linking.openURL(`tel:${contact_number}`);
+  };
 
   _handleBookNow = () => {
     const {
@@ -194,8 +217,6 @@ class BookAppointment extends React.Component {
     });
     return this.props.navigation.navigate(VIEW_BOOKING_CONFIRMATION);
   };
-
-  __handleCallNow = () => {};
 
   _renderTokenTimePanel() {
     return (
@@ -233,7 +254,9 @@ class BookAppointment extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  bookingData: state.bookingData
+  bookingData: state.bookingData,
+  userSupport: state.userSupport,
+  isPremiumUser: state.isPremiumUser
 });
 
 export default connect(
@@ -261,11 +284,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center"
   },
-  bookView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   headContainerStyle: {
     // flex: 1,
     alignItems: "center",
@@ -279,12 +297,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center"
-  },
-  bookText: {
-    fontSize: FONT_L,
-    fontWeight: FONT_WEIGHT_BOLD,
-    padding: 10,
-    color: PRIMARY
   },
   bookingContent: {
     padding: 12

@@ -6,10 +6,7 @@ import Footer from "../../components/FooterFrontDesk";
 import commonStyles from "../../commons/styles";
 import { DR_VISIT_CONFIRMATION } from "../../constants/strings";
 import QRCodeScanner from "react-native-qrcode-scanner";
-import {
-  VIEW_DR_VISIT_CONFIRMATION_DETAIL,
-  VIEW_FD_VISIT_CONFIRMATION_DETAIL
-} from "../../constants/viewNames";
+import { VIEW_FD_VISIT_CONFIRMATION_DETAIL } from "../../constants/viewNames";
 import { FONT_L } from "../../config/fontSize";
 import { FONT_WEIGHT_MEDIUM } from "../../config/fontWeight";
 
@@ -17,15 +14,15 @@ class VisitConfirmation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userBookingId: ""
+      bookingId: ""
     };
   }
 
   _onQRRead = event => {
-    console.log(event.data);
-    this.setState({ userBookingId: event.data, isScanComplete: true }, () =>
+    console.log(event);
+    this.setState({ isScanComplete: true }, () =>
       this.props.navigation.navigate(VIEW_FD_VISIT_CONFIRMATION_DETAIL, {
-        bookingId: this.state.userBookingId
+        bookingId: event.data
       })
     );
   };

@@ -34,6 +34,7 @@ class CurrentBookingList extends Component {
         name={item.name}
         number={item.number}
         tokenNumber={item.tokenNumber}
+        tokenType={item.tokenType}
         onPress={this.props.onItemPress}
         bookingId={item.bookingId}
       />

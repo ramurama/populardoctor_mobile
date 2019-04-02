@@ -15,7 +15,8 @@ import {
   SECONDARY,
   SECONDARY_DARK,
   WHITE,
-  HELPER_TEXT_COLOR
+  HELPER_TEXT_COLOR,
+  DISABLED_GREY
 } from "../config/colors";
 import {
   VERIFIED,
@@ -28,9 +29,14 @@ import {
 } from "../constants/strings";
 import * as Actions from "../actions";
 import APIService from "../services/APIService";
-import { VIEW_LOGIN } from "../constants/viewNames";
+import {
+  VIEW_LOGIN,
+  VIEW_REGISTER,
+  VIEW_RESET_PASSWORD
+} from "../constants/viewNames";
 import { FONT_M, FONT_S, FONT_XL } from "../config/fontSize";
 import { FONT_WEIGHT_XXBOLD } from "../config/fontWeight";
+import { isStringsEqual } from "../commons/utils";
 
 const MAX_LENGTH_CODE = 4;
 
@@ -97,22 +103,30 @@ class MobileVerification extends React.Component {
   };
 
   _handleVerificationResponse() {
-    this.setState({ spinner: true }, () => {
-      APIService.signUpCustomer(this.props.customerData, (status, message) => {
-        if (status) {
-          this.setState({ spinner: false }, () => {
-            setTimeout(() => {
-              Alert.alert(STR_SUCCESS, message, [
-                {
-                  text: "OK",
-                  onPress: () => this.props.navigation.navigate(VIEW_LOGIN)
-                }
-              ]);
-            }, 400);
-          });
-        }
+    const sourceScreen = this.props.navigation.getParam("sourceScreen");
+    if (isStringsEqual(sourceScreen, VIEW_REGISTER)) {
+      this.setState({ spinner: true }, () => {
+        APIService.signUpCustomer(
+          this.props.customerData,
+          (status, message) => {
+            if (status) {
+              this.setState({ spinner: false }, () => {
+                setTimeout(() => {
+                  Alert.alert(STR_SUCCESS, message, [
+                    {
+                      text: "OK",
+                      onPress: () => this.props.navigation.navigate(VIEW_LOGIN)
+                    }
+                  ]);
+                }, 400);
+              });
+            }
+          }
+        );
       });
-    });
+    } else if (isStringsEqual(sourceScreen, VIEW_LOGIN)) {
+      this.props.navigation.navigate(VIEW_RESET_PASSWORD);
+    }
   }
 
   _renderResendVerificationCode() {
@@ -128,10 +142,16 @@ class MobileVerification extends React.Component {
   }
 
   _renderVerifyButton() {
+    const isDisabled = this.state.otp.length !== 4;
+    const style = [styles.button];
+    if (isDisabled) {
+      style.push({ backgroundColor: DISABLED_GREY });
+    }
     return (
       <TouchableOpacity
-        style={styles.button}
+        style={style}
         onPress={this._handleVerifyMobileNumber}
+        disabled={isDisabled}
       >
         <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
@@ -160,7 +180,6 @@ class MobileVerification extends React.Component {
               keyboardType={Platform.OS === "ios" ? "number-pad" : "numeric"}
               style={[styles.textInput, styles.inputText]}
               returnKeyType="go"
-              autoFocus
               placeholderTextColor={SECONDARY}
               selectionColor={SECONDARY}
               maxLength={MAX_LENGTH_CODE}

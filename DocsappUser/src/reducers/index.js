@@ -6,6 +6,12 @@ import UserDataReducer from "./UserDataReducer";
 import SearchCriteriaReducer from "./SearchCriteriaReducer";
 import BookingDateReducer from "./BookingDataReducer";
 import FavoritesReducer from "./FavoritesReducer";
+import ScheduleConfirmationReducer from "./ScheduleConfirmationReducer";
+import DrBookingHistoryReducer from "./DrBookingHistoryReducer";
+import UserSupportReducer from "./UserSupportReducer";
+import CurrentBookingsReducer from "./CurrentBookingsReducer";
+import IsPremiumUserReducer from "./IsPremiumUserReducer";
+import ConfirmedSchedulesReducer from "./ConfirmedSchedulesReducer";
 
 export default combineReducers({
   isNetworkConnected: NetworkReducer,
@@ -14,5 +20,11 @@ export default combineReducers({
   userData: UserDataReducer,
   searchCriteria: SearchCriteriaReducer,
   bookingData: BookingDateReducer,
-  favorites: FavoritesReducer
+  favorites: FavoritesReducer,
+  scheduleConfirmations: ScheduleConfirmationReducer,
+  drBookingHistory: DrBookingHistoryReducer,
+  userSupport: UserSupportReducer,
+  currentBookings: CurrentBookingsReducer,
+  isPremiumUser: IsPremiumUserReducer,
+  confirmedSchedules: ConfirmedSchedulesReducer
 });
