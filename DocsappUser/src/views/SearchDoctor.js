@@ -193,7 +193,7 @@ export class SearchDoctor extends React.Component {
         </Content>
         {this._renderSearchModalDialog()}
         {this._renderSpinner()}
-        {this._renderFloatingActionBtn()}
+        {/* {this._renderFloatingActionBtn()} */}
       </Container>
     );
   }
