@@ -2,10 +2,15 @@ import React, { Component } from "react";
 import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native";
 import { Icon } from "native-base";
 import PropTypes from "prop-types";
-import { SECONDARY } from "../config/colors";
+import { SECONDARY, FASTTRACK_COLOR, PREMIUM_COLOR } from "../config/colors";
 import Token from "./Token";
-import { FONT_M, FONT_S, FONT_XXS, FONT_L } from "../config/fontSize";
-import { FONT_WEIGHT_THIN, FONT_WEIGHT_MEDIUM } from "../config/fontWeight";
+import { FONT_M, FONT_S, FONT_XXS, FONT_L, FONT_XL } from "../config/fontSize";
+import {
+  FONT_WEIGHT_THIN,
+  FONT_WEIGHT_MEDIUM,
+  FONT_WEIGHT_BOLD
+} from "../config/fontWeight";
+import { TOKEN_BOOKED, TOKEN_CANCELLED } from "../constants/tokenStatus";
 
 const propTypes = {
   imageURL: PropTypes.string.isRequired,
@@ -18,7 +23,8 @@ const propTypes = {
   tokenNumber: PropTypes.string.isRequired,
   tokenType: PropTypes.string.isRequired,
   isCurrent: PropTypes.bool.isRequired,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  status: PropTypes.string.isRequired
 };
 
 class UserHistoryCard extends Component {
@@ -46,12 +52,11 @@ class UserHistoryCard extends Component {
     );
   }
 
-  _renderOtpContent(otp, otpVisible) {
+  _renderOtpContent(otp) {
     return (
       <View style={styles.otpContainerStyle}>
-        {otpVisible && <Text style={styles.otpTitleStyle}>OTP</Text>}
-
-        {otpVisible && <Text style={styles.otpStyle}>{otp}</Text>}
+        <Text style={styles.otpTitleStyle}>OTP</Text>
+        <Text style={styles.otpStyle}>{otp}</Text>
       </View>
     );
   }
@@ -147,6 +152,35 @@ class UserHistoryCard extends Component {
     );
   }
 
+  _renderStatusIndicator() {
+    const { status } = this.props;
+    let displayStatus = "";
+    let statusStyle = {};
+    switch (status) {
+      case TOKEN_BOOKED:
+        displayStatus = "EXP";
+        statusStyle = { color: "#fb8c00" };
+        break;
+      case TOKEN_CANCELLED:
+        displayStatus = "CAN";
+        statusStyle = { color: "#ff1744" };
+        break;
+    }
+    return (
+      <View style={[styles.statusContainerStyle]}>
+        <Text
+          style={[
+            { fontWeight: FONT_WEIGHT_MEDIUM, fontSize: FONT_M },
+            statusStyle
+          ]}
+        >
+          {displayStatus}
+        </Text>
+        <View style={{ flex: 1 }} />
+      </View>
+    );
+  }
+
   _renderDoctorInfoContainer(
     imageURL,
     doctorName,
@@ -164,7 +198,8 @@ class UserHistoryCard extends Component {
           {this._renderSpecialization(specialization)}
         </View>
 
-        {this._renderOtpContent(otp, otpVisible)}
+        {otpVisible && this._renderOtpContent(otp)}
+        {!otpVisible && this._renderStatusIndicator()}
       </View>
     );
   }
@@ -311,6 +346,12 @@ const styles = StyleSheet.create({
   previousColorStyle: {
     color: "grey",
     borderColor: "grey"
+  },
+  statusContainerStyle: {
+    // flex: 1,
+    padding: 8,
+    // marginLeft: 8,
+    alignItems: "center"
   }
 });
 

@@ -123,6 +123,7 @@ class BookingHistory extends React.Component {
         tokenNumber={token.number}
         tokenType={token.type}
         isCurrent={false}
+        status={status}
         onPress={() => {
           this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
             ...historyDetailData
