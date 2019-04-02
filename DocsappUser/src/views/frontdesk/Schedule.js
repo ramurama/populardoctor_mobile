@@ -104,7 +104,7 @@ class Schedule extends React.Component {
     return (
       <Container>
         {this._renderHeader()}
-        <Content style={commonStyles.contentBg}>
+        <Content padder style={commonStyles.contentBg}>
           <View>{this._renderConfirmedSchedulesList()}</View>
         </Content>
         <Footer {...this.props} activeButton={DR_SCHEDULE} />
