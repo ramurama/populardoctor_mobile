@@ -26,16 +26,18 @@ import {
   BACKGROUND_2,
   SECONDARY,
   SECONDARY_LIGHT,
-  WHITE
+  WHITE,
+  HELPER_TEXT_COLOR
 } from "../config/colors";
 import { VIEW_DOCTOR_PROFILE } from "../constants/viewNames";
 import { icons } from "../constants/icons";
-import { FONT_XL } from "../config/fontSize";
+import { FONT_XL, FONT_XXXL } from "../config/fontSize";
 import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
 import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
 import * as Actions from "../actions";
 import APIService from "../services/APIService";
+import { isNullOrEmpty } from "../commons/utils";
 
 const SCREEN_W = Dimensions.get("window").width;
 
@@ -154,12 +156,39 @@ export class SearchDoctor extends React.Component {
     );
   }
 
+  _renderNoDoctorsFoundView() {
+    return (
+      <View
+        style={{
+          alignSelf: "center",
+          marginTop: Dimensions.get("window").height / 3
+        }}
+      >
+        <Text style={{ color: HELPER_TEXT_COLOR }}>
+          No doctors found for your search criteria.
+        </Text>
+        <Icon
+          name="emoji-sad"
+          type="Entypo"
+          style={{
+            color: HELPER_TEXT_COLOR,
+            fontSize: 50,
+            alignSelf: "center",
+            marginTop: 10
+          }}
+        />
+      </View>
+    );
+  }
+
   render() {
     console.log(this.state.doctorsList);
     return (
       <Container>
         <Content style={styles.contentBackground} padder>
           <View>{this._renderSearchList()}</View>
+          {isNullOrEmpty(this.state.doctorsList) &&
+            this._renderNoDoctorsFoundView()}
         </Content>
         {this._renderSearchModalDialog()}
         {this._renderSpinner()}
