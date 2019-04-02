@@ -27,7 +27,8 @@ import {
   SECONDARY,
   SECONDARY_LIGHT,
   WHITE,
-  HELPER_TEXT_COLOR
+  HELPER_TEXT_COLOR,
+  DISABLED_GREY
 } from "../config/colors";
 import { VIEW_DOCTOR_PROFILE } from "../constants/viewNames";
 import { icons } from "../constants/icons";
@@ -171,7 +172,7 @@ export class SearchDoctor extends React.Component {
           name="emoji-sad"
           type="Entypo"
           style={{
-            color: HELPER_TEXT_COLOR,
+            color: DISABLED_GREY,
             fontSize: 50,
             alignSelf: "center",
             marginTop: 10
