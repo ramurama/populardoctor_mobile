@@ -20,6 +20,7 @@ export const VIEW_DOCTOR_DESCRIPTION = "doctorProfileDescription";
 export const VIEW_CUSTOMER_SUPPORT = "customerSupport";
 export const VIEW_PAYMENT = "payment";
 export const VIEW_RESET_PASSWORD = "resetPassword";
+export const VIEW_LOCATION = "location";
 
 export const VIEW_NAV_DR_QR = "drQRNavigator";
 export const VIEW_NAV_DR = "drNavigator";

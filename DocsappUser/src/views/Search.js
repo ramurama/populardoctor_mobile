@@ -42,7 +42,11 @@ import {
   FONT_WEIGHT_XXBOLD
 } from "../config/fontWeight";
 import { icons } from "../constants/icons";
-import { VIEW_MENU, VIEW_SEARCH_DOCTOR } from "../constants/viewNames";
+import {
+  VIEW_MENU,
+  VIEW_SEARCH_DOCTOR,
+  VIEW_LOCATION
+} from "../constants/viewNames";
 import APIService from "../services/APIService";
 import * as Actions from "../actions";
 
@@ -65,9 +69,7 @@ class Search extends React.Component {
     super(props);
     this.state = {
       spinner: false,
-      isLocationModalOpen: false,
       locationCoords: null,
-      selectedLocation: "",
       locations: [],
       specializations: []
     };
@@ -88,6 +90,7 @@ class Search extends React.Component {
           () => {
             this.props.setFavorites(favorites);
             this.props.setUserSupport(support);
+            this.props.setLocation(this.state.locations[0].name);
           }
         );
       });
@@ -125,9 +128,7 @@ class Search extends React.Component {
           style={[styles.headerIcon]}
           type="MaterialIcons"
         />
-        <Text style={styles.locationNameText}>
-          {this.state.selectedLocation}
-        </Text>
+        <Text style={styles.locationNameText}>{this.props.location}</Text>
       </View>
     );
   }
@@ -149,7 +150,11 @@ class Search extends React.Component {
             <Col size={60} style={styles.locationViewCol}>
               <View style={{ width: "100%" }}>
                 <TouchableOpacity
-                  onPress={() => this.setState({ isLocationModalOpen: true })}
+                  onPress={() =>
+                    this.props.navigation.navigate(VIEW_LOCATION, {
+                      locations: this.state.locations
+                    })
+                  }
                 >
                   {this._renderHeaderLocationView()}
                 </TouchableOpacity>
@@ -176,122 +181,13 @@ class Search extends React.Component {
     );
   }
 
-  _renderModalCloseIcon() {
-    return (
-      <TouchableOpacity
-        onPress={() => this.setState({ isLocationModalOpen: false })}
-      >
-        <Icon
-          name={icons.close}
-          type="MaterialIcons"
-          //style={styles.closeIcon}
-        />
-      </TouchableOpacity>
-    );
-  }
-
-  _handleFindMyLocation = () => {
-    //close modal on click detect button is temproary
-    // modal has to be closed only after getting the location from google api
-    this._getGeoLocation(locationCoords =>
-      this.setState({ locationCoords, isLocationModalOpen: false })
-    );
-  };
-
-  _renderModalLocationButton() {
-    return (
-      <Button
-        style={[styles.modalBtn, commonStyles.shadow]}
-        onPress={this._handleFindMyLocation}
-        full
-      >
-        <Text style={styles.modalBtnText} allowFontScaling>
-          Detect Location
-        </Text>
-      </Button>
-    );
-  }
-
-  _handleLocationListItemPress(item) {
-    this.setState({
-      selectedLocation: item.name,
-      isLocationModalOpen: false
-    });
-  }
-
-  _renderLocationListItem(item) {
-    return (
-      <ListItem
-        onPress={() => this._handleLocationListItemPress(item)}
-        key={item._id}
-      >
-        <Left>
-          <Text>{item.name}</Text>
-        </Left>
-      </ListItem>
-    );
-  }
-
-  _renderLocationList() {
-    return (
-      <FlatList
-        data={this.state.locations}
-        renderItem={({ item }) => this._renderLocationListItem(item)}
-      />
-    );
-  }
-
-  _renderModalHeader() {
-    // return (
-    //   <Header style={[commonStyles.headerDefault]}>
-    //     <StatusBar />
-    //     <Left>{this._renderModalCloseIcon()}</Left>
-    //     <Body>
-    //       <Text style={commonStyles.headerTitleStyle}>Location</Text>
-    //     </Body>
-    //     <Right />
-    //   </Header>
-    // );
-    return (
-      <View style={[styles.modalHeader, commonStyles.shadow]}>
-        <Left style={styles.modalHeaderLeft}>
-          <View>{this._renderModalCloseIcon()}</View>
-        </Left>
-        <Body style={styles.modalHeaderBody}>
-          <Text style={styles.locationSeletText}>Choose Your Location</Text>
-        </Body>
-        <Right />
-      </View>
-    );
-  }
-
-  _renderLocationModal() {
-    // return (
-    //   <Modal animated={true} visible={this.state.isLocationModalOpen}>
-    //     {this._renderModalHeader()}
-    //   </Modal>
-    // );
-    return (
-      <ModalWrapper
-        containerStyle={styles.locationModalContainer}
-        style={styles.modalWrapper}
-        visible={this.state.isLocationModalOpen}
-        shouldAnimateOnRequestClose={true}
-        animateOnMount={true}
-      >
-        {this._renderModalHeader()}
-        <View style={styles.locationModalView}>
-          <View style={styles.locationListView}>
-            {this._renderLocationList()}
-          </View>
-          <Text style={styles.orText}>OR</Text>
-          <View style={styles.modalBtnView}>
-            {this._renderModalLocationButton()}
-          </View>
-        </View>
-      </ModalWrapper>
-    );
-  }
+  // _handleFindMyLocation = () => {
+  //   //close modal on click detect button is temproary
+  //   // modal has to be closed only after getting the location from google api
+  //   this._getGeoLocation(locationCoords =>
+  //     this.setState({ locationCoords, isLocationModalOpen: false })
+  //   );
+  // };
 
   _renderSpecialisationListItem(item) {
     return (
@@ -299,10 +195,9 @@ class Search extends React.Component {
         image={specializationImages[item.iconName]}
         specializationName={item.name}
         onPress={() => {
-          const { selectedLocation } = this.state;
           //set search criteria to redux state
           this.props.setSearchCriteria({
-            location: selectedLocation,
+            location: this.props.location,
             specialization: item.name
           });
           this.props.navigation.navigate(VIEW_SEARCH_DOCTOR, {
@@ -330,7 +225,6 @@ class Search extends React.Component {
         <Content style={styles.contentBackground} padder>
           {this._renderSpecialisationList()}
           {this._renderSpinner()}
-          {this._renderLocationModal()}
         </Content>
       </Container>
     );
@@ -338,7 +232,8 @@ class Search extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.token
+  token: state.token,
+  location: state.location
 });
 
 export default connect(
