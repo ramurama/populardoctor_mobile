@@ -151,7 +151,7 @@ class Register extends React.Component {
       <Item style={styles.itemStyle}>
         <Label style={[styles.labelStyle]}>Date of birth</Label>
         <DatePicker
-          date={this.state.dob}
+          date={this.state.dateOfBirth}
           mode="date"
           format="DD-MM-YYYY"
           maxDate={
