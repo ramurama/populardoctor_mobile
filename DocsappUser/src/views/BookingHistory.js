@@ -5,14 +5,14 @@ import HistoryCard from '../components/UserHistoryCard';
 import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from '../config/colors';
 import {
   VIEW_BOOKING_HISTORY_DETAIL,
-  VIEW_BOOKING_HISTORY
+  VIEW_BOOKING_HISTORY,
+  VIEW_HOME_BOOKING_HISTORY_DETAIL
 } from '../constants/viewNames';
 import { FONT_L } from '../config/fontSize';
 import Spinner from 'react-native-loading-spinner-overlay';
 import APIService from '../services/APIService';
 import { connect } from 'react-redux';
 import { getDateString } from '../commons/utils';
-import Header from '../components/HeaderUser';
 import FooterUser from '../components/FooterUser';
 import { MY_BOOKINGS } from '../constants/strings';
 
@@ -36,6 +36,7 @@ class BookingHistory extends React.Component {
   }
 
   _renderCurrentBookingsListItem(item) {
+    const showFooter = this.props.navigation.getParam('showFooter');
     const {
       bookingId,
       tokenDate,
@@ -79,15 +80,14 @@ class BookingHistory extends React.Component {
         tokenType={token.type}
         isCurrent={true}
         onPress={() => {
-          this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
-            ...historyDetailData
-          });
+          this._navigateToDetail(showFooter, historyDetailData);
         }}
       />
     );
   }
 
   _renderPreviousBookingsListItem(item) {
+    const showFooter = this.props.navigation.getParam('showFooter');
     const {
       bookingId,
       tokenDate,
@@ -131,12 +131,22 @@ class BookingHistory extends React.Component {
         isCurrent={false}
         status={status}
         onPress={() => {
-          this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
-            ...historyDetailData
-          });
+          this._navigateToDetail(showFooter, historyDetailData);
         }}
       />
     );
+  }
+
+  _navigateToDetail(showFooter, historyDetailData) {
+    if (showFooter) {
+      this.props.navigation.navigate(VIEW_HOME_BOOKING_HISTORY_DETAIL, {
+        ...historyDetailData
+      });
+    } else {
+      this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
+        ...historyDetailData
+      });
+    }
   }
 
   _renderCurrentBookingsList() {
@@ -197,7 +207,6 @@ class BookingHistory extends React.Component {
     const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
-        {showFooter && <Header title={MY_BOOKINGS} />}
         <Content padder style={styles.contentStyle}>
           {this._renderCurrentBookingsView()}
           {this._renderPreviousBookingsView()}

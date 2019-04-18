@@ -3,8 +3,8 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import Home from '../views/Home';
 import FavoriteDoctors from '../views/FavoriteDoctors';
 import UserNavigator from './UserNavigator';
-import BookingHistory from '../views/BookingHistory';
-import Menu from '../views/Menu';
+import UserBookingNavigator from './UserBookingNavigator';
+import UserMenuNavigator from './UserMenuNavigator';
 import { VIEW_HOME } from '../constants/viewNames';
 
 const UserHomeNavigator = createSwitchNavigator(
@@ -21,11 +21,11 @@ const UserHomeNavigator = createSwitchNavigator(
         header: null
       }
     },
-    homeBookingHistory: {
-      screen: BookingHistory
+    homeBookingHistoryNavigator: {
+      screen: UserBookingNavigator
     },
-    homeMenu: {
-      screen: Menu
+    homeMenuNavigator: {
+      screen: UserMenuNavigator
     }
   },
   {

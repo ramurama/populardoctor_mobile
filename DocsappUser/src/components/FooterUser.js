@@ -12,7 +12,9 @@ import {
   VIEW_MENU,
   VIEW_HOME_FAVORITES,
   VIEW_HOME_BOOKING_HISTORY,
-  VIEW_HOME_MENU
+  VIEW_HOME_MENU,
+  VIEW_NAV_HOME_BOOKING_HISTORY,
+  VIEW_NAV_HOME_MENU
 } from '../constants/viewNames';
 import {
   PRIMARY,
@@ -139,7 +141,9 @@ class FooterUser extends React.Component {
             : styles.buttonBgInActive
         }
         onPress={() =>
-          this.props.navigation.navigate(VIEW_HOME_MENU, { showFooter: true })
+          this.props.navigation.navigate(VIEW_HOME_MENU, {
+            showFooter: true
+          })
         }
       >
         <Icon

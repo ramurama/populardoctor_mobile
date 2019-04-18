@@ -24,8 +24,13 @@ export const VIEW_LOCATION = 'location';
 export const VIEW_HOME = 'userHome';
 export const VIEW_NAV_USER_HOME = 'userHomeNavigator';
 export const VIEW_HOME_FAVORITES = 'homeFavorites';
+export const VIEW_NAV_HOME_BOOKING_HISTORY = 'homeBookingHistoryNavigator';
 export const VIEW_HOME_BOOKING_HISTORY = 'homeBookingHistory';
+export const VIEW_HOME_BOOKING_HISTORY_DETAIL = 'homeBookingHistoryDetail';
 export const VIEW_HOME_MENU = 'homeMenu';
+export const VIEW_NAV_HOME_MENU = "homeMenuNavigator";
+export const VIEW_HOME_CHANGE_PASSWORD = 'homeMenuChangePassword';
+export const VIEW_HOME_CUSTOMER_SUPPORT = 'homeMenuSupport'
 
 export const VIEW_NAV_DR_QR = 'drQRNavigator';
 export const VIEW_NAV_DR = 'drNavigator';

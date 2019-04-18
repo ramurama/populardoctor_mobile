@@ -8,7 +8,9 @@ import {
   VIEW_CHANGE_PASSWORD,
   VIEW_FAVORITES,
   VIEW_CUSTOMER_SUPPORT,
-  VIEW_MENU
+  VIEW_MENU,
+  VIEW_HOME_CHANGE_PASSWORD,
+  VIEW_HOME_CUSTOMER_SUPPORT
 } from '../constants/viewNames';
 import MenuCard from '../components/MenuCard';
 import { BACKGROUND_1, ON_PRIMARY, SECONDARY } from '../config/colors';
@@ -16,7 +18,6 @@ import { Avatar } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { FONT_XL, FONT_XXXL } from '../config/fontSize';
 import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
-import Header from '../components/HeaderUser';
 import FooterUser from '../components/FooterUser';
 import { PROFILE } from '../constants/strings';
 
@@ -56,7 +57,13 @@ export class Menu extends React.Component {
         <MenuCard
           iconName="lock"
           menuTitle="Change Password"
-          onPress={() => this.props.navigation.navigate(VIEW_CHANGE_PASSWORD)}
+          onPress={() => {
+            if (showFooter) {
+              this.props.navigation.navigate(VIEW_HOME_CHANGE_PASSWORD);
+            } else {
+              this.props.navigation.navigate(VIEW_CHANGE_PASSWORD);
+            }
+          }}
         />
         {!showFooter && (
           <MenuCard
@@ -68,7 +75,13 @@ export class Menu extends React.Component {
         <MenuCard
           iconName="support"
           menuTitle="Customer Support"
-          onPress={() => this.props.navigation.navigate(VIEW_CUSTOMER_SUPPORT)}
+          onPress={() => {
+            if (showFooter) {
+              this.props.navigation.navigate(VIEW_HOME_CUSTOMER_SUPPORT);
+            } else {
+              this.props.navigation.navigate(VIEW_CUSTOMER_SUPPORT);
+            }
+          }}
         />
         <MenuCard
           iconName="logout"
@@ -86,7 +99,6 @@ export class Menu extends React.Component {
     const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
-        {showFooter && <Header title={PROFILE} />}
         <Content padder style={styles.contentStyle}>
           {this._renderUserContent()}
           {this._renderMenuCards()}
