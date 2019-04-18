@@ -1,25 +1,28 @@
-import React from "react";
-import { View, TextInput, FlatList, Dimensions, Platform } from "react-native";
-import { Container, Content, Text, Item, Fab, Icon } from "native-base";
-import ModalDialog from "react-native-modalbox";
-import DoctorCard from "../components/DoctorCard";
+import React from 'react';
+import { View, TextInput, FlatList, Dimensions, Platform } from 'react-native';
+import { Container, Content, Text, Item, Fab, Icon } from 'native-base';
+import ModalDialog from 'react-native-modalbox';
+import DoctorCard from '../components/DoctorCard';
 import {
   SECONDARY_DARK,
   BACKGROUND_2,
   SECONDARY,
   WHITE,
   SHADOW_COLOR
-} from "../config/colors";
-import { VIEW_DOCTOR_PROFILE } from "../constants/viewNames";
-import { FONT_XXL, FONT_L } from "../config/fontSize";
-import { connect } from "react-redux";
-import Spinner from "react-native-loading-spinner-overlay";
-import * as Actions from "../actions";
-import APIService from "../services/APIService";
-import { isNullOrEmpty } from "../commons/utils";
-import { FONT_WEIGHT_MEDIUM } from "../config/fontWeight";
+} from '../config/colors';
+import { VIEW_DOCTOR_PROFILE, VIEW_FAVORITES } from '../constants/viewNames';
+import { FONT_XXL, FONT_L } from '../config/fontSize';
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import * as Actions from '../actions';
+import APIService from '../services/APIService';
+import { isNullOrEmpty } from '../commons/utils';
+import { FONT_WEIGHT_MEDIUM } from '../config/fontWeight';
+import Header from '../components/HeaderUser';
+import FooterUser from '../components/FooterUser';
+import { FAVORITES } from '../constants/strings';
 
-const SCREEN_H = Dimensions.get("window").height;
+const SCREEN_H = Dimensions.get('window').height;
 
 export class FavoriteDoctors extends React.Component {
   constructor(props) {
@@ -52,7 +55,7 @@ export class FavoriteDoctors extends React.Component {
         // isAvailable={item.isAvailable}
         onPress={() =>
           this.props.navigation.navigate(VIEW_DOCTOR_PROFILE, {
-            title: "Dr. " + doctorDetails.fullName,
+            title: 'Dr. ' + doctorDetails.fullName,
             userId,
             doctorName: doctorDetails.fullName,
             profileImage: doctorDetails.profileImage,
@@ -89,13 +92,18 @@ export class FavoriteDoctors extends React.Component {
   }
 
   render() {
+    const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
+        {showFooter && <Header title={FAVORITES} />}
         <Content style={styles.contentBackground} padder>
           <View>{this._renderSearchList()}</View>
           {isNullOrEmpty(this.state.doctorsList) && this._renderNoDataView()}
         </Content>
         {this._renderSpinner()}
+        {showFooter && (
+          <FooterUser activeButton={VIEW_FAVORITES} {...this.props} />
+        )}
       </Container>
     );
   }
@@ -117,12 +125,12 @@ const styles = {
   },
   noDataView: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
     height: SCREEN_H * 0.6
   },
   noDataText: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: FONT_L,
     fontWeight: FONT_WEIGHT_MEDIUM,
     color: SHADOW_COLOR

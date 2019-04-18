@@ -1,14 +1,20 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text } from "native-base";
-import HistoryCard from "../components/UserHistoryCard";
-import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from "../config/colors";
-import { VIEW_BOOKING_HISTORY_DETAIL } from "../constants/viewNames";
-import { FONT_L } from "../config/fontSize";
-import Spinner from "react-native-loading-spinner-overlay";
-import APIService from "../services/APIService";
-import { connect } from "react-redux";
-import { getDateString } from "../commons/utils";
+import React from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import HistoryCard from '../components/UserHistoryCard';
+import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from '../config/colors';
+import {
+  VIEW_BOOKING_HISTORY_DETAIL,
+  VIEW_BOOKING_HISTORY
+} from '../constants/viewNames';
+import { FONT_L } from '../config/fontSize';
+import Spinner from 'react-native-loading-spinner-overlay';
+import APIService from '../services/APIService';
+import { connect } from 'react-redux';
+import { getDateString } from '../commons/utils';
+import Header from '../components/HeaderUser';
+import FooterUser from '../components/FooterUser';
+import { MY_BOOKINGS } from '../constants/strings';
 
 class BookingHistory extends React.Component {
   constructor(props) {
@@ -65,7 +71,7 @@ class BookingHistory extends React.Component {
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
         hospitalAddress={
-          hospitalDetails.address + " " + hospitalDetails.pincode
+          hospitalDetails.address + ' ' + hospitalDetails.pincode
         }
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
@@ -116,7 +122,7 @@ class BookingHistory extends React.Component {
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
         hospitalAddress={
-          hospitalDetails.address + " " + hospitalDetails.pincode
+          hospitalDetails.address + ' ' + hospitalDetails.pincode
         }
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
@@ -188,13 +194,18 @@ class BookingHistory extends React.Component {
   }
 
   render() {
+    const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
+        {showFooter && <Header title={MY_BOOKINGS} />}
         <Content padder style={styles.contentStyle}>
           {this._renderCurrentBookingsView()}
           {this._renderPreviousBookingsView()}
           {this._renderSpinner()}
         </Content>
+        {showFooter && (
+          <FooterUser activeButton={VIEW_BOOKING_HISTORY} {...this.props} />
+        )}
       </Container>
     );
   }
@@ -210,14 +221,14 @@ const styles = StyleSheet.create({
   },
   bookingsTextViewStyle: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20
   },
   bookingTextStyle: {
     fontSize: FONT_L,
-    fontWeight: "100",
+    fontWeight: '100',
     color: HELPER_TEXT_COLOR,
     margin: 5,
     flex: 1
@@ -228,6 +239,6 @@ const styles = StyleSheet.create({
     borderBottomColor: HELPER_TEXT_COLOR
   },
   textInnerView: {
-    justifyContent: "center"
+    justifyContent: 'center'
   }
 });
