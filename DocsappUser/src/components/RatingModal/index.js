@@ -30,6 +30,7 @@ import {
 import RatingStar from './RatingStar';
 import { FONT_L } from '../../config/fontSize';
 import { FONT_WEIGHT_BOLD } from '../../config/fontWeight';
+import PropTypes from 'prop-types';
 
 const IMG_ONE_STAR = require('./images/one_star_smile.png');
 const IMG_TWO_STAR = require('./images/two_star_smile.png');
@@ -37,6 +38,21 @@ const IMG_THREE_STAR = require('./images/three_star_smile.png');
 const IMG_FOUR_STAR = require('./images/four_star_smile.png');
 const IMG_FIVE_STAR = require('./images/five_star_smile.png');
 
+const propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
+};
+
+/**
+ * usage 
+ * 
+ * 
+ * <RatingModal
+            visible={this.state.ratingModalVisible}
+            onClose={() => this.setState({ ratingModalVisible: false })}
+          />
+ * 
+ */
 class RatingModal extends React.Component {
   constructor(props) {
     super(props);
@@ -51,7 +67,7 @@ class RatingModal extends React.Component {
     return (
       <Header>
         <Left>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => this.props.onClose()}>
             <Icon name="close" type="MaterialIcons" style={styles.closeIcon} />
           </TouchableOpacity>
         </Left>
@@ -152,7 +168,11 @@ class RatingModal extends React.Component {
 
   render() {
     return (
-      <Modal visible={true} animationType="slide" transparent={false}>
+      <Modal
+        visible={this.props.visible}
+        animationType="slide"
+        transparent={false}
+      >
         {this._renderHeader()}
         <Content scrollEnabled={false}>
           <KeyboardAvoidingView
