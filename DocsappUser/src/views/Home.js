@@ -10,6 +10,7 @@ import APIService from '../services/APIService';
 import * as Actions from '../actions';
 import Header from '../components/HeaderUser';
 import { HOME } from '../constants/strings';
+import { WHITE } from '../config/colors';
 
 class Home extends React.Component {
   constructor(props) {
@@ -22,23 +23,29 @@ class Home extends React.Component {
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     // this._getGeoLocation(locationCoords => this.setState({ locationCoords }));
-    this.setState({ spinner: true }, () => {
-      APIService.getInitialData(this.props.token, data => {
-        const { locations, specializations, favorites, support } = data;
-        this.setState(
-          {
-            locations,
-            specializations,
-            spinner: false
-          },
-          () => {
-            this.props.setFavorites(favorites);
-            this.props.setUserSupport(support);
-            this.props.setLocation(this.state.locations[0].name);
-          }
-        );
+    if (!this.props.receivedInitialData) {
+      this.setState({ spinner: true }, () => {
+        APIService.getInitialData(this.props.token, data => {
+          const { locations, specializations, favorites, support } = data;
+          this.setState(
+            {
+              spinner: false
+            },
+            () => {
+              this.props.setLocationsList(locations);
+              this.props.setSpecializations(specializations);
+              this.props.setFavorites(favorites);
+              this.props.setUserSupport(support);
+              this.props.setLocation(locations[0].name);
+              //set receivedInitialData true in redux state.
+              //if set to true, next time the datashould not be fetched
+              //if false, data should be fetched
+              this.props.setReceivedInitialData(true);
+            }
+          );
+        });
       });
-    });
+    }
   }
 
   _renderSpinner() {
@@ -53,6 +60,7 @@ class Home extends React.Component {
         <Header title={HOME} />
         <Content>
           <View />
+          {this._renderSpinner()}
         </Content>
         <FooterUser activeButton={VIEW_HOME} {...this.props} />
       </Container>
@@ -61,7 +69,8 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.token
+  token: state.token,
+  receivedInitialData: state.receivedInitialData
 });
 
 export default connect(

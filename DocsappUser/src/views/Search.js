@@ -72,31 +72,12 @@ class Search extends React.Component {
     this.state = {
       spinner: false,
       locationCoords: null,
-      locations: [],
-      specializations: []
+      locations: []
     };
   }
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    // this._getGeoLocation(locationCoords => this.setState({ locationCoords }));
-    this.setState({ spinner: true }, () => {
-      APIService.getInitialData(this.props.token, data => {
-        const { locations, specializations, favorites, support } = data;
-        this.setState(
-          {
-            locations,
-            specializations,
-            spinner: false
-          },
-          () => {
-            this.props.setFavorites(favorites);
-            this.props.setUserSupport(support);
-            this.props.setLocation(this.state.locations[0].name);
-          }
-        );
-      });
-    });
   }
 
   componentWillUnmount() {
@@ -154,7 +135,7 @@ class Search extends React.Component {
                 <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate(VIEW_LOCATION, {
-                      locations: this.state.locations
+                      locations: this.props.locationList
                     })
                   }
                 >
@@ -213,7 +194,7 @@ class Search extends React.Component {
   _renderSpecialisationList() {
     return (
       <FlatList
-        data={this.state.specializations}
+        data={this.props.specializations}
         renderItem={({ item }) => this._renderSpecialisationListItem(item)}
         numColumns="3"
       />
@@ -236,7 +217,9 @@ class Search extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  location: state.location
+  location: state.location,
+  locationList: state.locationList,
+  specializations: state.specializations
 });
 
 export default connect(
