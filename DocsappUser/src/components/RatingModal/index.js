@@ -49,7 +49,10 @@ const propTypes = {
  * 
  * <RatingModal
             visible={this.state.ratingModalVisible}
-            onClose={() => this.setState({ ratingModalVisible: false })}
+            onClose={(rating, suggestions) => {
+              alert(rating);
+              this.setState({ ratingModalVisible: false });
+            }}
           />
  * 
  */
@@ -64,10 +67,13 @@ class RatingModal extends React.Component {
   }
 
   _renderHeader() {
+    const { rating, suggestions } = this.state;
     return (
       <Header>
         <Left>
-          <TouchableOpacity onPress={() => this.props.onClose()}>
+          <TouchableOpacity
+            onPress={() => this.props.onClose(rating, suggestions)}
+          >
             <Icon name="close" type="MaterialIcons" style={styles.closeIcon} />
           </TouchableOpacity>
         </Left>
