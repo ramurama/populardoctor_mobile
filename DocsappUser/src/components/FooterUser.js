@@ -33,6 +33,10 @@ class FooterUser extends React.Component {
   }
 
   _renderHomeButton() {
+    const iconStyle =
+      this.props.activeButton === VIEW_HOME
+        ? styles.iconActive
+        : styles.iconInActive;
     return (
       <Button
         style={
@@ -45,17 +49,17 @@ class FooterUser extends React.Component {
         <Icon
           name="home"
           type="MaterialIcons"
-          style={
-            this.props.activeButton === VIEW_HOME
-              ? styles.iconActive
-              : styles.iconInActive
-          }
+          style={[styles.font30, iconStyle]}
         />
       </Button>
     );
   }
 
   _renderFavoritesButton() {
+    const iconStyle =
+      this.props.activeButton === VIEW_FAVORITES
+        ? styles.iconActive
+        : styles.iconInActive;
     return (
       <Button
         style={
@@ -72,11 +76,7 @@ class FooterUser extends React.Component {
         <Icon
           name="heart"
           type="AntDesign"
-          style={
-            this.props.activeButton === VIEW_FAVORITES
-              ? styles.iconActive
-              : styles.iconInActive
-          }
+          style={[iconStyle, styles.font25]}
         />
       </Button>
     );
@@ -106,6 +106,10 @@ class FooterUser extends React.Component {
   }
 
   _renderBookingHistoryButton() {
+    const iconStyle =
+      this.props.activeButton === VIEW_BOOKING_HISTORY
+        ? styles.iconActive
+        : styles.iconInActive;
     return (
       <Button
         style={
@@ -122,17 +126,17 @@ class FooterUser extends React.Component {
         <Icon
           name="calendar"
           type="Entypo"
-          style={
-            this.props.activeButton === VIEW_BOOKING_HISTORY
-              ? styles.iconActive
-              : styles.iconInActive
-          }
+          style={[iconStyle, styles.font25]}
         />
       </Button>
     );
   }
 
   _renderProfileButton() {
+    const iconStyle =
+      this.props.activeButton === VIEW_MENU
+        ? styles.iconActive
+        : styles.iconInActive;
     return (
       <Button
         style={
@@ -146,15 +150,7 @@ class FooterUser extends React.Component {
           })
         }
       >
-        <Icon
-          name="user"
-          type="Entypo"
-          style={
-            this.props.activeButton === VIEW_MENU
-              ? styles.iconActive
-              : styles.iconInActive
-          }
-        />
+        <Icon name="user" type="Entypo" style={[iconStyle, styles.font25]} />
       </Button>
     );
   }
@@ -191,5 +187,11 @@ const styles = StyleSheet.create({
     backgroundColor: BACKGROUND_3,
     borderRadius: 0,
     height: '100%'
+  },
+  font25: {
+    fontSize: 25
+  },
+  font30: {
+    fontSize: 30
   }
 });
