@@ -40,8 +40,8 @@ const IMG_FIVE_STAR = require('./images/five_star_smile.png');
 
 const propTypes = {
   visible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  doctorName: PropTypes.string.isRequired
+  doctorName: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired
 };
 
 /**
@@ -50,8 +50,10 @@ const propTypes = {
  * 
  * <RatingModal
             doctorName="Santhoshsivan Balanagarajan"
+            date={date}
             visible={this.state.ratingModalVisible}
-            onClose={(rating, suggestions) => {
+            onSubmit={(rating, suggestions) => {
+              //API call
               this.setState({ ratingModalVisible: false });
             }}
           />
@@ -72,11 +74,9 @@ class RatingModal extends React.Component {
     return (
       <Header>
         <Left>
-          <TouchableOpacity
-            onPress={() => this.props.onClose(rating, suggestions)}
-          >
+          {/* <TouchableOpacity onPress={() => this.props.onClose()}>
             <Icon name="close" type="MaterialIcons" style={styles.closeIcon} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </Left>
         <Body>
           <Title style={styles.title}>Rate Us</Title>
@@ -93,6 +93,15 @@ class RatingModal extends React.Component {
         <Text style={styles.doctorName} numberOfLines={2}>
           {'Dr. ' + this.props.doctorName}
         </Text>
+      </View>
+    );
+  }
+
+  _renderDateView() {
+    return (
+      <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+        <Text style={styles.appointmentText}>on </Text>
+        <Text style={{ color: SECONDARY_DARK }}>{this.props.date}</Text>
       </View>
     );
   }
@@ -172,8 +181,11 @@ class RatingModal extends React.Component {
   }
 
   _renderSubmitButton() {
+    const { rating, suggestions } = this.state;
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => this.props.onSubmit(rating, suggestions)}
+      >
         <Footer style={styles.footerButtonStyle}>
           <View style={styles.footerButtonView}>
             <Text style={styles.footerButtonText}>Submit</Text>
@@ -193,12 +205,13 @@ class RatingModal extends React.Component {
       >
         {this._renderHeader()}
         <Content scrollEnabled={false}>
-          {this._renderDoctorView()}
           <KeyboardAvoidingView
             behavior="padding"
             enabled
             style={styles.mainView}
           >
+            {this._renderDoctorView()}
+            {this._renderDateView()}
             {this._renderMessage()}
             {this._renderRatingView()}
             {this._renderSuggestionsView()}

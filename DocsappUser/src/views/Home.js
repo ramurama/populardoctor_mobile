@@ -11,12 +11,16 @@ import * as Actions from '../actions';
 import Header from '../components/HeaderUser';
 import { HOME } from '../constants/strings';
 import { WHITE } from '../config/colors';
+import RatingModal from '../components/RatingModal';
+import { isNullOrEmpty, getDateStringIndian } from '../commons/utils';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false
+      spinner: false,
+      feedbackModalVisible: false,
+      bookingsWithoutFeedback: {}
     };
   }
 
@@ -26,10 +30,24 @@ class Home extends React.Component {
     if (!this.props.receivedInitialData) {
       this.setState({ spinner: true }, () => {
         APIService.getInitialData(this.props.token, data => {
-          const { locations, specializations, favorites, support } = data;
+          const {
+            locations,
+            specializations,
+            favorites,
+            support,
+            bookingWithoutFeedback
+          } = data;
+
+          //set feedbackModalVisible to false initially
+          let feedbackModalVisible = false;
+          if (!isNullOrEmpty(bookingWithoutFeedback)) {
+            //if bookings without feedback available, show feedback modal
+            feedbackModalVisible = true;
+          }
           this.setState(
             {
-              spinner: false
+              spinner: false,
+              feedbackModalVisible
             },
             () => {
               this.props.setLocationsList(locations);
@@ -37,6 +55,7 @@ class Home extends React.Component {
               this.props.setFavorites(favorites);
               this.props.setUserSupport(support);
               this.props.setLocation(locations[0].name);
+              this.props.setBookingWithoutFeedback(bookingWithoutFeedback);
               //set receivedInitialData true in redux state.
               //if set to true, next time the datashould not be fetched
               //if false, data should be fetched
@@ -45,6 +64,11 @@ class Home extends React.Component {
           );
         });
       });
+    } else {
+      if (!isNullOrEmpty(this.props.bookingWithoutFeedback)) {
+        //if bookings without feedback available, show feedback modal
+        this.setState({ feedbackModalVisible: true });
+      }
     }
   }
 
@@ -54,12 +78,47 @@ class Home extends React.Component {
     );
   }
 
+  _computerAndRenderRatingModal() {
+    const { feedbackModalVisible } = this.state;
+    const { bookingWithoutFeedback, token } = this.props;
+    let doctorName = '';
+    let date = '';
+    if (!isNullOrEmpty(bookingWithoutFeedback)) {
+      doctorName = bookingWithoutFeedback.doctorName;
+      date = getDateStringIndian(
+        new Date(bookingWithoutFeedback.appointmentDate)
+      );
+    }
+    return (
+      <RatingModal
+        doctorName={doctorName}
+        date={date}
+        visible={feedbackModalVisible}
+        onSubmit={(rating, suggestions) => {
+          this.setState({ feedbackModalVisible: false }, () => {
+            const feedbackData = {
+              bookingId: bookingWithoutFeedback.bookingId,
+              rating,
+              suggestions
+            };
+            APIService.submitFeedback(token, feedbackData, data => {
+              const { status } = data;
+              if (status) {
+                this.props.setBookingWithoutFeedback({});
+              }
+            });
+          });
+        }}
+      />
+    );
+  }
+
   render() {
     return (
       <Container>
         <Header title={HOME} />
         <Content>
-          <View />
+          {this._computerAndRenderRatingModal()}
           {this._renderSpinner()}
         </Content>
         <FooterUser activeButton={VIEW_HOME} {...this.props} />
@@ -70,7 +129,8 @@ class Home extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  receivedInitialData: state.receivedInitialData
+  receivedInitialData: state.receivedInitialData,
+  bookingWithoutFeedback: state.bookingWithoutFeedback
 });
 
 export default connect(

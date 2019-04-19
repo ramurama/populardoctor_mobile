@@ -16,7 +16,8 @@ import {
   ACTION_SET_LOCATION,
   ACTION_SET_LOCATION_LIST,
   ACTION_SET_SPECIALIZATIONS,
-  ACTION_SET_RECEIVED_INITIAL_DATA
+  ACTION_SET_RECEIVED_INITIAL_DATA,
+  ACTION_SET_BOOKING_WITHOUT_FEEDBACK
 } from '../constants/actionTypes';
 
 export const setNetworkConnStatus = isNetworkConnected => ({
@@ -107,4 +108,9 @@ export const setSpecializations = specializations => ({
 export const setReceivedInitialData = receivedInitialData => ({
   type: ACTION_SET_RECEIVED_INITIAL_DATA,
   receivedInitialData
+});
+
+export const setBookingWithoutFeedback = bookingWithoutFeedback => ({
+  type: ACTION_SET_BOOKING_WITHOUT_FEEDBACK,
+  bookingWithoutFeedback
 });
