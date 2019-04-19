@@ -12,6 +12,9 @@ import {
 import { PRIMARY } from '../config/colors';
 import { VIEW_HOME_MENU } from '../constants/viewNames';
 
+/**
+ * This navigator will be used only for the home screen
+ */
 const UserMenuNavigator = createStackNavigator(
   {
     homeMenu: {

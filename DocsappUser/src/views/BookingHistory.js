@@ -138,6 +138,7 @@ class BookingHistory extends React.Component {
   }
 
   _navigateToDetail(showFooter, historyDetailData) {
+    //if screen opened from home footer
     if (showFooter) {
       this.props.navigation.navigate(VIEW_HOME_BOOKING_HISTORY_DETAIL, {
         ...historyDetailData

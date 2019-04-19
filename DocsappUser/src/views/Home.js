@@ -8,6 +8,8 @@ import { VIEW_HOME } from '../constants/viewNames';
 import Spinner from 'react-native-loading-spinner-overlay';
 import APIService from '../services/APIService';
 import * as Actions from '../actions';
+import Header from '../components/HeaderUser';
+import { HOME } from '../constants/strings';
 
 class Home extends React.Component {
   constructor(props) {
@@ -48,6 +50,7 @@ class Home extends React.Component {
   render() {
     return (
       <Container>
+        <Header title={HOME} />
         <Content>
           <View />
         </Content>

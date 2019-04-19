@@ -10,7 +10,11 @@ import {
   WHITE,
   SHADOW_COLOR
 } from '../config/colors';
-import { VIEW_DOCTOR_PROFILE, VIEW_FAVORITES } from '../constants/viewNames';
+import {
+  VIEW_DOCTOR_PROFILE,
+  VIEW_FAVORITES,
+  VIEW_HOME_FAV_DR_PROFILE
+} from '../constants/viewNames';
 import { FONT_XXL, FONT_L } from '../config/fontSize';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -18,7 +22,6 @@ import * as Actions from '../actions';
 import APIService from '../services/APIService';
 import { isNullOrEmpty } from '../commons/utils';
 import { FONT_WEIGHT_MEDIUM } from '../config/fontWeight';
-import Header from '../components/HeaderUser';
 import FooterUser from '../components/FooterUser';
 import { FAVORITES } from '../constants/strings';
 
@@ -43,6 +46,7 @@ export class FavoriteDoctors extends React.Component {
   }
 
   _renderSearchListItem(item) {
+    const showFooter = this.props.navigation.getParam('showFooter');
     const { doctorDetails, specialization, userId } = item;
     const isFavorite = this.props.favorites.includes(userId);
     return (
@@ -53,15 +57,23 @@ export class FavoriteDoctors extends React.Component {
         specialization={specialization}
         // hospitalName={item.hospitalName}
         // isAvailable={item.isAvailable}
-        onPress={() =>
-          this.props.navigation.navigate(VIEW_DOCTOR_PROFILE, {
+        onPress={() => {
+          let drProfileView = VIEW_DOCTOR_PROFILE;
+          let screenOpenedFromHome = false;
+          if (showFooter) {
+            //if screen opened from home footer
+            drProfileView = VIEW_HOME_FAV_DR_PROFILE;
+            screenOpenedFromHome = true;
+          }
+          this.props.navigation.navigate(drProfileView, {
             title: 'Dr. ' + doctorDetails.fullName,
             userId,
             doctorName: doctorDetails.fullName,
             profileImage: doctorDetails.profileImage,
-            isFavorite
-          })
-        }
+            isFavorite,
+            screenOpenedFromHome
+          });
+        }}
       />
     );
   }
@@ -95,7 +107,6 @@ export class FavoriteDoctors extends React.Component {
     const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
-        {showFooter && <Header title={FAVORITES} />}
         <Content style={styles.contentBackground} padder>
           <View>{this._renderSearchList()}</View>
           {isNullOrEmpty(this.state.doctorsList) && this._renderNoDataView()}

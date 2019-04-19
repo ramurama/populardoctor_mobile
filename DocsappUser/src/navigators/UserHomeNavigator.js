@@ -1,7 +1,7 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import Home from '../views/Home';
-import FavoriteDoctors from '../views/FavoriteDoctors';
+import FavoritesNavigator from './FavoritesNavigator';
 import UserNavigator from './UserNavigator';
 import UserBookingNavigator from './UserBookingNavigator';
 import UserMenuNavigator from './UserMenuNavigator';
@@ -12,8 +12,8 @@ const UserHomeNavigator = createSwitchNavigator(
     userHome: {
       screen: Home
     },
-    homeFavorites: {
-      screen: FavoriteDoctors
+    homeFavoritesNavigator: {
+      screen: FavoritesNavigator
     },
     userNavigator: {
       screen: UserNavigator,
