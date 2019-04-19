@@ -40,7 +40,8 @@ const IMG_FIVE_STAR = require('./images/five_star_smile.png');
 
 const propTypes = {
   visible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  doctorName: PropTypes.string.isRequired
 };
 
 /**
@@ -48,9 +49,9 @@ const propTypes = {
  * 
  * 
  * <RatingModal
+            doctorName="Santhoshsivan Balanagarajan"
             visible={this.state.ratingModalVisible}
             onClose={(rating, suggestions) => {
-              alert(rating);
               this.setState({ ratingModalVisible: false });
             }}
           />
@@ -82,6 +83,17 @@ class RatingModal extends React.Component {
         </Body>
         <Right />
       </Header>
+    );
+  }
+
+  _renderDoctorView() {
+    return (
+      <View style={styles.doctorView}>
+        <Text style={styles.appointmentText}>Your appointment with</Text>
+        <Text style={styles.doctorName} numberOfLines={2}>
+          {'Dr. ' + this.props.doctorName}
+        </Text>
+      </View>
     );
   }
 
@@ -181,6 +193,7 @@ class RatingModal extends React.Component {
       >
         {this._renderHeader()}
         <Content scrollEnabled={false}>
+          {this._renderDoctorView()}
           <KeyboardAvoidingView
             behavior="padding"
             enabled
@@ -278,5 +291,19 @@ const styles = StyleSheet.create({
   submitIcon: {
     color: WHITE,
     fontSize: 25
+  },
+  doctorName: {
+    color: SECONDARY_DARK,
+    fontSize: 20,
+    fontWeight: FONT_WEIGHT_BOLD,
+    paddingBottom: 10
+  },
+  appointmentText: {
+    alignSelf: 'center',
+    color: BACKGROUND_DARK_GREY
+  },
+  doctorView: {
+    alignSelf: 'center',
+    marginTop: 10
   }
 });
