@@ -121,7 +121,7 @@ class FooterUser extends React.Component {
       >
         <Icon
           name="calendar"
-          type="SimpleLineIcons"
+          type="Entypo"
           style={
             this.props.activeButton === VIEW_BOOKING_HISTORY
               ? styles.iconActive
