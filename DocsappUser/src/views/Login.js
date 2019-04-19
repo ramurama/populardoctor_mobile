@@ -160,7 +160,7 @@ class Login extends React.Component {
         const diff = nowMoment.diff(installedDateMoment, "days");
         console.log("*********************************************");
         //difference is greater than or equal to 30 days.
-        if (diff >= 1) {
+        if (diff >= 30) {
           isPremiumUser = true;
           await AsyncDataService.setItem(
             KEY_IS_PREMIUM_USER,
