@@ -17,7 +17,9 @@ import {
   ACTION_SET_LOCATION_LIST,
   ACTION_SET_SPECIALIZATIONS,
   ACTION_SET_RECEIVED_INITIAL_DATA,
-  ACTION_SET_BOOKING_WITHOUT_FEEDBACK
+  ACTION_SET_BOOKING_WITHOUT_FEEDBACK,
+  ACTION_SET_USER_CURRENT_BOOKINGS,
+  ACTION_SET_USER_PAST_BOOKINGS
 } from '../constants/actionTypes';
 
 export const setNetworkConnStatus = isNetworkConnected => ({
@@ -113,4 +115,14 @@ export const setReceivedInitialData = receivedInitialData => ({
 export const setBookingWithoutFeedback = bookingWithoutFeedback => ({
   type: ACTION_SET_BOOKING_WITHOUT_FEEDBACK,
   bookingWithoutFeedback
+});
+
+export const setUserCurrentBookings = userCurrentBookings => ({
+  type: ACTION_SET_USER_CURRENT_BOOKINGS,
+  userCurrentBookings
+});
+
+export const setUserPastBookings = userPastBookings => ({
+  type: ACTION_SET_USER_PAST_BOOKINGS,
+  userPastBookings
 });

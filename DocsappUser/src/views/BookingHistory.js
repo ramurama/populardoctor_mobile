@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { Container, Content, Text } from 'native-base';
 import HistoryCard from '../components/UserHistoryCard';
 import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from '../config/colors';
@@ -12,7 +12,8 @@ import { FONT_L } from '../config/fontSize';
 import Spinner from 'react-native-loading-spinner-overlay';
 import APIService from '../services/APIService';
 import { connect } from 'react-redux';
-import { getDateString } from '../commons/utils';
+import * as Actions from '../actions';
+import { getDateString, isNullOrEmpty } from '../commons/utils';
 import FooterUser from '../components/FooterUser';
 import { MY_BOOKINGS } from '../constants/strings';
 
@@ -21,16 +22,26 @@ class BookingHistory extends React.Component {
     super(props);
     this.state = {
       spinner: false,
-      currentBookings: [],
-      pastBookings: []
+      refreshing: false
     };
   }
 
   componentDidMount() {
+    const { userCurrentBookings, userPastBookings } = this.props;
+    if (isNullOrEmpty(userCurrentBookings) && isNullOrEmpty(userPastBookings)) {
+      this._fetchBookingData();
+    }
+  }
+
+  _fetchBookingData() {
+    const { setUserCurrentBookings, setUserPastBookings } = this.props;
     this.setState({ spinner: true }, () => {
       APIService.getBookingHistory(this.props.token, data => {
         const { currentBookings, pastBookings } = data;
-        this.setState({ spinner: false, currentBookings, pastBookings });
+        this.setState({ spinner: false, refreshing: false }, () => {
+          setUserCurrentBookings(currentBookings);
+          setUserPastBookings(pastBookings);
+        });
       });
     });
   }
@@ -153,8 +164,8 @@ class BookingHistory extends React.Component {
   _renderCurrentBookingsList() {
     return (
       <FlatList
-        data={this.state.currentBookings}
-        extraData={this.state}
+        data={this.props.userCurrentBookings}
+        extraData={this.props}
         keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderCurrentBookingsListItem(item)}
       />
@@ -164,8 +175,8 @@ class BookingHistory extends React.Component {
   _renderPreviousBookingsList() {
     return (
       <FlatList
-        data={this.state.pastBookings}
-        extraData={this.state}
+        data={this.props.userPastBookings}
+        extraData={this.props}
         keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderPreviousBookingsListItem(item)}
       />
@@ -204,11 +215,24 @@ class BookingHistory extends React.Component {
     );
   }
 
+  _onRefresh = () => {
+    this.setState({ refreshing: true }, () => this._fetchBookingData());
+  };
+
   render() {
     const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
-        <Content padder style={styles.contentStyle}>
+        <Content
+          padder
+          style={styles.contentStyle}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           {this._renderCurrentBookingsView()}
           {this._renderPreviousBookingsView()}
           {this._renderSpinner()}
@@ -221,9 +245,16 @@ class BookingHistory extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({ token: state.token });
+const mapStateToProps = state => ({
+  token: state.token,
+  userCurrentBookings: state.userCurrentBookings,
+  userPastBookings: state.userPastBookings
+});
 
-export default connect(mapStateToProps)(BookingHistory);
+export default connect(
+  mapStateToProps,
+  Actions
+)(BookingHistory);
 
 const styles = StyleSheet.create({
   contentStyle: {

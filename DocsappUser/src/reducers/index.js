@@ -17,6 +17,8 @@ import LocationListReducer from './LocationsListReducer';
 import SpecializationsReducer from './SpecializationsReducer';
 import ReceivedInitialDataReducer from './ReceivedInitialDataReducer';
 import BookingWithoutFeedbackReducer from './BookingWithoutFeedbackReducer';
+import UserCurrentBookingsReducer from './UserCurrentBookingsReducer';
+import UserPastBookingsReducer from './UserPastBookingsReducer';
 
 export default combineReducers({
   isNetworkConnected: NetworkReducer,
@@ -36,5 +38,7 @@ export default combineReducers({
   locationList: LocationListReducer,
   specializations: SpecializationsReducer,
   receivedInitialData: ReceivedInitialDataReducer,
-  bookingWithoutFeedback: BookingWithoutFeedbackReducer
+  bookingWithoutFeedback: BookingWithoutFeedbackReducer,
+  userCurrentBookings: UserCurrentBookingsReducer,
+  userPastBookings: UserPastBookingsReducer
 });
