@@ -1,12 +1,14 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text, Icon } from "native-base";
-import { connect } from "react-redux";
-import commonStyles from "../commons/styles";
-import LocationCard from "../components/LocationCard";
-import LocationTextInput from "../components/LocationTextInput";
-import * as Actions from "../actions";
-import { toUpperCaseFirstOfEachWord } from "../commons/utils";
+import React from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Container, Content, Text, Icon } from 'native-base';
+import { connect } from 'react-redux';
+import commonStyles from '../commons/styles';
+import LocationCard from '../components/LocationCard';
+import LocationTextInput from '../components/LocationTextInput';
+import * as Actions from '../actions';
+import { toUpperCaseFirstOfEachWord } from '../commons/utils';
+import { AsyncDataService } from '../services/AsyncDataService';
+import { KEY_LOCATION_INI } from '../constants/AsyncDataKeys';
 
 class Location extends React.Component {
   constructor(props) {
@@ -17,7 +19,7 @@ class Location extends React.Component {
   }
 
   componentDidMount() {
-    const locations = this.props.navigation.getParam("locations");
+    const locations = this.props.navigation.getParam('locations');
     this.setState({ locations });
   }
 
@@ -26,7 +28,10 @@ class Location extends React.Component {
       <LocationCard
         text={item.name}
         onPress={() => {
+          //set location to redux state
           this.props.setLocation(item.name);
+          //set location to async store - INI data
+          AsyncDataService.setItem(KEY_LOCATION_INI, item.name, false);
           this.props.navigation.goBack();
         }}
       />
@@ -57,7 +62,7 @@ class Location extends React.Component {
   }
 
   _filterLocations(text) {
-    const allLocations = this.props.navigation.getParam("locations");
+    const allLocations = this.props.navigation.getParam('locations');
     let filterText = toUpperCaseFirstOfEachWord(text);
     let locations = allLocations.filter(location => {
       if (location.name.includes(filterText)) {

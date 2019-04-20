@@ -233,7 +233,8 @@ class DoctorProfile extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  bookingData: state.bookingData
+  bookingData: state.bookingData,
+  location: state.location
 });
 
 export default connect(

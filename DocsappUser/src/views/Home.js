@@ -13,6 +13,8 @@ import { HOME } from '../constants/strings';
 import { WHITE } from '../config/colors';
 import RatingModal from '../components/RatingModal';
 import { isNullOrEmpty, getDateStringIndian } from '../commons/utils';
+import { KEY_LOCATION_INI } from '../constants/AsyncDataKeys';
+import { AsyncDataService } from '../services/AsyncDataService';
 
 class Home extends React.Component {
   constructor(props) {
@@ -49,17 +51,32 @@ class Home extends React.Component {
               spinner: false,
               feedbackModalVisible
             },
-            () => {
+            async () => {
               this.props.setLocationsList(locations);
               this.props.setSpecializations(specializations);
               this.props.setFavorites(favorites);
               this.props.setUserSupport(support);
-              this.props.setLocation(locations[0].name);
               this.props.setBookingWithoutFeedback(bookingWithoutFeedback);
               //set receivedInitialData true in redux state.
               //if set to true, next time the datashould not be fetched
               //if false, data should be fetched
               this.props.setReceivedInitialData(true);
+
+              //get location INI and set to redux state
+              try {
+                let location = await AsyncDataService.getItem(
+                  KEY_LOCATION_INI,
+                  false
+                );
+                if (isNullOrEmpty(location)) {
+                  this.props.setLocation(locations[0].name);
+                } else {
+                  this.props.setLocation(location);
+                }
+              } catch (err) {
+                this.props.setLocation(locations[0].name);
+                console.log(err);
+              }
             }
           );
         });
