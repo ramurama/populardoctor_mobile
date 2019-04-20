@@ -17,7 +17,12 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import APIService from '../services/APIService';
 import { connect } from 'react-redux';
 import * as Actions from '../actions';
-import { isNullOrEmpty, isStringsEqual, getDateString } from '../commons/utils';
+import {
+  isNullOrEmpty,
+  isStringsEqual,
+  getDateString,
+  removeDuplicates
+} from '../commons/utils';
 import Toast from 'react-native-simple-toast';
 
 const DATE_FORMAT = 'MMM DD YYYY';
@@ -31,11 +36,13 @@ class DoctorProfile extends React.Component {
       selectedDay: '',
       doctorDetails: {},
       schedules: [],
+      unmatchingWeekdays: [],
       availabilityStatus: []
     };
   }
 
   componentDidMount() {
+    const { location } = this.props;
     this.setState({ spinner: true }, () => {
       const date = this._computeTodayDate();
       //fetch all schedules for the seletect doctor
@@ -43,6 +50,21 @@ class DoctorProfile extends React.Component {
       APIService.getSchedules(this.props.token, userId, drSchedules => {
         console.log(drSchedules);
         const { schedules, doctorDetails, availabilityStatus } = drSchedules;
+
+        //find schedules that dont match with the location
+        let unmatchingSchedules = schedules.filter(schedule => {
+          if (!isStringsEqual(location, schedule.hospital.location)) {
+            return schedule;
+          }
+        });
+        //remove multiple schedules for the same weekday
+        unmatchingSchedules = removeDuplicates(unmatchingSchedules, 'weekday');
+
+        //form an array with only unmatching weekdays and set to state
+        const unmatchingWeekdays = unmatchingSchedules.map(schedule => {
+          return schedule.weekday;
+        });
+
         this.setState({
           schedules,
           doctorDetails,
@@ -50,6 +72,7 @@ class DoctorProfile extends React.Component {
           selectedDateStr: date.dateStr,
           selectedDay: date.day,
           selectedDateString: date.normalDateStr,
+          unmatchingWeekdays,
           spinner: false
         });
       });
@@ -218,7 +241,10 @@ class DoctorProfile extends React.Component {
         <View>{this._renderDoctorProfileCard()}</View>
         <View style={styles.scheduleView}>
           <Text style={styles.textStyle}>Week Schedule</Text>
-          <Calendar onSelect={this._handleCalendarSelect} />
+          <Calendar
+            unmatchingDays={this.state.unmatchingWeekdays}
+            onSelect={this._handleCalendarSelect}
+          />
         </View>
         <Content style={styles.contentStyle} scrollEnabled={true}>
           <View style={styles.scheduleListView}>
