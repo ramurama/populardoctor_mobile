@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   TextInput,
@@ -7,7 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   BackHandler
-} from "react-native";
+} from 'react-native';
 import {
   Container,
   Content,
@@ -18,9 +18,9 @@ import {
   Label,
   Input,
   Button
-} from "native-base";
-import ModalDialog from "react-native-modalbox";
-import DoctorCard from "../components/DoctorCard";
+} from 'native-base';
+import ModalDialog from 'react-native-modalbox';
+import DoctorCard from '../components/DoctorCard';
 import {
   SECONDARY_DARK,
   BACKGROUND_2,
@@ -29,18 +29,18 @@ import {
   WHITE,
   HELPER_TEXT_COLOR,
   DISABLED_GREY
-} from "../config/colors";
-import { VIEW_DOCTOR_PROFILE } from "../constants/viewNames";
-import { icons } from "../constants/icons";
-import { FONT_XL, FONT_XXXL } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
-import { connect } from "react-redux";
-import Spinner from "react-native-loading-spinner-overlay";
-import * as Actions from "../actions";
-import APIService from "../services/APIService";
-import { isNullOrEmpty } from "../commons/utils";
+} from '../config/colors';
+import { VIEW_DOCTOR_PROFILE } from '../constants/viewNames';
+import { icons } from '../constants/icons';
+import { FONT_XL, FONT_XXXL } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
+import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import * as Actions from '../actions';
+import APIService from '../services/APIService';
+import { isNullOrEmpty } from '../commons/utils';
 
-const SCREEN_W = Dimensions.get("window").width;
+const SCREEN_W = Dimensions.get('window').width;
 
 export class SearchDoctor extends React.Component {
   constructor(props) {
@@ -50,6 +50,7 @@ export class SearchDoctor extends React.Component {
       spinner: false,
       doctorsList: []
     };
+    this.favoritesIdArray = [];
   }
 
   componentDidMount() {
@@ -69,7 +70,7 @@ export class SearchDoctor extends React.Component {
 
   _renderFloatingActionBtn() {
     const fabSearchStyle =
-      Platform.OS === "ios"
+      Platform.OS === 'ios'
         ? styles.fabSearch
         : [styles.fabSearch, { flex: 1 }];
     return (
@@ -87,7 +88,7 @@ export class SearchDoctor extends React.Component {
     return (
       <ModalDialog
         style={[styles.modal, styles.searchDialogModal]}
-        position={"center"}
+        position={'center'}
         isDisabled={false}
         isOpen={this.state.isSearchModalOpen}
         onClosed={() => this.setState({ isSearchModalOpen: false })}
@@ -118,7 +119,7 @@ export class SearchDoctor extends React.Component {
 
   _renderSearchListItem(item) {
     const { doctorDetails, _id } = item;
-    const isFavorite = this.props.favorites.includes(_id);
+    const isFavorite = this.favoritesIdArray.includes(_id);
     return (
       <DoctorCard
         imageURL={doctorDetails.profileImage}
@@ -129,7 +130,7 @@ export class SearchDoctor extends React.Component {
         // isAvailable={item.isAvailable}
         onPress={() =>
           this.props.navigation.navigate(VIEW_DOCTOR_PROFILE, {
-            title: "Dr. " + doctorDetails.fullName,
+            title: 'Dr. ' + doctorDetails.fullName,
             userId: _id,
             doctorName: doctorDetails.fullName,
             profileImage: doctorDetails.profileImage,
@@ -141,6 +142,11 @@ export class SearchDoctor extends React.Component {
   }
 
   _renderSearchList() {
+    const { favorites } = this.props;
+    const favoritesIdArray = favorites.map(favorite => {
+      return favorite.userId;
+    });
+    this.favoritesIdArray = favoritesIdArray;
     return (
       <FlatList
         data={this.state.doctorsList}
@@ -161,8 +167,8 @@ export class SearchDoctor extends React.Component {
     return (
       <View
         style={{
-          alignSelf: "center",
-          marginTop: Dimensions.get("window").height / 3
+          alignSelf: 'center',
+          marginTop: Dimensions.get('window').height / 3
         }}
       >
         <Text style={{ color: HELPER_TEXT_COLOR }}>
@@ -174,7 +180,7 @@ export class SearchDoctor extends React.Component {
           style={{
             color: DISABLED_GREY,
             fontSize: 50,
-            alignSelf: "center",
+            alignSelf: 'center',
             marginTop: 10
           }}
         />
@@ -183,7 +189,6 @@ export class SearchDoctor extends React.Component {
   }
 
   render() {
-    console.log(this.state.doctorsList);
     return (
       <Container>
         <Content style={styles.contentBackground} padder>
@@ -212,8 +217,8 @@ export default connect(
 
 const styles = {
   modal: {
-    justifyContent: "space-around",
-    alignItems: "center",
+    justifyContent: 'space-around',
+    alignItems: 'center',
     borderRadius: 15
   },
   searchDialogModal: {
@@ -221,7 +226,7 @@ const styles = {
     width: SCREEN_W * 0.9
   },
   searchModalDialogText: {
-    textAlign: "left",
+    textAlign: 'left',
     padding: 10,
     fontSize: FONT_XL,
     fontWeight: FONT_WEIGHT_BOLD,
@@ -241,12 +246,12 @@ const styles = {
     color: SECONDARY
   },
   searchItem: {
-    width: "75%",
+    width: '75%',
     borderBottomColor: SECONDARY,
     marginBottom: 25
   },
   searchInput: {
     fontSize: FONT_XL,
-    fontFamily: "Courier"
+    fontFamily: 'Courier'
   }
 };

@@ -37,22 +37,21 @@ export class FavoriteDoctors extends React.Component {
   }
 
   componentDidMount() {
-    const { token, favorites } = this.props;
-    this.setState({ spinner: false }, () => {
-      APIService.getFavorites(token, favorites, doctorsList => {
-        this.setState({ doctorsList, spinner: false });
-      });
-    });
+    // const { token, favorites } = this.props;
+    // this.setState({ spinner: false }, () => {
+    //   APIService.getFavorites(token, favorites, doctorsList => {
+    //     this.setState({ doctorsList, spinner: false });
+    //   });
+    // });
   }
 
   _renderSearchListItem(item) {
     const showFooter = this.props.navigation.getParam('showFooter');
     const { doctorDetails, specialization, userId } = item;
-    const isFavorite = this.props.favorites.includes(userId);
     return (
       <DoctorCard
         imageURL={doctorDetails.profileImage}
-        isFavorite={isFavorite}
+        isFavorite={true}
         doctorName={doctorDetails.fullName}
         specialization={specialization}
         // hospitalName={item.hospitalName}
@@ -70,7 +69,7 @@ export class FavoriteDoctors extends React.Component {
             userId,
             doctorName: doctorDetails.fullName,
             profileImage: doctorDetails.profileImage,
-            isFavorite,
+            isFavorite: true,
             screenOpenedFromHome
           });
         }}
@@ -81,7 +80,7 @@ export class FavoriteDoctors extends React.Component {
   _renderSearchList() {
     return (
       <FlatList
-        data={this.state.doctorsList}
+        data={this.props.favorites}
         renderItem={({ item }) => this._renderSearchListItem(item)}
         keyExtractor={(item, index) => item._id}
         extraData={this.props}
@@ -109,7 +108,7 @@ export class FavoriteDoctors extends React.Component {
       <Container>
         <Content style={styles.contentBackground} padder>
           <View>{this._renderSearchList()}</View>
-          {isNullOrEmpty(this.state.doctorsList) && this._renderNoDataView()}
+          {isNullOrEmpty(this.props.favorites) && this._renderNoDataView()}
         </Content>
         {this._renderSpinner()}
         {showFooter && (
