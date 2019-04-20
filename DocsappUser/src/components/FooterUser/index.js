@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { Footer, FooterTab, Button, Icon } from 'native-base';
-import commonStyles from '../commons/styles';
+import commonStyles from '../../commons/styles';
 import PropTypes from 'prop-types';
 import {
   VIEW_HOME,
@@ -15,19 +15,42 @@ import {
   VIEW_HOME_MENU,
   VIEW_NAV_HOME_BOOKING_HISTORY,
   VIEW_NAV_HOME_MENU
-} from '../constants/viewNames';
+} from '../../constants/viewNames';
 import {
   PRIMARY,
   ICON_INACTIVE,
   ICON_ACTIVE,
-  BACKGROUND_3
-} from '../config/colors';
+  BACKGROUND_3,
+  SECONDARY
+} from '../../config/colors';
 
 const props = {
   activeButton: PropTypes.string.isRequired
 };
 
-class FooterUser extends React.Component {
+const activeSearchIcon = (
+  <Image
+    source={require('./search.png')}
+    style={{
+      height: 65,
+      width: 65,
+      bottom: 8
+    }}
+  />
+);
+
+const inActiveSearchIcon = (
+  <Image
+    source={require('./search.png')}
+    style={{
+      height: 65,
+      width: 65,
+      bottom: 8
+    }}
+  />
+);
+
+class FooterUser extends React.PureComponent {
   constructor(props) {
     super(props);
   }
@@ -85,22 +108,12 @@ class FooterUser extends React.Component {
   _renderSearchButton() {
     return (
       <Button
-        style={
-          this.props.activeButton === VIEW_SEARCH
-            ? styles.buttonBgActive
-            : styles.buttonBgInActive
-        }
+        style={styles.buttonBgInActive}
         onPress={() => this.props.navigation.navigate(VIEW_NAV_USER)}
       >
-        <Icon
-          name="search"
-          type="MaterialIcons"
-          style={
-            this.props.activeButton === VIEW_SEARCH
-              ? styles.iconActive
-              : styles.iconInActive
-          }
-        />
+        {this.props.activeButton === VIEW_SEARCH
+          ? activeSearchIcon
+          : inActiveSearchIcon}
       </Button>
     );
   }
@@ -181,12 +194,16 @@ const styles = StyleSheet.create({
   },
   buttonBgInActive: {
     backgroundColor: PRIMARY,
-    borderRadius: 0
+    borderRadius: 0,
+    borderBottomWidth: 4,
+    borderColor: PRIMARY
   },
   buttonBgActive: {
-    backgroundColor: BACKGROUND_3,
+    // backgroundColor: BACKGROUND_3,
     borderRadius: 0,
-    height: '100%'
+    height: '100%',
+    borderBottomWidth: 4,
+    borderColor: SECONDARY
   },
   font25: {
     fontSize: 25
