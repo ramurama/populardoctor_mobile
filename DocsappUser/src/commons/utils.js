@@ -1,12 +1,12 @@
-import __ from "underscore";
+import __ from 'underscore';
 
 export const toUpperCaseFirstOfEachWord = str => {
-  let splitStr = str.toLowerCase().split(" ");
+  let splitStr = str.toLowerCase().split(' ');
   for (let i = 0; i < splitStr.length; i++) {
     splitStr[i] =
       splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
   }
-  return splitStr.join(" ");
+  return splitStr.join(' ');
 };
 
 export const isPasswordLengthOk = password => {
@@ -48,19 +48,23 @@ export const isValidMobileNumber = number => {
 export const getDateString = date => {
   return (
     date.getFullYear() +
-    "-" +
-    ("0" + (date.getMonth() + 1)).slice(-2) +
-    "-" +
-    ("0" + date.getDate()).slice(-2)
+    '-' +
+    ('0' + (date.getMonth() + 1)).slice(-2) +
+    '-' +
+    ('0' + date.getDate()).slice(-2)
   );
 };
 
 export const getDateStringIndian = date => {
   return (
     date.getDate() +
-    "-" +
-    ("0" + (date.getMonth() + 1)).slice(-2) +
-    "-" +
+    '-' +
+    ('0' + (date.getMonth() + 1)).slice(-2) +
+    '-' +
     date.getFullYear()
   );
+};
+
+export const removeDuplicates = (array, value) => {
+  return __.uniq(array, value);
 };

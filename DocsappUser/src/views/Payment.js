@@ -1,17 +1,23 @@
-import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Container, Content, Text, Footer } from "native-base";
-import { connect } from "react-redux";
-import * as Actions from "../actions";
-import { SECONDARY, PRIMARY } from "../config/colors";
-import { FONT_L } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
-import APIService from "../services/APIService";
-import { VIEW_BOOKING_HISTORY_DETAIL } from "../constants/viewNames";
-import commonStyles from "../commons/styles";
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Container, Content, Text, Footer } from 'native-base';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+import { SECONDARY, PRIMARY } from '../config/colors';
+import { FONT_L } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
+import APIService from '../services/APIService';
+import {
+  VIEW_BOOKING_HISTORY_DETAIL,
+  VIEW_HOME_FAV_BOOKING_DETAIL
+} from '../constants/viewNames';
+import commonStyles from '../commons/styles';
 
 class Payment extends React.Component {
   _handlePayButton = async () => {
+    const screenOpenedFromHome = this.props.navigation.getParam(
+      'screenOpenedFromHome'
+    );
     const { token, bookingData } = this.props;
     const {
       doctorId,
@@ -37,7 +43,11 @@ class Payment extends React.Component {
     };
     APIService.bookToken(token, data, res => {
       if (res.status) {
-        this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
+        let bookingDetailView = VIEW_BOOKING_HISTORY_DETAIL;
+        if (screenOpenedFromHome) {
+          bookingDetailView = VIEW_HOME_FAV_BOOKING_DETAIL;
+        }
+        this.props.navigation.navigate(bookingDetailView, {
           enableQR: true,
           bookingId: res.bookingId,
           tokenNumber,
@@ -49,10 +59,11 @@ class Payment extends React.Component {
           endTime,
           hospital,
           tokenType,
-          enableDoneButton: true
+          showDone: true,
+          screenOpenedFromHome
         });
       } else {
-        alert("null");
+        // alert('null');
       }
     });
   };

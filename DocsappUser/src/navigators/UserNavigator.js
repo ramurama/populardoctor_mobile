@@ -31,6 +31,7 @@ import FavoriteDoctors from "../views/FavoriteDoctors";
 import BookingHistoryDetail from "../views/BookingHistoryDetail";
 import DoctorProfileDescription from "../views/DoctorProfileDescription";
 import CustomerSupport from "../views/CustomerSupport";
+import Location from "../views/Location";
 import Payment from "../views/Payment";
 import { icons } from "../constants/icons";
 
@@ -41,6 +42,16 @@ const UserNavigatorStack = createStackNavigator(
       navigationOptions: {
         header: null,
         headerBackTitle: null
+      }
+    }, 
+    location: {
+      screen: Location,
+      navigationOptions : {
+        title: LOCATION,
+        headerTitleStyle: commonStyles.headerTitleStyle,
+        headerTintColor: PRIMARY,
+        headerBackTitle: null,
+        headerStyle: commonStyles.headerDefault
       }
     },
     searchDoctor: {

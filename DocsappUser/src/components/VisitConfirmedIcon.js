@@ -12,20 +12,18 @@ import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
 
 const SCREEN_W = Dimensions.get("window").width;
 
-class VisitConfirmedIcon extends React.PureComponent {
-  render() {
-    return (
-      <Animatable.View
-        animation="pulse"
-        easing="ease-out"
-        iterationCount="infinite"
-        style={styles.mainView}
-      >
-        <Icon name="checkcircleo" type="AntDesign" style={styles.iconStyle} />
-        <Text style={styles.textStyle}>Visit Confirmed</Text>
-      </Animatable.View>
-    );
-  }
+function VisitConfirmedIcon() {
+  return (
+    <Animatable.View
+      animation="pulse"
+      easing="ease-out"
+      iterationCount="infinite"
+      style={styles.mainView}
+    >
+      <Icon name="checkcircleo" type="AntDesign" style={styles.iconStyle} />
+      <Text style={styles.textStyle}>Visit Confirmed</Text>
+    </Animatable.View>
+  );
 }
 
 export default VisitConfirmedIcon;
