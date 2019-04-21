@@ -1,14 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Container, Content, Text, Footer } from 'native-base';
 import UserBooking from '../components/UserBooking';
 import commonStyles from '../commons/styles';
-import {
-  VIEW_SEARCH,
-  VIEW_HOME_FAVORITES
-} from '../constants/viewNames';
+import { VIEW_SEARCH, VIEW_HOME_FAVORITES } from '../constants/viewNames';
+import { SECONDARY, WHITE } from '../config/colors';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
+import { FONT_L } from '../config/fontSize';
+import { connect } from 'react-redux';
+import APIService from '../services/APIService';
+import Toast from 'react-native-simple-toast';
 
 class BookingHistoryDetail extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   _renderFooterDoneButton() {
     return (
       <TouchableOpacity onPress={this._handleDoneButton}>
@@ -32,6 +40,38 @@ class BookingHistoryDetail extends React.Component {
     }
   };
 
+  _renderFooterCancelButton() {
+    return (
+      <TouchableOpacity onPress={this._handleCancelButton}>
+        <Footer style={{}}>
+          <View style={styles.cancelButtonView}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </View>
+        </Footer>
+      </TouchableOpacity>
+    );
+  }
+
+  _handleCancelButton = () => {
+    const bookingId = this.props.navigation.getParam('bookingId');
+    Alert.alert('Cancel', 'Are you sure you want to cancel this booking?', [
+      { text: 'No' },
+      {
+        text: 'Yes',
+        onPress: () => {
+          APIService.cancelBooking(this.props.token, bookingId, status => {
+            if (status) {
+              Toast.show('Appointment cancelled', Toast.SHORT);
+              this.props.navigation.navigate(VIEW_SEARCH);
+            } else {
+              Toast.show('Unknown Error. Contact customer care', Toast.SHORT);
+            }
+          });
+        }
+      }
+    ]);
+  };
+
   render() {
     const { getParam } = this.props.navigation;
     const { name, address, pincode } = getParam('hospital');
@@ -53,12 +93,29 @@ class BookingHistoryDetail extends React.Component {
             showBookingId={true}
           />
         </Content>
-        {getParam('enableDoneButton') && this._renderFooterDoneButton()}
+        {getParam('showDone') && this._renderFooterDoneButton()}
+        {getParam('showCancel') && this._renderFooterCancelButton()}
       </Container>
     );
   }
 }
 
-export default BookingHistoryDetail;
+const mapStateToProps = state => ({
+  token: state.token
+});
 
-const styles = StyleSheet.create({});
+export default connect(mapStateToProps)(BookingHistoryDetail);
+
+const styles = StyleSheet.create({
+  cancelButtonView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  cancelButtonText: {
+    fontSize: FONT_L,
+    fontWeight: FONT_WEIGHT_BOLD,
+    padding: 10,
+    color: SECONDARY
+  }
+});

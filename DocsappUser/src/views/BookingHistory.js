@@ -72,7 +72,8 @@ class BookingHistory extends React.Component {
       tokenTime: token.time,
       tokenType: token.type,
       enableQR: true,
-      enableDoneButton: false
+      showDone: false,
+      showCancel: true
     };
     return (
       <HistoryCard
@@ -123,7 +124,8 @@ class BookingHistory extends React.Component {
       tokenTime: token.time,
       tokenType: token.type,
       enableQR: false,
-      enableDoneButton: false
+      showDone: false,
+      showCancel: false
     };
     return (
       <HistoryCard

@@ -36,6 +36,7 @@ const URL_GET_FAVORITES = '/customer/getFavorites';
 const URL_BOOK_TOKEN = '/customer/bookToken';
 const URL_GET_BOOKING_HISTORY = '/customer/getBookingHistory';
 const URL_SUBMIT_FEEDBACK = '/customer/submitFeedback';
+const URL_CANCEL_BOOKING = '/customer/cancelBooking';
 
 //doctor
 const URL_DR_GET_SCHEDULE_CONFIRMATIONS = '/doctor/getNextDayConfirmations';
@@ -409,6 +410,17 @@ export default (APIService = {
       })
       .then(res => callback(res.data))
       .catch(err => console.log('***** Error submitting feedback'));
+  },
+
+  cancelBooking(token, bookingId, callback) {
+    axios
+      .put(
+        HOST + URL_CANCEL_BOOKING + '/' + bookingId,
+        {},
+        { headers: buildAuthHeader(token) }
+      )
+      .then(res => callback(res.data.status))
+      .catch(err => console.log('***** Error cancelling booking.'));
   }
 });
 

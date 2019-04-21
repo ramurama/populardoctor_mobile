@@ -59,7 +59,7 @@ class Payment extends React.Component {
           endTime,
           hospital,
           tokenType,
-          enableDoneButton: true,
+          showDone: true,
           screenOpenedFromHome
         });
       } else {
