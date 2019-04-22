@@ -30,22 +30,24 @@ const props = {
 
 const activeSearchIcon = (
   <Image
-    source={require('./search.png')}
+    source={require('./bookdoc-active.png')}
     style={{
-      height: 65,
-      width: 65,
-      bottom: 8
+      height: 50,
+      width: 50
     }}
   />
 );
 
 const inActiveSearchIcon = (
   <Image
-    source={require('./search.png')}
+    source={require('./bookdoc-inactive.png')}
     style={{
-      height: 65,
-      width: 65,
-      bottom: 8
+      height: 60,
+      width: 60,
+      bottom: 3,
+      shadowOffset: { height: 1, width: 0 },
+      shadowColor: 'grey',
+      shadowOpacity: 0.3
     }}
   />
 );
