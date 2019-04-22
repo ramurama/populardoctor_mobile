@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   TouchableOpacity,
   View,
   Text,
   StyleSheet,
   Dimensions
-} from "react-native";
-import { Icon } from "native-base";
-import PropTypes from "prop-types";
-import { ON_PRIMARY, SECONDARY } from "../config/colors";
-import commonStyles from "../commons/styles";
-import { FONT_WEIGHT_MEDIUM } from "../config/fontWeight";
+} from 'react-native';
+import { Icon } from 'native-base';
+import PropTypes from 'prop-types';
+import { ON_PRIMARY, SECONDARY } from '../config/colors';
+import commonStyles from '../commons/styles';
+import { FONT_WEIGHT_MEDIUM } from '../config/fontWeight';
 
 const propTypes = {
   onPress: PropTypes.func,
@@ -18,7 +18,7 @@ const propTypes = {
   title: PropTypes.string.isRequired
 };
 
-const SCREEN_W = Dimensions.get("window").width;
+const SCREEN_W = Dimensions.get('window').width;
 
 class MenuCard extends React.Component {
   render() {
@@ -27,7 +27,7 @@ class MenuCard extends React.Component {
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={styles.containerStyle}>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: 'row' }}>
             <View style={styles.menuTitleView}>
               <Icon
                 style={styles.iconStyle}
@@ -49,12 +49,14 @@ class MenuCard extends React.Component {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    flexDirection: "row",
+    flexDirection: 'row',
     padding: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
     margin: 3,
     borderRadius: 10,
-    backgroundColor: "white",
-    shadowColor: "grey",
+    backgroundColor: 'white',
+    shadowColor: 'grey',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
@@ -63,18 +65,19 @@ const styles = StyleSheet.create({
   },
   iconStyle: {
     color: SECONDARY,
-    padding: 2
+    padding: 2,
+    fontSize: 20
   },
   menuTitleStyle: {
-    color: "grey",
+    color: 'grey',
     fontSize: SCREEN_W * 0.048,
     fontWeight: FONT_WEIGHT_MEDIUM,
     padding: 8,
     paddingLeft: 25
   },
   menuTitleView: {
-    flexDirection: "column",
-    justifyContent: "center"
+    flexDirection: 'column',
+    justifyContent: 'center'
   }
 });
 

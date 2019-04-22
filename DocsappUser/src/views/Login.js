@@ -63,7 +63,8 @@ import {
   VIEW_NAV_DRAWER_FD,
   VIEW_NAV_USER,
   VIEW_REGISTER,
-  VIEW_LOGIN
+  VIEW_LOGIN,
+  VIEW_NAV_USER_HOME
 } from "../constants/viewNames";
 import APIService from "../services/APIService";
 import { AsyncDataService } from "../services/AsyncDataService";
@@ -98,7 +99,8 @@ class Login extends React.Component {
 
   _moveToRelevantNavigator(userType) {
     if (userType == USER_CUSTOMER) {
-      this.props.navigation.navigate(VIEW_NAV_USER);
+      // this.props.navigation.navigate(VIEW_NAV_USER);
+      this.props.navigation.navigate(VIEW_NAV_USER_HOME);
     } else if (userType == USER_DOCTOR) {
       this.props.navigation.navigate(VIEW_NAV_DRAWER_DR);
     } else if (userType == USER_FRONT_DESK) {

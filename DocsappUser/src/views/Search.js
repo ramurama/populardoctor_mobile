@@ -9,22 +9,22 @@ import {
   ListItem,
   Right,
   Text
-} from "native-base";
-import React from "react";
+} from 'native-base';
+import React from 'react';
 import {
   BackHandler,
   FlatList,
   StyleSheet,
   TouchableOpacity,
   View
-} from "react-native";
-import { Col, Grid } from "react-native-easy-grid";
-import Spinner from "react-native-loading-spinner-overlay";
-import ModalWrapper from "react-native-modal-wrapper";
-import { connect } from "react-redux";
-import commonStyles from "../commons/styles";
-import Specialization from "../components/Specialization";
-import StatusBar from "../components/StatusBar";
+} from 'react-native';
+import { Col, Grid } from 'react-native-easy-grid';
+import Spinner from 'react-native-loading-spinner-overlay';
+import ModalWrapper from 'react-native-modal-wrapper';
+import { connect } from 'react-redux';
+import commonStyles from '../commons/styles';
+import Specialization from '../components/Specialization';
+import StatusBar from '../components/StatusBar';
 import {
   BACKGROUND_2,
   DEFAULT_BORDER_COLOR,
@@ -34,34 +34,36 @@ import {
   PRIMARY,
   SECONDARY,
   WHITE
-} from "../config/colors";
-import { FONT_L, FONT_XS, FONT_XXXL } from "../config/fontSize";
+} from '../config/colors';
+import { FONT_L, FONT_XS, FONT_XXXL } from '../config/fontSize';
 import {
   FONT_WEIGHT_BOLD,
   FONT_WEIGHT_XBOLD,
   FONT_WEIGHT_XXBOLD
-} from "../config/fontWeight";
-import { icons } from "../constants/icons";
+} from '../config/fontWeight';
+import { icons } from '../constants/icons';
 import {
   VIEW_MENU,
   VIEW_SEARCH_DOCTOR,
-  VIEW_LOCATION
-} from "../constants/viewNames";
-import APIService from "../services/APIService";
-import * as Actions from "../actions";
+  VIEW_LOCATION,
+  VIEW_SEARCH
+} from '../constants/viewNames';
+import APIService from '../services/APIService';
+import * as Actions from '../actions';
+import FooterUser from '../components/FooterUser';
 
 //the keys must be specified in API (DB)
 const specializationImages = {
-  dental: require("./images/dental.png"),
-  cardio: require("./images/cardio.png"),
-  optical: require("./images/optical.png"),
-  ortho: require("./images/ortho.png"),
-  general: require("./images/general.png"),
-  gynaecology: require("./images/gynaecology.png"),
-  ent: require("./images/ent.png"),
-  endocrine: require("./images/endocrine.png"),
-  neuro: require("./images/neuro.png"),
-  pediatrics: require("./images/pediatrics.png")
+  dental: require('./images/dental.png'),
+  cardio: require('./images/cardio.png'),
+  optical: require('./images/optical.png'),
+  ortho: require('./images/ortho.png'),
+  general: require('./images/general.png'),
+  gynaecology: require('./images/gynaecology.png'),
+  ent: require('./images/ent.png'),
+  endocrine: require('./images/endocrine.png'),
+  neuro: require('./images/neuro.png'),
+  pediatrics: require('./images/pediatrics.png')
 };
 
 class Search extends React.Component {
@@ -70,39 +72,20 @@ class Search extends React.Component {
     this.state = {
       spinner: false,
       locationCoords: null,
-      locations: [],
-      specializations: []
+      locations: []
     };
   }
 
   componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
-    // this._getGeoLocation(locationCoords => this.setState({ locationCoords }));
-    this.setState({ spinner: true }, () => {
-      APIService.getInitialData(this.props.token, data => {
-        const { locations, specializations, favorites, support } = data;
-        this.setState(
-          {
-            locations,
-            specializations,
-            spinner: false
-          },
-          () => {
-            this.props.setFavorites(favorites);
-            this.props.setUserSupport(support);
-            this.props.setLocation(this.state.locations[0].name);
-          }
-        );
-      });
-    });
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBackButton);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   handleBackButton = () => {
-    console.log("Back button is pressed");
+    console.log('Back button is pressed');
     return true;
   };
 
@@ -148,11 +131,11 @@ class Search extends React.Component {
         <Body style={commonStyles.shadow}>
           <Grid>
             <Col size={60} style={styles.locationViewCol}>
-              <View style={{ width: "100%" }}>
+              <View style={{ width: '100%' }}>
                 <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate(VIEW_LOCATION, {
-                      locations: this.state.locations
+                      locations: this.props.locationList
                     })
                   }
                 >
@@ -211,7 +194,7 @@ class Search extends React.Component {
   _renderSpecialisationList() {
     return (
       <FlatList
-        data={this.state.specializations}
+        data={this.props.specializations}
         renderItem={({ item }) => this._renderSpecialisationListItem(item)}
         numColumns="3"
       />
@@ -226,6 +209,7 @@ class Search extends React.Component {
           {this._renderSpecialisationList()}
           {this._renderSpinner()}
         </Content>
+        <FooterUser activeButton={VIEW_SEARCH} {...this.props} />
       </Container>
     );
   }
@@ -233,7 +217,9 @@ class Search extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  location: state.location
+  location: state.location,
+  locationList: state.locationList,
+  specializations: state.specializations
 });
 
 export default connect(
@@ -250,7 +236,7 @@ const styles = StyleSheet.create({
     color: PRIMARY,
     marginTop: 3,
     flex: 1,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     fontSize: FONT_XS
   },
   locationNameText: {
@@ -258,26 +244,26 @@ const styles = StyleSheet.create({
     color: PRIMARY
   },
   locationView: {
-    flexDirection: "row",
-    alignItems: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   locationViewCol: {
-    justifyContent: "center",
-    alignItems: "flex-start"
+    justifyContent: 'center',
+    alignItems: 'flex-start'
   },
   menuView: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   menuViewCol: {
-    justifyContent: "center",
-    alignItems: "flex-end"
+    justifyContent: 'center',
+    alignItems: 'flex-end'
   },
   locationModalContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end"
+    flexDirection: 'row',
+    alignItems: 'flex-end'
   },
   locationModalView: {
     height: 330,
@@ -296,7 +282,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_L,
     fontWeight: FONT_WEIGHT_BOLD,
     backgroundColor: SECONDARY,
-    width: "100%",
+    width: '100%',
     borderRadius: 5
   },
   modalWrapper: {
@@ -310,12 +296,12 @@ const styles = StyleSheet.create({
     paddingBottom: 6
   },
   orText: {
-    fontWeight: "800",
-    textAlign: "center",
+    fontWeight: '800',
+    textAlign: 'center',
     color: HELPER_TEXT_COLOR
   },
   locationSeletText: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: FONT_L,
     fontWeight: FONT_WEIGHT_XXBOLD,
     color: ON_PRIMARY,
@@ -334,7 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: BACKGROUND_2
   },
   modalHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingTop: 10,
     backgroundColor: PRIMARY
   },

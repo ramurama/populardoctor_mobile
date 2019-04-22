@@ -1,24 +1,25 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text } from "native-base";
-import Header from "../../components/HeaderDoctor";
-import Footer from "../../components/FooterDoctor";
-import { DR_BOOKING_HISTORY } from "../../constants/strings";
-import commonStyles from "../../commons/styles";
-import VisitorHistoryCard from "../../components/VisitorHistoryCard";
-import { VIEW_DR_BOOKING_HISTORY_DETAIL } from "../../constants/viewNames";
-import { WHITE } from "../../config/colors";
-import Spinner from "react-native-loading-spinner-overlay";
-import { connect } from "react-redux";
-import * as Actions from "../../actions";
-import { isNullOrEmpty, getDateStringIndian } from "../../commons/utils";
-import APIService from "../../services/APIService";
+import React from 'react';
+import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import Header from '../../components/HeaderDoctor';
+import Footer from '../../components/FooterDoctor';
+import { DR_BOOKING_HISTORY } from '../../constants/strings';
+import commonStyles from '../../commons/styles';
+import VisitorHistoryCard from '../../components/VisitorHistoryCard';
+import { VIEW_DR_BOOKING_HISTORY_DETAIL } from '../../constants/viewNames';
+import { WHITE } from '../../config/colors';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { connect } from 'react-redux';
+import * as Actions from '../../actions';
+import { isNullOrEmpty, getDateStringIndian } from '../../commons/utils';
+import APIService from '../../services/APIService';
 
 class BookingHistory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false
+      spinner: false,
+      refreshing: false
     };
   }
 
@@ -32,7 +33,7 @@ class BookingHistory extends React.Component {
     const { setDoctorBookingHistory, token } = this.props;
     this.setState({ spinner: true }, () => {
       APIService.getDoctorBookingHistory(token, bookings => {
-        this.setState({ spinner: false }, () => {
+        this.setState({ spinner: false, refreshing: false }, () => {
           setDoctorBookingHistory(bookings);
         });
       });
@@ -45,6 +46,7 @@ class BookingHistory extends React.Component {
         data={this.props.drBookingHistory}
         renderItem={({ item }) => this._renderBookingHistoryListItem(item)}
         keyExtractor={(item, index) => item.bookingId}
+        extraData={this.props}
       />
     );
   }
@@ -73,6 +75,12 @@ class BookingHistory extends React.Component {
     );
   }
 
+  _onRefresh = () => {
+    this.setState({ refreshing: true }, () => {
+      this._refreshHistory();
+    });
+  };
+
   render() {
     return (
       <Container>
@@ -82,7 +90,15 @@ class BookingHistory extends React.Component {
           showRefresh="true"
           onRefresh={() => this._refreshHistory()}
         />
-        <Content style={commonStyles.contentBg}>
+        <Content
+          style={commonStyles.contentBg}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           <View>{this._renderBookingHistoryList()}</View>
           {this._renderSpinner()}
         </Content>
