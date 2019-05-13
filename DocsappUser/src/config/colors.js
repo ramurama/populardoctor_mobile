@@ -3,10 +3,10 @@ export const PRIMARY_LIGHT = "#ffffff";
 export const PRIMARY_DARK = "#c7c7c7";
 export const ON_PRIMARY = "#565656";
 
-export const SECONDARY = "#04C9A3";
-export const SECONDARY_LIGHT = "#80cbc4";
-export const SECONDARY_DARK = "#007c91";
-export const ON_SECONDARY = "#f2f2f2";
+export const SECONDARY = "#3c73aa";
+export const SECONDARY_LIGHT = "#70a1dc";
+export const SECONDARY_DARK = "#00487b";
+export const ON_SECONDARY = "#ffffff";
 
 export const BACKGROUND_1 = "#f4f6f7";
 export const BACKGROUND_2 = "#f1f2f3";
