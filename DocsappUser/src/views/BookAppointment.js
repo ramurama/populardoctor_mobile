@@ -202,8 +202,8 @@ class BookAppointment extends React.Component {
   }
 
   _handleCallNow = () => {
-    const { contact_number } = this.props.userSupport;
-    Linking.openURL(`tel:${contact_number}`);
+    const { contactNumber } = this.props.userSupport;
+    Linking.openURL(`tel:${contactNumber}`);
   };
 
   _handleBookNow = () => {
