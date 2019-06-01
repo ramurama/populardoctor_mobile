@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     // marginTop: 6,
     // marginBottom: 6,
-    elevation: 4,
     alignItems: 'flex-start',
     borderRadius: 10,
     margin: 10,
