@@ -58,6 +58,7 @@ class Drawer extends React.Component {
           doctorPdNumber,
           false
         );
+        this.props.setDoctorPdNumber(doctorPdNumber);
       });
     }
     this.props.setDoctorPdNumber(doctorPdNumber);
@@ -88,7 +89,7 @@ class Drawer extends React.Component {
           <Text
             style={styles.userNameStyle}
             numberOfLines={1}
-            ellipsizeMode="tail"
+            ellipsizeMode='tail'
           >
             {userData.fullName}
           </Text>
@@ -107,9 +108,9 @@ class Drawer extends React.Component {
         {this._renderUserContent()}
         <Content scrollEnabled={false}>
           <DrawerItem
-            title="Home"
-            icon="home"
-            iconType="MaterialCommunityIcons"
+            title='Home'
+            icon='home'
+            iconType='MaterialCommunityIcons'
             pressedItem={this.state.pressedItem}
             onItemPress={() =>
               this.setState({ pressedItem: 'Home' }, () =>
@@ -120,8 +121,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={DR_MY_RATING}
             pressedItem={this.state.pressedItem}
-            icon="chart-line"
-            iconType="MaterialCommunityIcons"
+            icon='chart-line'
+            iconType='MaterialCommunityIcons'
             onItemPress={() =>
               this.setState({ pressedItem: DR_MY_RATING }, () =>
                 this.props.navigation.navigate(VIEW_DR_RATING)
@@ -131,8 +132,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={DR_SUPPORT}
             pressedItem={this.state.pressedItem}
-            icon="support"
-            iconType="FontAwesome"
+            icon='support'
+            iconType='FontAwesome'
             onItemPress={() =>
               this.setState({ pressedItem: DR_SUPPORT }, () =>
                 this.props.navigation.navigate(VIEW_DR_SUPPORT)
@@ -142,8 +143,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={CHANGE_PASSWORD}
             pressedItem={this.state.pressedItem}
-            icon="onepassword"
-            iconType="MaterialCommunityIcons"
+            icon='onepassword'
+            iconType='MaterialCommunityIcons'
             onItemPress={() =>
               this.setState({ pressedItem: CHANGE_PASSWORD }, () =>
                 this.props.navigation.navigate(VIEW_DR_CHANGE_PASSWORD, {
@@ -154,8 +155,8 @@ class Drawer extends React.Component {
           />
           <DrawerItem
             title={LOGOUT}
-            icon="logout"
-            iconType="MaterialCommunityIcons"
+            icon='logout'
+            iconType='MaterialCommunityIcons'
             pressedItem={this.state.pressedItem}
             onItemPress={this._handleLogout}
           />
