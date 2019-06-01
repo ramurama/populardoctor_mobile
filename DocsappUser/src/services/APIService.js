@@ -49,6 +49,7 @@ const URL_DR_VERIFY_BOOKING_OTP = '/doctor/verifyBookingOtp';
 const URL_DR_GET_BOOKING_STATUS = '/doctor/getBookingStatus';
 const URL_DR_GET_CONFIRMED_SCHEDULES = '/doctor/getConfirmedSchedules';
 const URL_DR_BLOCK_SCHEDULE = '/doctor/blockSchedule';
+const URL_DR_GET_PD_NUMBER = '/doctor/getPdNumber';
 
 //frontdesk
 const URL_FD_GET_TODAYS_BOOKINGS = '/frontdesk/getTodaysBookings';
@@ -423,6 +424,17 @@ export default (APIService = {
       )
       .then(res => callback(res.data.status))
       .catch(err => console.log('***** Error cancelling booking.'));
+  },
+
+  getDoctorPdNumber(token, callback) {
+    axios
+      .get(HOST + URL_DR_GET_PD_NUMBER, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log('**** Error fetching doctor pd number. ' + err)
+      );
   }
 });
 
