@@ -7,7 +7,7 @@ import {
 import { isStringsEqual } from '../commons/utils';
 
 // const HOST = "https://populardoctor-deploy.herokuapp.com/api/v1";
-const HOST = 'http://192.168.0.111:5000/api/v1';
+const HOST = 'http://192.168.0.113:5000/api/v1';
 
 //auth
 const URL_CUST_AUTH = '/auth/customer';
@@ -97,6 +97,8 @@ export default (APIService = {
   },
 
   changePassword(passwordData, token, callback) {
+    console.log(HOST + URL_CHANGE_PASSWORD);
+    console.log(passwordData);
     axios
       .post(HOST + URL_CHANGE_PASSWORD, passwordData, {
         headers: buildAuthHeader(token)

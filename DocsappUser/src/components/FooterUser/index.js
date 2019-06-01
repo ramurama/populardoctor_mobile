@@ -72,8 +72,8 @@ class FooterUser extends React.PureComponent {
         onPress={() => this.props.navigation.navigate(VIEW_HOME)}
       >
         <Icon
-          name="home"
-          type="MaterialIcons"
+          name='home'
+          type='MaterialIcons'
           style={[styles.font30, iconStyle]}
         />
       </Button>
@@ -99,8 +99,8 @@ class FooterUser extends React.PureComponent {
         }
       >
         <Icon
-          name="heart"
-          type="AntDesign"
+          name='heart'
+          type='AntDesign'
           style={[iconStyle, styles.font25]}
         />
       </Button>
@@ -108,14 +108,28 @@ class FooterUser extends React.PureComponent {
   }
 
   _renderSearchButton() {
+    const iconStyle =
+      this.props.activeButton === VIEW_SEARCH
+        ? styles.iconActive
+        : styles.iconInActive;
     return (
       <Button
-        style={styles.buttonBgInActive}
-        onPress={() => this.props.navigation.navigate(VIEW_NAV_USER)}
+        style={
+          this.props.activeButton === VIEW_SEARCH
+            ? styles.buttonBgActive
+            : styles.buttonBgInActive
+        }
+        onPress={() =>
+          this.props.navigation.navigate(VIEW_NAV_USER, {
+            showFooter: true
+          })
+        }
       >
-        {this.props.activeButton === VIEW_SEARCH
-          ? activeSearchIcon
-          : inActiveSearchIcon}
+        <Icon
+          name='md-search'
+          type='Ionicons'
+          style={[iconStyle, styles.font30]}
+        />
       </Button>
     );
   }
@@ -139,8 +153,8 @@ class FooterUser extends React.PureComponent {
         }
       >
         <Icon
-          name="calendar"
-          type="Entypo"
+          name='calendar'
+          type='Entypo'
           style={[iconStyle, styles.font25]}
         />
       </Button>
@@ -165,7 +179,7 @@ class FooterUser extends React.PureComponent {
           })
         }
       >
-        <Icon name="user" type="Entypo" style={[iconStyle, styles.font25]} />
+        <Icon name='user' type='Entypo' style={[iconStyle, styles.font25]} />
       </Button>
     );
   }
@@ -201,7 +215,7 @@ const styles = StyleSheet.create({
     borderColor: PRIMARY
   },
   buttonBgActive: {
-    // backgroundColor: BACKGROUND_3,
+    backgroundColor: BACKGROUND_3,
     borderRadius: 0,
     height: '100%',
     borderBottomWidth: 4,
