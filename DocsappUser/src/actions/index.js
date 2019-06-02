@@ -19,7 +19,8 @@ import {
   ACTION_SET_RECEIVED_INITIAL_DATA,
   ACTION_SET_BOOKING_WITHOUT_FEEDBACK,
   ACTION_SET_USER_CURRENT_BOOKINGS,
-  ACTION_SET_USER_PAST_BOOKINGS
+  ACTION_SET_USER_PAST_BOOKINGS,
+  ACTION_SET_DOCTOR_PD_NUMBER
 } from '../constants/actionTypes';
 
 export const setNetworkConnStatus = isNetworkConnected => ({
@@ -125,4 +126,9 @@ export const setUserCurrentBookings = userCurrentBookings => ({
 export const setUserPastBookings = userPastBookings => ({
   type: ACTION_SET_USER_PAST_BOOKINGS,
   userPastBookings
+});
+
+export const setDoctorPdNumber = doctorPdNumber => ({
+  type: ACTION_SET_DOCTOR_PD_NUMBER,
+  doctorPdNumber
 });

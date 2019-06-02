@@ -7,7 +7,7 @@ import {
 import { isStringsEqual } from '../commons/utils';
 
 // const HOST = "https://populardoctor-deploy.herokuapp.com/api/v1";
-const HOST = 'http://192.168.43.57:5000/api/v1';
+const HOST = 'http://192.168.0.113:5000/api/v1';
 
 //auth
 const URL_CUST_AUTH = '/auth/customer';
@@ -49,6 +49,7 @@ const URL_DR_VERIFY_BOOKING_OTP = '/doctor/verifyBookingOtp';
 const URL_DR_GET_BOOKING_STATUS = '/doctor/getBookingStatus';
 const URL_DR_GET_CONFIRMED_SCHEDULES = '/doctor/getConfirmedSchedules';
 const URL_DR_BLOCK_SCHEDULE = '/doctor/blockSchedule';
+const URL_DR_GET_PD_NUMBER = '/doctor/getPdNumber';
 
 //frontdesk
 const URL_FD_GET_TODAYS_BOOKINGS = '/frontdesk/getTodaysBookings';
@@ -97,6 +98,8 @@ export default (APIService = {
   },
 
   changePassword(passwordData, token, callback) {
+    console.log(HOST + URL_CHANGE_PASSWORD);
+    console.log(passwordData);
     axios
       .post(HOST + URL_CHANGE_PASSWORD, passwordData, {
         headers: buildAuthHeader(token)
@@ -421,6 +424,17 @@ export default (APIService = {
       )
       .then(res => callback(res.data.status))
       .catch(err => console.log('***** Error cancelling booking.'));
+  },
+
+  getDoctorPdNumber(token, callback) {
+    axios
+      .get(HOST + URL_DR_GET_PD_NUMBER, {
+        headers: buildAuthHeader(token)
+      })
+      .then(res => callback(res.data))
+      .catch(err =>
+        console.log('**** Error fetching doctor pd number. ' + err)
+      );
   }
 });
 

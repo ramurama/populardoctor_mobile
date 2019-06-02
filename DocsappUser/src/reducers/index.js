@@ -19,6 +19,7 @@ import ReceivedInitialDataReducer from './ReceivedInitialDataReducer';
 import BookingWithoutFeedbackReducer from './BookingWithoutFeedbackReducer';
 import UserCurrentBookingsReducer from './UserCurrentBookingsReducer';
 import UserPastBookingsReducer from './UserPastBookingsReducer';
+import DoctorPdNumberReducer from './DoctorPdNumberReducer';
 
 export default combineReducers({
   isNetworkConnected: NetworkReducer,
@@ -40,5 +41,6 @@ export default combineReducers({
   receivedInitialData: ReceivedInitialDataReducer,
   bookingWithoutFeedback: BookingWithoutFeedbackReducer,
   userCurrentBookings: UserCurrentBookingsReducer,
-  userPastBookings: UserPastBookingsReducer
+  userPastBookings: UserPastBookingsReducer,
+  doctorPdNumber: DoctorPdNumberReducer
 });

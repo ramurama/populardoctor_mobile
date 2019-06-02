@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
-import { Icon } from "native-base";
-import PropTypes from "prop-types";
-import { SECONDARY, WHITE, BLOCK_COLOR } from "../config/colors";
-import { FONT_L, FONT_XXL, FONT_XXXL } from "../config/fontSize";
+import React, { Component } from 'react';
+import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { Icon } from 'native-base';
+import PropTypes from 'prop-types';
+import { SECONDARY, WHITE, BLOCK_COLOR } from '../config/colors';
+import { FONT_L, FONT_XXL, FONT_XXXL } from '../config/fontSize';
 
 const propTypes = {
   hospital: PropTypes.string.isRequired,
@@ -19,24 +19,24 @@ class StatusAvailability extends Component {
           <View style={styles.columnView}>
             <View style={styles.iconTextContainer}>
               <Icon
-                name="hospital"
-                type="FontAwesome5"
+                name='hospital'
+                type='FontAwesome5'
                 style={styles.generalIcon}
               />
               <Text
                 style={styles.contentStyle}
                 numberOfLines={3}
-                ellipsizeMode="tail"
+                ellipsizeMode='tail'
               >
                 {hospital}
               </Text>
             </View>
             <View style={styles.iconTextContainer}>
-              <Icon name="md-time" type="Ionicons" style={styles.generalIcon} />
+              <Icon name='md-time' type='Ionicons' style={styles.generalIcon} />
               <Text
                 style={styles.contentStyle}
                 numberOfLines={2}
-                ellipsizeMode="tail"
+                ellipsizeMode='tail'
               >
                 {time}
               </Text>
@@ -48,8 +48,8 @@ class StatusAvailability extends Component {
               onPress={onBlockPress}
             >
               <Icon
-                name="block"
-                type="MaterialIcons"
+                name='block'
+                type='MaterialIcons'
                 style={styles.blockIcon}
               />
             </TouchableOpacity>
@@ -68,16 +68,18 @@ class StatusAvailability extends Component {
 const styles = StyleSheet.create({
   cardStyle: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingRight: 0,
-    backgroundColor: "white",
-    shadowColor: "grey",
+    backgroundColor: 'white',
+    shadowColor: 'grey',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
-    marginTop: 6,
-    marginBottom: 6,
-    elevation: 4,
-    alignItems: "flex-start"
+    // marginTop: 6,
+    // marginBottom: 6,
+    alignItems: 'flex-start',
+    borderRadius: 10,
+    margin: 10,
+    overflow: 'hidden'
   },
   contentStyle: {
     minHeight: 20,
@@ -85,13 +87,13 @@ const styles = StyleSheet.create({
   },
   buttonLayoutStyle: {
     flex: 1,
-    flexDirection: "column"
+    flexDirection: 'column'
   },
   blockButtonStyle: {
     flex: 1,
     backgroundColor: BLOCK_COLOR,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   blockTextStyle: {
     color: SECONDARY
@@ -101,18 +103,18 @@ const styles = StyleSheet.create({
     color: SECONDARY
   },
   columnView: {
-    flexDirection: "column",
+    flexDirection: 'column',
     flex: 4,
     paddingTop: 12,
     paddingBottom: 12,
     paddingLeft: 8
   },
   row: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   iconTextContainer: {
-    flexDirection: "row",
-    alignItems: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   blockIcon: {
     fontSize: FONT_XXXL,

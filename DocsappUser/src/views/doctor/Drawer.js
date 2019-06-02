@@ -1,51 +1,75 @@
-import React from "react";
-import { View, StyleSheet, Platform, BackHandler } from "react-native";
-import { Container, Content, Text } from "native-base";
-import { PRIMARY, SECONDARY } from "../../config/colors";
+import React from 'react';
+import { View, StyleSheet, Platform, BackHandler } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import { PRIMARY, SECONDARY } from '../../config/colors';
 import {
   VIEW_DR_CHANGE_PASSWORD,
   VIEW_NAV_DR,
   VIEW_DR_RATING,
   VIEW_LOGIN,
   VIEW_DR_SUPPORT
-} from "../../constants/viewNames";
-import DrawerItem from "../../components/DrawerItem";
+} from '../../constants/viewNames';
+import DrawerItem from '../../components/DrawerItem';
 import {
   CHANGE_PASSWORD,
   DR_MY_RATING,
   LOGOUT,
   DR_SUPPORT
-} from "../../constants/strings";
-import { DBService } from "../../services/DBService";
-import { connect } from "react-redux";
-import * as Actions from "../../actions";
-import { FONT_M, FONT_L, FONT_XL, FONT_XXXL } from "../../config/fontSize";
-import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_XBOLD } from "../../config/fontWeight";
-import { isNullOrEmpty } from "../../commons/utils";
-import APIService from "../../services/APIService";
+} from '../../constants/strings';
+import { DBService } from '../../services/DBService';
+import { connect } from 'react-redux';
+import * as Actions from '../../actions';
+import { FONT_M, FONT_L, FONT_XL, FONT_XXXL } from '../../config/fontSize';
+import { FONT_WEIGHT_MEDIUM, FONT_WEIGHT_XBOLD } from '../../config/fontWeight';
+import { isNullOrEmpty } from '../../commons/utils';
+import APIService from '../../services/APIService';
+import { AsyncDataService } from '../../services/AsyncDataService';
+import { KEY_DOCTOR_PD_NUMBER } from '../../constants/AsyncDataKeys';
 
 class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pressedItem: "Home"
+      pressedItem: 'Home'
     };
   }
 
   componentDidMount() {
-    BackHandler.addEventListener("hardwareBackPress", this.handleBackButton);
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     const { userSupport, setUserSupport } = this.props;
     if (isNullOrEmpty(userSupport)) {
       APIService.getSupportDetails(support => setUserSupport(support));
     }
+    this._fetchAndUpdatePdNumber();
+  }
+
+  async _fetchAndUpdatePdNumber() {
+    let doctorPdNumber = await AsyncDataService.getItem(
+      KEY_DOCTOR_PD_NUMBER,
+      false
+    );
+    console.log(doctorPdNumber);
+    if (isNullOrEmpty(doctorPdNumber)) {
+      APIService.getDoctorPdNumber(this.props.token, async res => {
+        console.log(res);
+        doctorPdNumber = res.doctorPdNumber;
+        await AsyncDataService.setItem(
+          KEY_DOCTOR_PD_NUMBER,
+          doctorPdNumber,
+          false
+        );
+        this.props.setDoctorPdNumber(doctorPdNumber);
+      });
+    }
+    this.props.setDoctorPdNumber(doctorPdNumber);
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBackButton);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
   handleBackButton = () => {
-    console.log("Back button is pressed");
+    console.log('Back button is pressed');
     return true;
   };
 
@@ -65,11 +89,14 @@ class Drawer extends React.Component {
           <Text
             style={styles.userNameStyle}
             numberOfLines={1}
-            ellipsizeMode="tail"
+            ellipsizeMode='tail'
           >
             {userData.fullName}
           </Text>
           <Text style={styles.mobileNumTextStyle}>{userData.mobile}</Text>
+          <Text style={styles.mobileNumTextStyle}>
+            {this.props.doctorPdNumber}
+          </Text>
         </View>
       </View>
     );
@@ -81,12 +108,12 @@ class Drawer extends React.Component {
         {this._renderUserContent()}
         <Content scrollEnabled={false}>
           <DrawerItem
-            title="Home"
-            icon="home"
-            iconType="MaterialCommunityIcons"
+            title='Home'
+            icon='home'
+            iconType='MaterialCommunityIcons'
             pressedItem={this.state.pressedItem}
             onItemPress={() =>
-              this.setState({ pressedItem: "Home" }, () =>
+              this.setState({ pressedItem: 'Home' }, () =>
                 this.props.navigation.navigate(VIEW_NAV_DR)
               )
             }
@@ -94,8 +121,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={DR_MY_RATING}
             pressedItem={this.state.pressedItem}
-            icon="chart-line"
-            iconType="MaterialCommunityIcons"
+            icon='chart-line'
+            iconType='MaterialCommunityIcons'
             onItemPress={() =>
               this.setState({ pressedItem: DR_MY_RATING }, () =>
                 this.props.navigation.navigate(VIEW_DR_RATING)
@@ -105,8 +132,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={DR_SUPPORT}
             pressedItem={this.state.pressedItem}
-            icon="support"
-            iconType="FontAwesome"
+            icon='support'
+            iconType='FontAwesome'
             onItemPress={() =>
               this.setState({ pressedItem: DR_SUPPORT }, () =>
                 this.props.navigation.navigate(VIEW_DR_SUPPORT)
@@ -116,8 +143,8 @@ class Drawer extends React.Component {
           <DrawerItem
             title={CHANGE_PASSWORD}
             pressedItem={this.state.pressedItem}
-            icon="onepassword"
-            iconType="MaterialCommunityIcons"
+            icon='onepassword'
+            iconType='MaterialCommunityIcons'
             onItemPress={() =>
               this.setState({ pressedItem: CHANGE_PASSWORD }, () =>
                 this.props.navigation.navigate(VIEW_DR_CHANGE_PASSWORD, {
@@ -128,8 +155,8 @@ class Drawer extends React.Component {
           />
           <DrawerItem
             title={LOGOUT}
-            icon="logout"
-            iconType="MaterialCommunityIcons"
+            icon='logout'
+            iconType='MaterialCommunityIcons'
             pressedItem={this.state.pressedItem}
             onItemPress={this._handleLogout}
           />
@@ -141,7 +168,9 @@ class Drawer extends React.Component {
 
 const mapStateToProps = state => ({
   userData: state.userData,
-  userSupport: state.userSupport
+  userSupport: state.userSupport,
+  token: state.token,
+  doctorPdNumber: state.doctorPdNumber
 });
 
 export default connect(
@@ -171,13 +200,13 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   profileContentStyle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     margin: 15,
     backgroundColor: SECONDARY,
     margin: 0,
-    paddingTop: Platform.OS === "ios" ? 40 : 20,
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
     paddingBottom: 20,
     paddingRight: 5
   },
@@ -198,7 +227,7 @@ const styles = StyleSheet.create({
   },
   userContentTextView: {
     paddingLeft: 15,
-    flexDirection: "column",
-    alignItems: "flex-start"
+    flexDirection: 'column',
+    alignItems: 'flex-start'
   }
 });
