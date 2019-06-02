@@ -1,22 +1,22 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text } from "native-base";
-import Header from "../../components/HeaderDoctor";
-import Footer from "../../components/FooterDoctor";
-import { DR_CURRENT_BOOKINGS } from "../../constants/strings";
-import commonStyles from "../../commons/styles";
+import React from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import Header from '../../components/HeaderDoctor';
+import Footer from '../../components/FooterDoctor';
+import { DR_CURRENT_BOOKINGS } from '../../constants/strings';
+import commonStyles from '../../commons/styles';
 import {
   VIEW_DR_CURRENT_BOOKINGS,
   VIEW_DR_NAV_CURRENT_BOOKINGS,
   VIEW_DR_CURRENT_BOOKING_DETAIL
-} from "../../constants/viewNames";
-import CurrentBookingList from "../../components/CurrentBookingList";
-import Spinner from "react-native-loading-spinner-overlay";
-import { WHITE } from "../../config/colors";
-import { connect } from "react-redux";
-import * as Actions from "../../actions";
-import APIService from "../../services/APIService";
-import { USER_DOCTOR } from "../../constants/userType";
+} from '../../constants/viewNames';
+import CurrentBookingList from '../../components/CurrentBookingList';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { WHITE } from '../../config/colors';
+import { connect } from 'react-redux';
+import * as Actions from '../../actions';
+import APIService from '../../services/APIService';
+import { USER_DOCTOR } from '../../constants/userType';
 
 class CurrentBookings extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class CurrentBookings extends React.Component {
   _renderCurrentBookingListItem(item) {
     return (
       <CurrentBookingList
-        hospitalName={item.hospitalName}
+        hospitalName={item.hospitalName + ' - ' + item.hospitalPdNumber}
         hospitalTime={item.hospitalTime}
         visitorList={item.visitorsList}
         onItemPress={bookingId =>

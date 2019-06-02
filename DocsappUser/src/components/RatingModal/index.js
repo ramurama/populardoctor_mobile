@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import {
   Text,
@@ -71,8 +72,12 @@ class RatingModal extends React.Component {
 
   _renderHeader() {
     const { rating, suggestions } = this.state;
+    let headerStyle = {};
+    if (Platform.OS === 'android') {
+      headerStyle = { backgroundColor: PRIMARY };
+    }
     return (
-      <Header>
+      <Header style={headerStyle}>
         <Left>
           {/* <TouchableOpacity onPress={() => this.props.onClose()}>
             <Icon name="close" type="MaterialIcons" style={styles.closeIcon} />
@@ -173,7 +178,7 @@ class RatingModal extends React.Component {
               })
             }
             multiline={true}
-            placeholder="Please fill your answer..."
+            placeholder='Please fill your answer...'
           />
         </Item>
       </View>
@@ -189,7 +194,7 @@ class RatingModal extends React.Component {
         <Footer style={styles.footerButtonStyle}>
           <View style={styles.footerButtonView}>
             <Text style={styles.footerButtonText}>Submit</Text>
-            <Icon name="send" type="MaterialIcons" style={styles.submitIcon} />
+            <Icon name='send' type='MaterialIcons' style={styles.submitIcon} />
           </View>
         </Footer>
       </TouchableOpacity>
@@ -200,13 +205,13 @@ class RatingModal extends React.Component {
     return (
       <Modal
         visible={this.props.visible}
-        animationType="slide"
+        animationType='slide'
         transparent={false}
       >
         {this._renderHeader()}
         <Content scrollEnabled={false}>
           <KeyboardAvoidingView
-            behavior="padding"
+            behavior='padding'
             enabled
             style={styles.mainView}
           >

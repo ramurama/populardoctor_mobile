@@ -4,7 +4,7 @@ import { Container, Content, Text, Footer } from 'native-base';
 import UserBooking from '../components/UserBooking';
 import commonStyles from '../commons/styles';
 import { VIEW_SEARCH, VIEW_HOME_FAVORITES } from '../constants/viewNames';
-import { SECONDARY, WHITE } from '../config/colors';
+import { SECONDARY, WHITE, PRIMARY } from '../config/colors';
 import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
 import { FONT_L } from '../config/fontSize';
 import { connect } from 'react-redux';
@@ -43,7 +43,7 @@ class BookingHistoryDetail extends React.Component {
   _renderFooterCancelButton() {
     return (
       <TouchableOpacity onPress={this._handleCancelButton}>
-        <Footer style={{}}>
+        <Footer style={{ backgroundColor: PRIMARY }}>
           <View style={styles.cancelButtonView}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </View>
