@@ -1,4 +1,4 @@
-package com.docsappuser;
+package com.populardoctor;
 
 import android.app.Application;
 
