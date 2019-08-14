@@ -829,7 +829,7 @@
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 32884K3637;
+						DevelopmentTeam = 54ZA29ZP72;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -846,6 +846,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1366,7 +1367,7 @@
 				CODE_SIGN_ENTITLEMENTS = DocsappUser/DocsappUser.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 32884K3637;
+				DEVELOPMENT_TEAM = 54ZA29ZP72;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
@@ -1390,7 +1391,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.justalabindia.populardoctordev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.populardoctor.india;
 				PRODUCT_NAME = DocsappUser;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1403,7 +1404,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DocsappUser/DocsappUser.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 32884K3637;
+				DEVELOPMENT_TEAM = 54ZA29ZP72;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
@@ -1427,7 +1428,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.justalabindia.populardoctordev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.populardoctor.india;
 				PRODUCT_NAME = DocsappUser;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

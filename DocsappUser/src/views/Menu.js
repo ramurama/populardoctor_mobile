@@ -1,20 +1,25 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Container, Content, Text } from "native-base";
-import { DBService } from "../services/DBService";
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import { DBService } from '../services/DBService';
 import {
   VIEW_LOGIN,
   VIEW_BOOKING_HISTORY,
   VIEW_CHANGE_PASSWORD,
   VIEW_FAVORITES,
-  VIEW_CUSTOMER_SUPPORT
-} from "../constants/viewNames";
-import MenuCard from "../components/MenuCard";
-import { BACKGROUND_1, ON_PRIMARY, SECONDARY } from "../config/colors";
-import { Avatar } from "react-native-elements";
-import { connect } from "react-redux";
-import { FONT_XL, FONT_XXXL } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
+  VIEW_CUSTOMER_SUPPORT,
+  VIEW_MENU,
+  VIEW_HOME_CHANGE_PASSWORD,
+  VIEW_HOME_CUSTOMER_SUPPORT
+} from '../constants/viewNames';
+import MenuCard from '../components/MenuCard';
+import { BACKGROUND_1, ON_PRIMARY, SECONDARY } from '../config/colors';
+import { Avatar } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { FONT_XL, FONT_XXXL } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
+import FooterUser from '../components/FooterUser';
+import { PROFILE } from '../constants/strings';
 
 export class Menu extends React.Component {
   constructor(props) {
@@ -24,8 +29,8 @@ export class Menu extends React.Component {
 
   _renderUserContent() {
     const { userData } = this.props;
-    const nameArray = userData.fullName.split(" ");
-    let avatarName = "";
+    const nameArray = userData.fullName.split(' ');
+    let avatarName = '';
     nameArray.forEach(str => {
       avatarName += str[0];
     });
@@ -39,27 +44,44 @@ export class Menu extends React.Component {
   }
 
   _renderMenuCards() {
+    const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <View>
-        <MenuCard
-          iconName="calendar"
-          menuTitle="My Bookings"
-          onPress={() => this.props.navigation.navigate(VIEW_BOOKING_HISTORY)}
-        />
+        {!showFooter && (
+          <MenuCard
+            iconName="calendar"
+            menuTitle="My Bookings"
+            onPress={() => this.props.navigation.navigate(VIEW_BOOKING_HISTORY)}
+          />
+        )}
         <MenuCard
           iconName="lock"
           menuTitle="Change Password"
-          onPress={() => this.props.navigation.navigate(VIEW_CHANGE_PASSWORD)}
+          onPress={() => {
+            if (showFooter) {
+              this.props.navigation.navigate(VIEW_HOME_CHANGE_PASSWORD);
+            } else {
+              this.props.navigation.navigate(VIEW_CHANGE_PASSWORD);
+            }
+          }}
         />
-        <MenuCard
-          iconName="heart"
-          menuTitle="Favorites"
-          onPress={() => this.props.navigation.navigate(VIEW_FAVORITES)}
-        />
+        {!showFooter && (
+          <MenuCard
+            iconName="heart"
+            menuTitle="Favorites"
+            onPress={() => this.props.navigation.navigate(VIEW_FAVORITES)}
+          />
+        )}
         <MenuCard
           iconName="support"
           menuTitle="Customer Support"
-          onPress={() => this.props.navigation.navigate(VIEW_CUSTOMER_SUPPORT)}
+          onPress={() => {
+            if (showFooter) {
+              this.props.navigation.navigate(VIEW_HOME_CUSTOMER_SUPPORT);
+            } else {
+              this.props.navigation.navigate(VIEW_CUSTOMER_SUPPORT);
+            }
+          }}
         />
         <MenuCard
           iconName="logout"
@@ -74,12 +96,14 @@ export class Menu extends React.Component {
   }
 
   render() {
+    const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
         <Content padder style={styles.contentStyle}>
           {this._renderUserContent()}
           {this._renderMenuCards()}
         </Content>
+        {showFooter && <FooterUser activeButton={VIEW_MENU} {...this.props} />}
       </Container>
     );
   }
@@ -97,7 +121,7 @@ const styles = StyleSheet.create({
   },
   mobileNumTextStyle: {
     fontSize: FONT_XL,
-    color: "grey",
+    color: 'grey',
     margin: 10,
     marginTop: 5
   },
@@ -107,9 +131,9 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   profileContentStyle: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     margin: 15
   },
   changePasswordButtonText: {
@@ -117,10 +141,10 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT_BOLD
   },
   changePasswordModalView: {
-    width: "90%"
+    width: '90%'
   },
   passwordErrorMsg: {
-    color: "red",
+    color: 'red',
     fontSize: 15,
     paddingTop: 8
   },
@@ -129,7 +153,7 @@ const styles = StyleSheet.create({
     width: 300
   },
   modal: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

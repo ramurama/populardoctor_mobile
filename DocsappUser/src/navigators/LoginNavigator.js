@@ -1,22 +1,24 @@
-import React from "react";
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import Login from "../views/Login";
-import { SECONDARY_DARK, PRIMARY } from "../config/colors";
-import Register from "../views/Register";
-import MobileVerification from "../views/MobileVerification";
-import TermsConditions from "../views/TermsConditions";
-import PrivacyPolicy from "../views/PrivacyPolicy";
+import React from 'react';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import Login from '../views/Login';
+import { SECONDARY_DARK, PRIMARY } from '../config/colors';
+import Register from '../views/Register';
+import MobileVerification from '../views/MobileVerification';
+import TermsConditions from '../views/TermsConditions';
+import PrivacyPolicy from '../views/PrivacyPolicy';
 import {
   REGISTER,
   PRIVACY_POLICY,
   TERMS_CONDITIONS,
-  MOBILE_VERIFICATION
-} from "../constants/strings";
-import { VIEW_LOGIN } from "../constants/viewNames";
-import UserNavigator from "./UserNavigator";
-import DrDrawerNavigator from "./DrDrawerNavigator";
-import FronDeskDrawerNavigator from "./FdDrawerNavigator";
-import commonStyles from "../commons/styles";
+  MOBILE_VERIFICATION,
+  RESET_PASSWORD
+} from '../constants/strings';
+import { VIEW_LOGIN } from '../constants/viewNames';
+import UserHomeNavigator from './UserHomeNavigator';
+import DrDrawerNavigator from './DrDrawerNavigator';
+import FronDeskDrawerNavigator from './FdDrawerNavigator';
+import ResetPassword from '../views/ResetPassword';
+import commonStyles from '../commons/styles';
 
 const LoginNavigator = createStackNavigator(
   {
@@ -33,7 +35,7 @@ const LoginNavigator = createStackNavigator(
         title: REGISTER,
         headerTitleStyle: commonStyles.headerTitleStyle,
         headerBackTitle: null,
-        headerTintColor: "white",
+        headerTintColor: 'white',
         headerStyle: commonStyles.headerDefault
       }
     },
@@ -43,7 +45,7 @@ const LoginNavigator = createStackNavigator(
         title: MOBILE_VERIFICATION,
         headerTitleStyle: commonStyles.headerTitleStyle,
         headerBackTitle: null,
-        headerTintColor: "white",
+        headerTintColor: 'white',
         headerStyle: commonStyles.headerDefault
       }
     },
@@ -65,8 +67,8 @@ const LoginNavigator = createStackNavigator(
         headerStyle: commonStyles.headerDefault
       }
     },
-    userNavigator: {
-      screen: UserNavigator,
+    userHomeNavigator: {
+      screen: UserHomeNavigator,
       navigationOptions: {
         header: null,
         gesturesEnabled: false
@@ -84,6 +86,16 @@ const LoginNavigator = createStackNavigator(
       navigationOptions: {
         gesturesEnabled: false,
         header: null
+      }
+    },
+    resetPassword: {
+      screen: ResetPassword,
+      navigationOptions: {
+        title: RESET_PASSWORD,
+        headerTitleStyle: commonStyles.headerTitleStyle,
+        headerTintColor: PRIMARY,
+        headerStyle: commonStyles.headerDefault,
+        headerLeft: null
       }
     }
   },

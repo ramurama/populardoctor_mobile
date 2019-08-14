@@ -1,39 +1,44 @@
 {
   "project_info": {
-    "project_number": "522861203555",
-    "firebase_url": "https://populardoctor-f4673.firebaseio.com",
-    "project_id": "populardoctor-f4673",
-    "storage_bucket": "populardoctor-f4673.appspot.com"
+    "project_number": "875995233190",
+    "firebase_url": "https://popular-doctor.firebaseio.com",
+    "project_id": "popular-doctor",
+    "storage_bucket": "popular-doctor.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:522861203555:android:5bb003f38f944ca2",
+        "mobilesdk_app_id": "1:875995233190:android:f63f2340d8b17758",
         "android_client_info": {
-          "package_name": "com.docsappuser"
+          "package_name": "com.populardoctor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "522861203555-dksvlsdqjj2vnvg78je1otu7m2f7kpb1.apps.googleusercontent.com",
+          "client_id": "875995233190-jh147v3a7831kid9n9kcl7680kvmfcrb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAyCEvypfhw1cDUQKVewbhMXLVgKtFl0H8"
+          "current_key": "AIzaSyBF5Js2RHJGYZDOZBP2wjw-CCUFcqeow90"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875995233190-jh147v3a7831kid9n9kcl7680kvmfcrb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875995233190-4gvc74glj8pbaa5ennvaqfce7thbsd2j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.populardoctor.india"
+              }
+            }
+          ]
         }
       }
     }

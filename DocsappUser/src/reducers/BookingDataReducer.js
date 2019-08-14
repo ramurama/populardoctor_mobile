@@ -3,7 +3,8 @@ import { ACTION_SET_BOOKING_DATA } from "../constants/actionTypes";
 /**
  * tokenType
  * tokenNumber
- * tokenTyme
+ * tokenDate
+ * tokenTime
  * doctorName,
  * doctorId,
  * specialization,
@@ -12,7 +13,6 @@ import { ACTION_SET_BOOKING_DATA } from "../constants/actionTypes";
  * hospital,
  * startTime,
  * endTime,
- * tokenDate
  */
 export default (state = {}, action) => {
   switch (action.type) {

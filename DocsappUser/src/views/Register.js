@@ -25,7 +25,8 @@ import { DatePicker } from "../components/Datepicker/Datepicker";
 import {
   VIEW_PRIVACY,
   VIEW_TERMS,
-  VIEW_MOBILE_VERIFICATION
+  VIEW_MOBILE_VERIFICATION,
+  VIEW_REGISTER
 } from "../constants/viewNames";
 import Spinner from "react-native-loading-spinner-overlay";
 import StatusBar from "../components/StatusBar";
@@ -109,7 +110,9 @@ class Register extends React.Component {
               } else {
                 setTimeout(
                   () =>
-                    this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION),
+                    this.props.navigation.navigate(VIEW_MOBILE_VERIFICATION, {
+                      sourceScreen: VIEW_REGISTER
+                    }),
                   500
                 );
               }
@@ -148,7 +151,7 @@ class Register extends React.Component {
       <Item style={styles.itemStyle}>
         <Label style={[styles.labelStyle]}>Date of birth</Label>
         <DatePicker
-          date={this.state.dob}
+          date={this.state.dateOfBirth}
           mode="date"
           format="DD-MM-YYYY"
           maxDate={

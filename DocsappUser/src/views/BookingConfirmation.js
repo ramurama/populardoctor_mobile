@@ -1,16 +1,17 @@
-import React from "react";
-import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { Container, Content, Text, Footer } from "native-base";
-import { SECONDARY, PRIMARY, HELPER_TEXT_COLOR, WHITE } from "../config/colors";
-import UserBooking from "../components/UserBooking";
-import { FONT_L } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
-import { connect } from "react-redux";
-import * as Actions from "../actions";
-import { VIEW_PAYMENT } from "../constants/viewNames";
-import Spinner from "react-native-loading-spinner-overlay";
-import APIService from "../services/APIService";
-import { isNullOrEmpty } from "../commons/utils";
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Container, Content, Text, Footer } from 'native-base';
+import { SECONDARY, PRIMARY, HELPER_TEXT_COLOR, WHITE } from '../config/colors';
+import UserBooking from '../components/UserBooking';
+import { FONT_L } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+import { VIEW_PAYMENT, VIEW_HOME_FAV_PAYMENT } from '../constants/viewNames';
+import Spinner from 'react-native-loading-spinner-overlay';
+import APIService from '../services/APIService';
+import { isNullOrEmpty } from '../commons/utils';
+import commonStyles from '../commons/styles';
 
 class BookingConfirmation extends React.Component {
   constructor(props) {
@@ -21,6 +22,9 @@ class BookingConfirmation extends React.Component {
   }
 
   _handleConfirmButton = () => {
+    const screenOpenedFromHome = this.props.navigation.getParam(
+      'screenOpenedFromHome'
+    );
     this.setState({ spinner: true }, () => {
       const {
         doctorId,
@@ -40,10 +44,16 @@ class BookingConfirmation extends React.Component {
         this.setState({ spinner: false }, () => {
           setTimeout(() => {
             if (res.status) {
-              this.props.navigation.navigate(VIEW_PAYMENT);
+              let paymentView = VIEW_PAYMENT;
+              if (screenOpenedFromHome) {
+                paymentView = VIEW_HOME_FAV_PAYMENT;
+              }
+              this.props.navigation.navigate(paymentView, {
+                screenOpenedFromHome
+              });
             } else {
               if (!isNullOrEmpty(res.message)) {
-                Alert.alert("Try Again!", res.message);
+                Alert.alert('Try Again!', res.message);
               }
             }
           }, 100);
@@ -55,9 +65,9 @@ class BookingConfirmation extends React.Component {
   _renderFooterConfirmButton() {
     return (
       <TouchableOpacity onPress={this._handleConfirmButton}>
-        <Footer style={styles.footerStyle}>
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Confirm</Text>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Confirm</Text>
           </View>
         </Footer>
       </TouchableOpacity>
@@ -87,9 +97,10 @@ class BookingConfirmation extends React.Component {
         <Content>
           <UserBooking
             hospitalName={hospital.name}
-            hospitalAddress={hospital.address + " " + hospital.pincode}
+            hospitalAddress={hospital.address}
+            hospitalPincode={hospital.pincode}
             bookingDay={weekday}
-            availableTime={startTime + " - " + endTime}
+            availableTime={startTime + ' - ' + endTime}
             doctorName={doctorName}
             specialization={specialization}
             tokenNumber={tokenNumber}
@@ -97,6 +108,7 @@ class BookingConfirmation extends React.Component {
             enableQR={false}
             tokenType={tokenType}
             bookingId={null}
+            showBookingId={false}
           />
           {this._renderSpinner()}
         </Content>
@@ -116,19 +128,4 @@ export default connect(
   Actions
 )(BookingConfirmation);
 
-const styles = StyleSheet.create({
-  footerStyle: {
-    backgroundColor: SECONDARY
-  },
-  bookView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  bookText: {
-    fontSize: FONT_L,
-    fontWeight: FONT_WEIGHT_BOLD,
-    padding: 10,
-    color: PRIMARY
-  }
-});
+const styles = StyleSheet.create({});

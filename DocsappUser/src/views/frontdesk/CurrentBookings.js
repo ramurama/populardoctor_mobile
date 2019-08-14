@@ -7,67 +7,33 @@ import { DR_CURRENT_BOOKINGS } from "../../constants/strings";
 import commonStyles from "../../commons/styles";
 import { VIEW_FD_CURRENT_BOOKING_DETAIL } from "../../constants/viewNames";
 import CurrentBookingList from "../../components/CurrentBookingList";
-
-const tempData = [
-  {
-    hospitalName: "ABC Hospital",
-    hospitalTime: "08:00 AM to 12:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  },
-  {
-    hospitalName: "EFG Hospital",
-    hospitalTime: "02:00 PM to 06:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  },
-  {
-    hospitalName: "XYZ Hospital",
-    hospitalTime: "07:00 PM to 10:00 PM",
-    visitorsList: [
-      {
-        name: "Santhoshsivan",
-        number: "8056677845",
-        tokenNumber: "6",
-        bookingID: "1"
-      },
-      {
-        name: "Logu",
-        number: "8056677845",
-        tokenNumber: "7",
-        bookingID: "2"
-      }
-    ]
-  }
-];
+import Spinner from "react-native-loading-spinner-overlay";
+import { WHITE } from "../../config/colors";
+import { connect } from "react-redux";
+import * as Actions from "../../actions";
+import APIService from "../../services/APIService";
+import { USER_FRONT_DESK } from "../../constants/userType";
 
 class CurrentBookings extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      spinner: false
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ spinner: true }, () => {
+      APIService.getTodaysBookings(
+        this.props.token,
+        USER_FRONT_DESK,
+        bookings => {
+          this.setState({ spinner: false }, () => {
+            this.props.setCurrentBookings(bookings);
+          });
+        }
+      );
+    });
   }
 
   _renderCurrentBookingListItem(item) {
@@ -76,8 +42,11 @@ class CurrentBookings extends React.Component {
         hospitalName={item.hospitalName}
         hospitalTime={item.hospitalTime}
         visitorList={item.visitorsList}
-        onItemPress={() =>
-          this.props.navigation.navigate(VIEW_FD_CURRENT_BOOKING_DETAIL)
+        onItemPress={bookingId =>
+          this.props.navigation.navigate(VIEW_FD_CURRENT_BOOKING_DETAIL, {
+            bookingDetails: item,
+            bookingId
+          })
         }
       />
     );
@@ -86,9 +55,17 @@ class CurrentBookings extends React.Component {
   _renderCurrentBookingList() {
     return (
       <FlatList
-        data={tempData}
+        data={this.props.currentBookings}
         renderItem={({ item }) => this._renderCurrentBookingListItem(item)}
+        keyExtractor={(item, index) => item.hospitalTime}
+        extraData={this.props}
       />
+    );
+  }
+
+  _renderSpinner() {
+    return (
+      <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
     );
   }
 
@@ -98,6 +75,7 @@ class CurrentBookings extends React.Component {
         <Header title={DR_CURRENT_BOOKINGS} {...this.props} />
         <Content style={commonStyles.contentBg}>
           {this._renderCurrentBookingList()}
+          {this._renderSpinner()}
         </Content>
         <Footer {...this.props} activeButton={DR_CURRENT_BOOKINGS} />
       </Container>
@@ -105,6 +83,14 @@ class CurrentBookings extends React.Component {
   }
 }
 
-export default CurrentBookings;
+const mapStateToProps = state => ({
+  token: state.token,
+  currentBookings: state.currentBookings
+});
+
+export default connect(
+  mapStateToProps,
+  Actions
+)(CurrentBookings);
 
 const styles = StyleSheet.create({});

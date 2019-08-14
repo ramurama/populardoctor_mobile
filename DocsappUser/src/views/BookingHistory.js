@@ -1,117 +1,175 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text } from "native-base";
-import commonStyles from "../commons/styles";
-import HistoryCard from "../components/UserHistoryCard";
-import { BACKGROUND_1, HELPER_TEXT_COLOR } from "../config/colors";
-import { VIEW_BOOKING_HISTORY_DETAIL } from "../constants/viewNames";
-import { FONT_L } from "../config/fontSize";
-
-const tempCurrentBookingsData = [
-  {
-    doctorName: "Ramu Ramasamy",
-    specialization: "Neurologist",
-    otp: "5597",
-    otpVisible: true,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "PSG Multi Speciality Hospital",
-    hospitalAddress: "Karapakkam, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "11:00 AM to 12:00 PM",
-    tokenNumber: "13"
-  },
-  {
-    doctorName: "Santhoshsivan Balanagarajan",
-    specialization: "Orthologist",
-    otp: "4283",
-    otpVisible: true,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "Apollo Hospital",
-    hospitalAddress: "Kandhanchavadi, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "07:00 PM to 08:00 PM",
-    tokenNumber: "4"
-  }
-];
-
-const tempPreviousBookingsData = [
-  {
-    doctorName: "Ramu Ramasamy",
-    specialization: "Neurologist",
-    otp: "5597",
-    otpVisible: false,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "PSG Multi Speciality Hospital",
-    hospitalAddress: "Karapakkam, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "11:00 AM to 12:00 PM",
-    tokenNumber: "24"
-  },
-  {
-    doctorName: "Santhoshsivan Balanagarajan",
-    specialization: "Orthologist",
-    otp: "4283",
-    otpVisible: false,
-    imageURL:
-      "https://pbs.twimg.com/profile_images/979315748693659648/6SwLXRt__400x400.jpg",
-    hospitalName: "Apollo Hospital",
-    hospitalAddress: "Kandhanchavadi, OMR, Chennai - 97.",
-    bookingDate: "Jan 2, 2019",
-    bookingTime: "07:00 PM to 08:00 PM",
-    tokenNumber: "7"
-  }
-];
+import React from 'react';
+import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import HistoryCard from '../components/UserHistoryCard';
+import { BACKGROUND_1, HELPER_TEXT_COLOR, WHITE } from '../config/colors';
+import {
+  VIEW_BOOKING_HISTORY_DETAIL,
+  VIEW_BOOKING_HISTORY,
+  VIEW_HOME_BOOKING_HISTORY_DETAIL
+} from '../constants/viewNames';
+import { FONT_L } from '../config/fontSize';
+import Spinner from 'react-native-loading-spinner-overlay';
+import APIService from '../services/APIService';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+import { getDateString, isNullOrEmpty } from '../commons/utils';
+import FooterUser from '../components/FooterUser';
+import { MY_BOOKINGS } from '../constants/strings';
 
 class BookingHistory extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      spinner: false,
+      refreshing: false
+    };
+  }
+
+  componentDidMount() {
+    const { userCurrentBookings, userPastBookings } = this.props;
+    if (isNullOrEmpty(userCurrentBookings) && isNullOrEmpty(userPastBookings)) {
+      this._fetchBookingData();
+    }
+  }
+
+  _fetchBookingData() {
+    const { setUserCurrentBookings, setUserPastBookings } = this.props;
+    this.setState({ spinner: true }, () => {
+      APIService.getBookingHistory(this.props.token, data => {
+        const { currentBookings, pastBookings } = data;
+        this.setState({ spinner: false, refreshing: false }, () => {
+          setUserCurrentBookings(currentBookings);
+          setUserPastBookings(pastBookings);
+        });
+      });
+    });
+  }
+
   _renderCurrentBookingsListItem(item) {
+    const showFooter = this.props.navigation.getParam('showFooter');
+    const {
+      bookingId,
+      tokenDate,
+      token,
+      status,
+      scheduleDetails,
+      hospitalDetails,
+      doctorDetails,
+      startTime,
+      endTime,
+      bookingOtp
+    } = item;
+    let historyDetailData = {
+      bookingId,
+      tokenDate: getDateString(new Date(tokenDate)),
+      hospital: { ...hospitalDetails },
+      startTime,
+      endTime,
+      doctorName: doctorDetails.fullName,
+      specialization: doctorDetails.specialization,
+      tokenNumber: token.number,
+      tokenTime: token.time,
+      tokenType: token.type,
+      enableQR: true,
+      showDone: false,
+      showCancel: true
+    };
     return (
       <HistoryCard
-        doctorName={item.doctorName}
-        specialization={item.specialization}
-        otp={item.otp}
-        otpVisible={item.otpVisible}
-        imageURL={item.imageURL}
-        hospitalName={item.hospitalName}
-        hospitalAddress={item.hospitalAddress}
-        bookingDate={item.bookingDate}
-        bookingTime={item.bookingTime}
-        tokenNumber={item.tokenNumber}
+        doctorName={doctorDetails.fullName}
+        specialization={doctorDetails.specialization}
+        otp={bookingOtp.otp}
+        otpVisible={true}
+        imageURL={doctorDetails.profileImage}
+        hospitalName={hospitalDetails.name}
+        hospitalAddress={
+          hospitalDetails.address + ' ' + hospitalDetails.pincode
+        }
+        bookingDate={getDateString(new Date(tokenDate))}
+        bookingTime={token.time}
+        tokenNumber={token.number}
+        tokenType={token.type}
         isCurrent={true}
-        onPress={this._handleHistoryCardPress}
+        onPress={() => {
+          this._navigateToDetail(showFooter, historyDetailData);
+        }}
       />
     );
   }
 
-  _handleHistoryCardPress = () => {
-    this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL);
-  };
-
   _renderPreviousBookingsListItem(item) {
+    const showFooter = this.props.navigation.getParam('showFooter');
+    const {
+      bookingId,
+      tokenDate,
+      token,
+      status,
+      scheduleDetails,
+      hospitalDetails,
+      doctorDetails,
+      startTime,
+      endTime,
+      bookingOtp
+    } = item;
+    let historyDetailData = {
+      bookingId,
+      tokenDate: getDateString(new Date(tokenDate)),
+      hospital: { ...hospitalDetails },
+      startTime,
+      endTime,
+      doctorName: doctorDetails.fullName,
+      specialization: doctorDetails.specialization,
+      tokenNumber: token.number,
+      tokenTime: token.time,
+      tokenType: token.type,
+      enableQR: false,
+      showDone: false,
+      showCancel: false
+    };
+    const { streetName, building } = JSON.parse(hospitalDetails.address);
     return (
       <HistoryCard
-        doctorName={item.doctorName}
-        specialization={item.specialization}
-        otp={item.otp}
-        otpVisible={item.otpVisible}
-        imageURL={item.imageURL}
-        hospitalName={item.hospitalName}
-        hospitalAddress={item.hospitalAddress}
-        bookingDate={item.bookingDate}
-        bookingTime={item.bookingTime}
-        tokenNumber={item.tokenNumber}
+        doctorName={doctorDetails.fullName}
+        specialization={doctorDetails.specialization}
+        otpVisible={false}
+        imageURL={doctorDetails.profileImage}
+        hospitalName={hospitalDetails.name}
+        hospitalAddress={`${building}, ${streetName} ${
+          hospitalDetails.pincode
+        }`}
+        bookingDate={getDateString(new Date(tokenDate))}
+        bookingTime={token.time}
+        tokenNumber={token.number}
+        tokenType={token.type}
         isCurrent={false}
-        onPress={this._handleHistoryCardPress}
+        status={status}
+        onPress={() => {
+          this._navigateToDetail(showFooter, historyDetailData);
+        }}
       />
     );
+  }
+
+  _navigateToDetail(showFooter, historyDetailData) {
+    //if screen opened from home footer
+    if (showFooter) {
+      this.props.navigation.navigate(VIEW_HOME_BOOKING_HISTORY_DETAIL, {
+        ...historyDetailData
+      });
+    } else {
+      this.props.navigation.navigate(VIEW_BOOKING_HISTORY_DETAIL, {
+        ...historyDetailData
+      });
+    }
   }
 
   _renderCurrentBookingsList() {
     return (
       <FlatList
-        data={tempCurrentBookingsData}
+        data={this.props.userCurrentBookings}
+        extraData={this.props}
+        keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderCurrentBookingsListItem(item)}
       />
     );
@@ -120,7 +178,9 @@ class BookingHistory extends React.Component {
   _renderPreviousBookingsList() {
     return (
       <FlatList
-        data={tempPreviousBookingsData}
+        data={this.props.userPastBookings}
+        extraData={this.props}
+        keyExtractor={(item, index) => item.bookingId}
         renderItem={({ item }) => this._renderPreviousBookingsListItem(item)}
       />
     );
@@ -152,19 +212,52 @@ class BookingHistory extends React.Component {
     );
   }
 
+  _renderSpinner() {
+    return (
+      <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
+    );
+  }
+
+  _onRefresh = () => {
+    this.setState({ refreshing: true }, () => this._fetchBookingData());
+  };
+
   render() {
+    const showFooter = this.props.navigation.getParam('showFooter');
     return (
       <Container>
-        <Content padder style={styles.contentStyle}>
+        <Content
+          padder
+          style={styles.contentStyle}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
           {this._renderCurrentBookingsView()}
           {this._renderPreviousBookingsView()}
+          {this._renderSpinner()}
         </Content>
+        {showFooter && (
+          <FooterUser activeButton={VIEW_BOOKING_HISTORY} {...this.props} />
+        )}
       </Container>
     );
   }
 }
 
-export default BookingHistory;
+const mapStateToProps = state => ({
+  token: state.token,
+  userCurrentBookings: state.userCurrentBookings,
+  userPastBookings: state.userPastBookings
+});
+
+export default connect(
+  mapStateToProps,
+  Actions
+)(BookingHistory);
 
 const styles = StyleSheet.create({
   contentStyle: {
@@ -172,14 +265,14 @@ const styles = StyleSheet.create({
   },
   bookingsTextViewStyle: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20
   },
   bookingTextStyle: {
     fontSize: FONT_L,
-    fontWeight: "100",
+    fontWeight: '100',
     color: HELPER_TEXT_COLOR,
     margin: 5,
     flex: 1
@@ -190,6 +283,6 @@ const styles = StyleSheet.create({
     borderBottomColor: HELPER_TEXT_COLOR
   },
   textInnerView: {
-    justifyContent: "center"
+    justifyContent: 'center'
   }
 });

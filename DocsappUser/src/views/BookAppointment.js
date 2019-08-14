@@ -1,50 +1,71 @@
-import { Container, Content, Footer, Icon, Text } from "native-base";
-import React from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
-import { isStringsEqual } from "../commons/utils";
-import TokenTimePanel from "../components/TokenTimePanel";
-import TouchableToken from "../components/TouchableToken";
+import { Container, Content, Footer, Icon, Text } from 'native-base';
+import React from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Linking
+} from 'react-native';
+import { isStringsEqual } from '../commons/utils';
+import TokenTimePanel from '../components/TokenTimePanel';
+import TouchableToken from '../components/TouchableToken';
 import {
   HELPER_TEXT_COLOR,
   PRIMARY,
   SECONDARY,
   SHADOW_COLOR,
   WHITE
-} from "../config/colors";
-import { FONT_L, FONT_M, FONT_S, FONT_XL } from "../config/fontSize";
+} from '../config/colors';
+import { FONT_L, FONT_M, FONT_S, FONT_XL } from '../config/fontSize';
 import {
   FONT_WEIGHT_BOLD,
   FONT_WEIGHT_MEDIUM,
   FONT_WEIGHT_THIN
-} from "../config/fontWeight";
-import { VIEW_BOOKING_CONFIRMATION } from "../constants/viewNames";
-import Spinner from "react-native-loading-spinner-overlay";
-import APIService from "../services/APIService";
-import { connect } from "react-redux";
-import * as Actions from "../actions";
-import { TOKEN_OPEN } from "../constants/tokenStatus";
+} from '../config/fontWeight';
+import {
+  VIEW_BOOKING_CONFIRMATION,
+  VIEW_HOME_FAV_BOOKING_CONFIRMATION
+} from '../constants/viewNames';
+import Spinner from 'react-native-loading-spinner-overlay';
+import APIService from '../services/APIService';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+import { TOKEN_OPEN } from '../constants/tokenStatus';
+import commonStyles from '../commons/styles';
+import { TOKEN_PREMIUM } from '../constants/tokenTypes';
 
 class BookAppointment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       spinner: false,
-      selectedTokenNumber: "",
-      selectedTokenType: "",
-      selectedTokenTime: "",
+      selectedTokenNumber: '',
+      selectedTokenType: '',
+      selectedTokenTime: '',
       tokens: []
     };
   }
 
   componentDidMount() {
-    const isBookingOpen = this.props.navigation.getParam("isBookingOpen");
+    const isBookingOpen = this.props.navigation.getParam('isBookingOpen');
     if (isBookingOpen) {
       this.setState({ spinner: true }, () => {
         const { token, bookingData } = this.props;
         const { doctorId, scheduleId } = bookingData;
         APIService.getTokens(token, doctorId, scheduleId, data => {
+          //sort tokens based on token number
           data.tokens.sort((a, b) => a.number - b.number);
-          this.setState({ tokens: data.tokens, spinner: false });
+          //filter premium tokens if user is not premium
+          let tokens = data.tokens;
+          if (!this.props.isPremiumUser) {
+            tokens = tokens.filter(token => {
+              if (!isStringsEqual(token.type, TOKEN_PREMIUM)) {
+                return token;
+              }
+            });
+          }
+          this.setState({ tokens, spinner: false });
         });
       });
     }
@@ -52,6 +73,7 @@ class BookAppointment extends React.Component {
 
   _renderBookingContentContainer() {
     const { hospital, startTime, endTime } = this.props.bookingData;
+    const { streetName, building } = JSON.parse(hospital.address);
     return (
       <View style={styles.bookingContent}>
         <View style={styles.infoContainer}>
@@ -67,7 +89,7 @@ class BookAppointment extends React.Component {
         <View style={styles.infoContainer}>
           <Icon style={styles.iconStyle} name="schedule" type="MaterialIcons" />
           <Text style={styles.timeStyle} numberOfLines={1} ellipsizeMode="tail">
-            {startTime + " - " + endTime}
+            {startTime + ' - ' + endTime}
           </Text>
         </View>
         <View style={styles.infoContainer}>
@@ -77,7 +99,7 @@ class BookAppointment extends React.Component {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {hospital.address + " " + hospital.pincode}
+            {`${building}, ${streetName} ${hospital.pincode}`}
           </Text>
         </View>
       </View>
@@ -125,7 +147,7 @@ class BookAppointment extends React.Component {
         data={this.state.tokens}
         renderItem={({ item }) => this._renderTokenListItem(item)}
         numColumns={3}
-        style={{ height: "100%" }}
+        style={{ height: '100%' }}
         keyExtractor={(item, index) => item.number}
       />
     );
@@ -150,18 +172,18 @@ class BookAppointment extends React.Component {
   _renderBookNowButton() {
     return (
       <TouchableOpacity
-        disabled={this.state.selectedTokenNumber === ""}
+        disabled={this.state.selectedTokenNumber === ''}
         onPress={this._handleBookNow}
       >
         <Footer
           style={
-            this.state.selectedTokenNumber === ""
+            this.state.selectedTokenNumber === ''
               ? styles.footerDisabledStyle
-              : styles.footerEnabledStyle
+              : commonStyles.footerButtonStyle
           }
         >
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Book Now</Text>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Book Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>
@@ -171,16 +193,24 @@ class BookAppointment extends React.Component {
   _renderCallNowButton() {
     return (
       <TouchableOpacity onPress={this._handleCallNow}>
-        <Footer style={styles.footerEnabledStyle}>
-          <View style={styles.bookView}>
-            <Text style={styles.bookText}>Call Now</Text>
+        <Footer style={commonStyles.footerButtonStyle}>
+          <View style={commonStyles.footerButtonView}>
+            <Text style={commonStyles.footerButtonText}>Call Now</Text>
           </View>
         </Footer>
       </TouchableOpacity>
     );
   }
 
+  _handleCallNow = () => {
+    const { contactNumber } = this.props.userSupport;
+    Linking.openURL(`tel:${contactNumber}`);
+  };
+
   _handleBookNow = () => {
+    const screenOpenedFromHome = this.props.navigation.getParam(
+      'screenOpenedFromHome'
+    );
     const {
       selectedTokenType,
       selectedTokenNumber,
@@ -192,14 +222,18 @@ class BookAppointment extends React.Component {
       tokenNumber: selectedTokenNumber,
       tokenTime: selectedTokenTime
     });
-    return this.props.navigation.navigate(VIEW_BOOKING_CONFIRMATION);
+    let bookingConfirmationView = VIEW_BOOKING_CONFIRMATION;
+    if (screenOpenedFromHome) {
+      bookingConfirmationView = VIEW_HOME_FAV_BOOKING_CONFIRMATION;
+    }
+    return this.props.navigation.navigate(bookingConfirmationView, {
+      screenOpenedFromHome
+    });
   };
-
-  __handleCallNow = () => {};
 
   _renderTokenTimePanel() {
     return (
-      !isStringsEqual(this.state.selectedTokenNumber, "") && (
+      !isStringsEqual(this.state.selectedTokenNumber, '') && (
         <TokenTimePanel timeRange={this.state.selectedTokenTime} />
       )
     );
@@ -212,7 +246,7 @@ class BookAppointment extends React.Component {
   }
 
   render() {
-    let isBookingOpen = this.props.navigation.getParam("isBookingOpen");
+    let isBookingOpen = this.props.navigation.getParam('isBookingOpen');
     // isBookingOpen = true;
     return (
       <Container>
@@ -233,7 +267,9 @@ class BookAppointment extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  bookingData: state.bookingData
+  bookingData: state.bookingData,
+  userSupport: state.userSupport,
+  isPremiumUser: state.isPremiumUser
 });
 
 export default connect(
@@ -251,40 +287,29 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     borderBottomWidth: 3,
-    borderBottomColor: "lightgrey"
+    borderBottomColor: 'lightgrey'
   },
   iconStyle: {
     fontSize: FONT_XL,
     color: SECONDARY
   },
   infoContainer: {
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  bookView: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   headContainerStyle: {
     // flex: 1,
-    alignItems: "center",
-    flexDirection: "row"
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   tokenHeader: {
     flex: 2,
     color: SECONDARY,
     fontSize: FONT_M,
     fontWeight: FONT_WEIGHT_THIN,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center"
-  },
-  bookText: {
-    fontSize: FONT_L,
-    fontWeight: FONT_WEIGHT_BOLD,
-    padding: 10,
-    color: PRIMARY
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
   },
   bookingContent: {
     padding: 12
@@ -308,10 +333,10 @@ const styles = StyleSheet.create({
   },
   tokenContainer: {
     padding: 8,
-    alignItems: "center"
+    alignItems: 'center'
   },
   notOpenedTextStyle: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: FONT_M,
     fontWeight: FONT_WEIGHT_MEDIUM,
     color: HELPER_TEXT_COLOR

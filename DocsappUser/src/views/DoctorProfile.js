@@ -1,46 +1,70 @@
-import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Container, Content, Text, Icon } from "native-base";
-import { BACKGROUND_1, SECONDARY, PRIMARY, WHITE } from "../config/colors";
-import Calendar from "../components/CalendarSlot";
-import DoctorProfileCard from "../components/DoctorProfileCard";
-import ScheduleCard from "../components/ScheduleCard";
+import React from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Container, Content, Text, Icon } from 'native-base';
+import { BACKGROUND_1, SECONDARY, PRIMARY, WHITE } from '../config/colors';
+import Calendar from '../components/CalendarSlot';
+import DoctorProfileCard from '../components/DoctorProfileCard';
+import ScheduleCard from '../components/ScheduleCard';
 import {
   VIEW_BOOK_APPOINTMENT,
-  VIEW_DOCTOR_DESCRIPTION
-} from "../constants/viewNames";
-import Moment from "moment";
-import { FONT_M, FONT_S } from "../config/fontSize";
-import Spinner from "react-native-loading-spinner-overlay";
-import APIService from "../services/APIService";
-import { connect } from "react-redux";
-import * as Actions from "../actions";
-import { isNullOrEmpty, isStringsEqual, getDateString } from "../commons/utils";
-import Toast from "react-native-simple-toast";
+  VIEW_DOCTOR_DESCRIPTION,
+  VIEW_HOME_FAV_DR_DESCRIPTION,
+  VIEW_HOME_FAV_BOOK_APPOINTMENT
+} from '../constants/viewNames';
+import Moment from 'moment';
+import { FONT_M, FONT_S } from '../config/fontSize';
+import Spinner from 'react-native-loading-spinner-overlay';
+import APIService from '../services/APIService';
+import { connect } from 'react-redux';
+import * as Actions from '../actions';
+import {
+  isNullOrEmpty,
+  isStringsEqual,
+  getDateString,
+  removeDuplicates
+} from '../commons/utils';
+import Toast from 'react-native-simple-toast';
 
-const DATE_FORMAT = "MMM DD YYYY";
+const DATE_FORMAT = 'MMM DD YYYY';
 
 class DoctorProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       spinner: false,
-      selectedDateStr: "",
-      selectedDay: "",
+      selectedDateStr: '',
+      selectedDay: '',
       doctorDetails: {},
       schedules: [],
+      unmatchingWeekdays: [],
       availabilityStatus: []
     };
   }
 
   componentDidMount() {
+    const { location } = this.props;
     this.setState({ spinner: true }, () => {
       const date = this._computeTodayDate();
       //fetch all schedules for the seletect doctor
-      const userId = this.props.navigation.getParam("userId");
+      const userId = this.props.navigation.getParam('userId');
       APIService.getSchedules(this.props.token, userId, drSchedules => {
         console.log(drSchedules);
         const { schedules, doctorDetails, availabilityStatus } = drSchedules;
+
+        //find schedules that dont match with the location
+        let unmatchingSchedules = schedules.filter(schedule => {
+          if (!isStringsEqual(location, schedule.hospital.location)) {
+            return schedule;
+          }
+        });
+        //remove multiple schedules for the same weekday
+        unmatchingSchedules = removeDuplicates(unmatchingSchedules, 'weekday');
+
+        //form an array with only unmatching weekdays and set to state
+        const unmatchingWeekdays = unmatchingSchedules.map(schedule => {
+          return schedule.weekday;
+        });
+
         this.setState({
           schedules,
           doctorDetails,
@@ -48,6 +72,7 @@ class DoctorProfile extends React.Component {
           selectedDateStr: date.dateStr,
           selectedDay: date.day,
           selectedDateString: date.normalDateStr,
+          unmatchingWeekdays,
           spinner: false
         });
       });
@@ -57,11 +82,11 @@ class DoctorProfile extends React.Component {
   _computeTodayDate() {
     let todayDate = new Date();
     let today = new Moment(todayDate, DATE_FORMAT).toDate();
-    let dateStringArr = today.toDateString().split(" ");
+    let dateStringArr = today.toDateString().split(' ');
     const day = dateStringArr[0];
     const month = dateStringArr[1];
     const date = dateStringArr[2];
-    const dateStr = day + " " + date + ", " + month;
+    const dateStr = day + ' ' + date + ', ' + month;
     //this normalDate will be updated to redux state as tokenDate
     let normalDateStr = getDateString(todayDate);
     return { dateStr, day, normalDateStr };
@@ -70,7 +95,7 @@ class DoctorProfile extends React.Component {
   _handleCalendarSelect = selectedDate => {
     const { date, dateString } = selectedDate;
     // alert(JSON.stringify(selectedDate));
-    const selectedDateStr = date.day + " " + date.date + ", " + date.month;
+    const selectedDateStr = date.day + ' ' + date.date + ', ' + date.month;
     this.setState({
       selectedDateStr,
       selectedDay: date.day,
@@ -79,17 +104,24 @@ class DoctorProfile extends React.Component {
   };
 
   _handleProfileIconPress = () => {
-    this.props.navigation.navigate(VIEW_DOCTOR_DESCRIPTION, {
-      // doctorId: this.props.navigation.getParam("doctorId")
+    const screenOpenedFromHome = this.props.navigation.getParam(
+      'screenOpenedFromHome'
+    );
+    let drDescriptionView = VIEW_DOCTOR_DESCRIPTION;
+    if (screenOpenedFromHome) {
+      drDescriptionView = VIEW_HOME_FAV_DR_DESCRIPTION;
+    }
+    this.props.navigation.navigate(drDescriptionView, {
+      profileContent: this.state.doctorDetails.profileContent
     });
   };
 
   _renderDoctorProfileCard() {
     const { specialization, yearsOfExperience } = this.state.doctorDetails;
     const { navigation } = this.props;
-    const doctorName = navigation.getParam("doctorName");
-    const profileImage = navigation.getParam("profileImage");
-    const isFavorite = navigation.getParam("isFavorite");
+    const doctorName = navigation.getParam('doctorName');
+    const profileImage = navigation.getParam('profileImage');
+    const isFavorite = navigation.getParam('isFavorite');
     return (
       <DoctorProfileCard
         imageURL={profileImage}
@@ -105,15 +137,15 @@ class DoctorProfile extends React.Component {
 
   _handleFavoriteIconPress = isFavorite => {
     const { token } = this.props;
-    const userId = this.props.navigation.getParam("userId");
+    const userId = this.props.navigation.getParam('userId');
     if (isFavorite) {
       //add to favorites
       APIService.addFavorite(token, userId, (status, favorites) => {
         if (status) {
           this.props.setFavorites(favorites);
-          Toast.show("Added to favorites", Toast.SHORT);
+          Toast.show('Added to favorites', Toast.SHORT);
         } else {
-          Toast.show("Error adding to favorites", Toast.SHORT);
+          Toast.show('Error adding to favorites', Toast.SHORT);
         }
       });
     } else {
@@ -121,15 +153,18 @@ class DoctorProfile extends React.Component {
       APIService.removeFavorite(token, userId, (status, favorites) => {
         if (status) {
           this.props.setFavorites(favorites);
-          Toast.show("Removed from favorites", Toast.SHORT);
+          Toast.show('Removed from favorites', Toast.SHORT);
         } else {
-          Toast.show("Error removing from favorites", Toast.SHORT);
+          Toast.show('Error removing from favorites', Toast.SHORT);
         }
       });
     }
   };
 
   _renderScheduleListItem(item) {
+    const screenOpenedFromHome = this.props.navigation.getParam(
+      'screenOpenedFromHome'
+    );
     const { hospital, startTime, endTime, weekday, scheduleId } = item;
     const { availabilityStatus, selectedDateStr, doctorDetails } = this.state;
     const isBookingOpen = availabilityStatus.some(
@@ -141,8 +176,9 @@ class DoctorProfile extends React.Component {
       <ScheduleCard
         isAvailable={isBookingOpen}
         hospitalName={hospital.name}
-        hospitalAddress={hospital.address + " " + hospital.pincode}
-        hospitalTime={startTime + " - " + endTime}
+        hospitalAddress={hospital.address}
+        hospitalPinCode={hospital.pincode}
+        hospitalTime={startTime + ' - ' + endTime}
         onPress={() => {
           this.props.setBookingData({
             doctorId: doctorDetails._id,
@@ -151,13 +187,19 @@ class DoctorProfile extends React.Component {
             hospital,
             startTime,
             endTime,
-            doctorName: this.props.navigation.getParam("doctorName"),
+            doctorName: this.props.navigation.getParam('doctorName'),
             specialization: this.state.doctorDetails.specialization,
             tokenDate: this.state.selectedDateString
           });
-          this.props.navigation.navigate(VIEW_BOOK_APPOINTMENT, {
+
+          let bookAppointmentView = VIEW_BOOK_APPOINTMENT;
+          if (screenOpenedFromHome) {
+            bookAppointmentView = VIEW_HOME_FAV_BOOK_APPOINTMENT;
+          }
+          this.props.navigation.navigate(bookAppointmentView, {
             title: selectedDateStr,
-            isBookingOpen
+            isBookingOpen,
+            screenOpenedFromHome
           });
         }}
       />
@@ -200,7 +242,10 @@ class DoctorProfile extends React.Component {
         <View>{this._renderDoctorProfileCard()}</View>
         <View style={styles.scheduleView}>
           <Text style={styles.textStyle}>Week Schedule</Text>
-          <Calendar onSelect={this._handleCalendarSelect} />
+          <Calendar
+            unmatchingDays={this.state.unmatchingWeekdays}
+            onSelect={this._handleCalendarSelect}
+          />
         </View>
         <Content style={styles.contentStyle} scrollEnabled={true}>
           <View style={styles.scheduleListView}>
@@ -215,7 +260,8 @@ class DoctorProfile extends React.Component {
 
 const mapStateToProps = state => ({
   token: state.token,
-  bookingData: state.bookingData
+  bookingData: state.bookingData,
+  location: state.location
 });
 
 export default connect(
@@ -230,28 +276,28 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontSize: FONT_S,
-    fontWeight: "100",
-    color: "grey",
+    fontWeight: '100',
+    color: 'grey',
     margin: 5
   },
   textViewStyle: {
     flex: 1,
-    alignItems: "center",
-    flexDirection: "row",
-    alignItems: "center"
+    alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   weekIconStyle: {
-    color: "grey",
+    color: 'grey',
     fontSize: FONT_M
   },
   scheduleView: {
     marginTop: 0,
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: PRIMARY
   },
   scheduleListView: {
     flex: 1,
-    width: "100%",
+    width: '100%',
     paddingTop: 10,
     paddingBottom: 10
   }
