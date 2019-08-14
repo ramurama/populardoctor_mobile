@@ -127,6 +127,7 @@ class BookingHistory extends React.Component {
       showDone: false,
       showCancel: false
     };
+    const { streetName, building } = JSON.parse(hospitalDetails.address);
     return (
       <HistoryCard
         doctorName={doctorDetails.fullName}
@@ -134,9 +135,9 @@ class BookingHistory extends React.Component {
         otpVisible={false}
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
-        hospitalAddress={
-          hospitalDetails.address + ' ' + hospitalDetails.pincode
-        }
+        hospitalAddress={`${building}, ${streetName} ${
+          hospitalDetails.pincode
+        }`}
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
         tokenNumber={token.number}

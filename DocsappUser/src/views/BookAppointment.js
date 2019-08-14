@@ -73,6 +73,7 @@ class BookAppointment extends React.Component {
 
   _renderBookingContentContainer() {
     const { hospital, startTime, endTime } = this.props.bookingData;
+    const { streetName, building } = JSON.parse(hospital.address);
     return (
       <View style={styles.bookingContent}>
         <View style={styles.infoContainer}>
@@ -98,7 +99,7 @@ class BookAppointment extends React.Component {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {hospital.address + ' ' + hospital.pincode}
+            {`${building}, ${streetName} ${hospital.pincode}`}
           </Text>
         </View>
       </View>

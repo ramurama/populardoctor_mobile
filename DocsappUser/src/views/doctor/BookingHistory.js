@@ -52,13 +52,14 @@ class BookingHistory extends React.Component {
   }
 
   _renderBookingHistoryListItem(item) {
-    const { bookingId, tokenDate, userDetails, hospitalDetails } = item;
+    const { tokenDate, userDetails, hospitalDetails } = item;
+    const { streetName, building } = JSON.parse(hospitalDetails.address);
     return (
       <VisitorHistoryCard
         visitorName={userDetails.fullName}
         mobile={userDetails.username}
         hospitalName={hospitalDetails.name}
-        hospitalAddress={hospitalDetails.address}
+        hospitalAddress={`${building}, ${streetName}`}
         bookingDate={getDateStringIndian(new Date(tokenDate))}
         onPress={() =>
           this.props.navigation.navigate(VIEW_DR_BOOKING_HISTORY_DETAIL, {

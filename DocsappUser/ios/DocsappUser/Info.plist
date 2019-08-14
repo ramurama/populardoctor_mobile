@@ -24,16 +24,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-  <key>NSCalendarsUsageDescription</key>
-  <string>Access to calendar is required</string>
-  <key>NSBluetoothPeripheralUsageDescription </key>
-  <string>Access to bluetooth peripheral is required</string>
-  <key>NSAppleMusicUsageDescription </key>
-  <string>Access to bluetooth peripheral is required</string>
-  <key>NSMotionUsageDescription </key>
-  <string>Access to bluetooth peripheral is required</string>
-  <key>NSSpeechRecognitionUsageDescription  </key>
-  <string>Access to bluetooth peripheral is required</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>
@@ -51,10 +41,20 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription </key>
+	<string>Access to bluetooth peripheral is required</string>
+	<key>NSBluetoothPeripheralUsageDescription </key>
+	<string>Access to bluetooth peripheral is required</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Access to calendar is required</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Access to camera is required for scanning QR code.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is needed for making the appointment.</string>
+	<key>NSMotionUsageDescription </key>
+	<string>Access to bluetooth peripheral is required</string>
+	<key>NSSpeechRecognitionUsageDescription  </key>
+	<string>Access to bluetooth peripheral is required</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

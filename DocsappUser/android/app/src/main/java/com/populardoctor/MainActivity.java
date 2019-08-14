@@ -1,4 +1,4 @@
-package com.docsappuser;
+package com.populardoctor;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
