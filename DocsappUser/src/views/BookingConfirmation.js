@@ -97,7 +97,8 @@ class BookingConfirmation extends React.Component {
         <Content>
           <UserBooking
             hospitalName={hospital.name}
-            hospitalAddress={hospital.address + ' ' + hospital.pincode}
+            hospitalAddress={hospital.address}
+            hospitalPincode={hospital.pincode}
             bookingDay={weekday}
             availableTime={startTime + ' - ' + endTime}
             doctorName={doctorName}

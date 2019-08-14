@@ -80,7 +80,8 @@ class BookingHistoryDetail extends React.Component {
         <Content>
           <UserBooking
             hospitalName={name}
-            hospitalAddress={address + ' ' + pincode}
+            hospitalAddress={address}
+            hospitalPincode={pincode}
             bookingDay={getParam('tokenDate')}
             availableTime={getParam('startTime') + ' - ' + getParam('endTime')}
             doctorName={getParam('doctorName')}

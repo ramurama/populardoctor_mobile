@@ -1,6 +1,6 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Text } from "native-base";
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'native-base';
 import {
   SECONDARY,
   PRIMARY,
@@ -9,15 +9,15 @@ import {
   ON_PRIMARY,
   BACKGROUND_1,
   WHITE
-} from "../config/colors";
-import { Icon } from "native-base";
-import { Divider } from "react-native-elements";
-import PropTypes from "prop-types";
-import QRCode from "react-native-qrcode";
-import Chip from "../components/Chip";
-import { TOKEN_FASTTRACK } from "../constants/tokenTypes";
-import { FONT_M, FONT_L, FONT_XL } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
+} from '../config/colors';
+import { Icon } from 'native-base';
+import { Divider } from 'react-native-elements';
+import PropTypes from 'prop-types';
+import QRCode from 'react-native-qrcode';
+import Chip from '../components/Chip';
+import { TOKEN_FASTTRACK } from '../constants/tokenTypes';
+import { FONT_M, FONT_L, FONT_XL } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
 
 const propTypes = {
   hospitalName: PropTypes.string.isRequired,
@@ -42,7 +42,7 @@ class UserBooking extends React.Component {
         <Icon name="person" style={styles.iconStyle} type="MaterialIcons" />
 
         <View
-          style={{ flexDirection: "column", justifyContent: "space-around" }}
+          style={{ flexDirection: 'column', justifyContent: 'space-around' }}
         >
           <Text
             style={styles.primaryTextStyle}
@@ -64,7 +64,8 @@ class UserBooking extends React.Component {
   }
 
   _renderHospitalInfo() {
-    const { hospitalName, hospitalAddress } = this.props;
+    const { hospitalName, hospitalAddress, hospitalPincode } = this.props;
+    const { streetName, building } = JSON.parse(hospitalAddress);
     return (
       <View style={styles.listItems}>
         <Icon name="hospital" style={styles.iconStyle} type="FontAwesome5" />
@@ -81,7 +82,7 @@ class UserBooking extends React.Component {
             numberOfLines={2}
             ellipsizeMode="tail"
           >
-            {hospitalAddress}
+            {`${building}, ${streetName} ${hospitalPincode}`}
           </Text>
         </View>
       </View>
@@ -127,7 +128,7 @@ class UserBooking extends React.Component {
     return (
       <View>
         <Text style={styles.headerStyle}>Booking details</Text>
-        <View style={{ flexDirection: "column", paddingLeft: 32 }}>
+        <View style={{ flexDirection: 'column', paddingLeft: 32 }}>
           {this.props.showBookingId && (
             <View style={styles.bookingItemList}>
               <Text style={styles.primaryTextStyle}>Booking Id </Text>
@@ -205,24 +206,24 @@ const styles = StyleSheet.create({
   },
   mainBody: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     paddingLeft: 24
   },
   listItems: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 16
   },
   bookingItemList: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingBottom: 16
   },
   listText: {
-    flexDirection: "column",
-    justifyContent: "space-around"
+    flexDirection: 'column',
+    justifyContent: 'space-around'
   },
   iconStyle: {
     color: SECONDARY,
@@ -258,8 +259,8 @@ const styles = StyleSheet.create({
   },
   qrView: {
     padding: 20,
-    flexDirection: "row",
-    justifyContent: "center"
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   chipStyle: {
     fontSize: FONT_M,

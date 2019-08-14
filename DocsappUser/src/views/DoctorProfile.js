@@ -176,7 +176,8 @@ class DoctorProfile extends React.Component {
       <ScheduleCard
         isAvailable={isBookingOpen}
         hospitalName={hospital.name}
-        hospitalAddress={hospital.address + ' ' + hospital.pincode}
+        hospitalAddress={hospital.address}
+        hospitalPinCode={hospital.pincode}
         hospitalTime={startTime + ' - ' + endTime}
         onPress={() => {
           this.props.setBookingData({

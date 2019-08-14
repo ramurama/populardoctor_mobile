@@ -1,26 +1,32 @@
-import React, { Component } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { Icon } from "native-base";
+import React, { Component } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Icon } from 'native-base';
 import {
   SECONDARY,
   HELPER_TEXT_COLOR,
   STATUS_AVAILABLE_COLOR,
   STATUS_NOT_AVAILABLE_COLOR
-} from "../config/colors";
-import PropTypes from "prop-types";
-import { FONT_M, FONT_XXS, FONT_XL } from "../config/fontSize";
-import { FONT_WEIGHT_BOLD } from "../config/fontWeight";
+} from '../config/colors';
+import PropTypes from 'prop-types';
+import { FONT_M, FONT_XXS, FONT_XL } from '../config/fontSize';
+import { FONT_WEIGHT_BOLD } from '../config/fontWeight';
 
 const propTypes = {
   hospitalName: PropTypes.string.isRequired,
   hospitalAddress: PropTypes.string.isRequired,
+  hospitalPinCode: PropTypes.string.isRequired,
   hospitalTime: PropTypes.string.isRequired,
   isAvailable: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired
 };
 
 class ScheduleCard extends Component {
-  _renderHospitalDetails(hospitalName, hospitalAddress, hospitalTime) {
+  _renderHospitalDetails(
+    hospitalName,
+    hospitalAddress,
+    hospitalPinCode,
+    hospitalTime
+  ) {
     const {
       hospitalContainer,
       hospitalAddressStyle,
@@ -29,6 +35,7 @@ class ScheduleCard extends Component {
       timeSectionStyle,
       hospitalTimeIconStyle
     } = styles;
+    const { streetName, building } = JSON.parse(hospitalAddress);
     return (
       <View style={hospitalContainer}>
         <Text style={hospitalNameStyle} numberOfLines={2} ellipsizeMode="tail">
@@ -39,7 +46,7 @@ class ScheduleCard extends Component {
           numberOfLines={2}
           ellipsizeMode="tail"
         >
-          {hospitalAddress}
+          {`${building}, ${streetName} ${hospitalPinCode}`}
         </Text>
         <View style={timeSectionStyle}>
           <Icon
@@ -58,6 +65,7 @@ class ScheduleCard extends Component {
       isAvailable,
       hospitalName,
       hospitalAddress,
+      hospitalPinCode,
       hospitalTime,
       onPress
     } = this.props;
@@ -82,6 +90,7 @@ class ScheduleCard extends Component {
         {this._renderHospitalDetails(
           hospitalName,
           hospitalAddress,
+          hospitalPinCode,
           hospitalTime
         )}
         <View style={bookingContainer}>
@@ -95,22 +104,22 @@ class ScheduleCard extends Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
-    backgroundColor: "white",
-    flexDirection: "row",
+    backgroundColor: 'white',
+    flexDirection: 'row',
     margin: 5
   },
   statusContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   hospitalContainer: {
     flex: 4,
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     padding: 8
   },
   timeSectionStyle: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   hospitalAddressStyle: {
     fontSize: FONT_XXS,
@@ -133,20 +142,20 @@ const styles = StyleSheet.create({
     // paddingTop: 0
   },
   iconStyle: {
-    color: "white",
+    color: 'white',
     fontSize: FONT_XL
   },
   isAvailable: {
     backgroundColor: SECONDARY,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   isNotAvailable: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   statusIndicatorStyle: {
     borderRadius: 35,
