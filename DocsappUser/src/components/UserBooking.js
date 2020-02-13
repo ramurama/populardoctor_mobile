@@ -131,7 +131,7 @@ class UserBooking extends React.Component {
         <View style={{ flexDirection: 'column', paddingLeft: 32 }}>
           {this.props.showBookingId && (
             <View style={styles.bookingItemList}>
-              <Text style={styles.primaryTextStyle}>Booking Id </Text>
+              <Text style={styles.primaryTextStyle}>Booking ID </Text>
               <Text
                 style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
               >{` :  `}</Text>
@@ -139,7 +139,7 @@ class UserBooking extends React.Component {
             </View>
           )}
           <View style={styles.bookingItemList}>
-            <Text style={styles.primaryTextStyle}>Token type</Text>
+            <Text style={styles.primaryTextStyle}>Token Type</Text>
             <Text
               style={[{ paddingLeft: 12 }, styles.secondaryTextStyle]}
             >{` :  ${this.props.tokenType}`}</Text>
@@ -147,7 +147,7 @@ class UserBooking extends React.Component {
           {!this._isFasttrackTokenType() && (
             <View>
               <View style={styles.bookingItemList}>
-                <Text style={styles.primaryTextStyle}>Token No </Text>
+                <Text style={styles.primaryTextStyle}>Token No.</Text>
                 <Text
                   style={[{ paddingLeft: 22 }, styles.secondaryTextStyle]}
                 >{` :  ${tokenNumber}`}</Text>
@@ -181,7 +181,7 @@ class UserBooking extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1, flexDirection: 'column' }}>
         <Text style={styles.headerStyle}>Doctor details</Text>
         <View style={styles.mainBody}>
           {this._renderDoctorInfo()}
@@ -189,8 +189,10 @@ class UserBooking extends React.Component {
           {this._renderDateTimeInfo()}
         </View>
         {/* {this._renderDivider()} */}
-        {this.props.enableQR && this._renderQRView()}
-        {this._renderBookingDetails()}
+        <View style={{ flexDirection: 'column' }}>
+          {this.props.enableQR && this._renderQRView()}
+          {this._renderBookingDetails()}
+        </View>
       </View>
     );
   }
@@ -207,7 +209,8 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
     flexDirection: 'column',
-    paddingLeft: 24
+    paddingLeft: 24,
+    zIndex: 999
   },
   listItems: {
     flexDirection: 'row',
@@ -258,7 +261,8 @@ const styles = StyleSheet.create({
     color: SECONDARY
   },
   qrView: {
-    padding: 20,
+    // padding: 20,
+    height: 100,
     flexDirection: 'row',
     justifyContent: 'center'
   },
