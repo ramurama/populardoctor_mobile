@@ -75,6 +75,7 @@ class BookingHistory extends React.Component {
       showDone: false,
       showCancel: true
     };
+    const { streetName, building } = JSON.parse(hospitalDetails.address);
     return (
       <HistoryCard
         doctorName={doctorDetails.fullName}
@@ -83,9 +84,7 @@ class BookingHistory extends React.Component {
         otpVisible={true}
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
-        hospitalAddress={
-          hospitalDetails.address + ' ' + hospitalDetails.pincode
-        }
+        hospitalAddress={`${building}, ${streetName} ${hospitalDetails.pincode}`}
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
         tokenNumber={token.number}
@@ -135,9 +134,7 @@ class BookingHistory extends React.Component {
         otpVisible={false}
         imageURL={doctorDetails.profileImage}
         hospitalName={hospitalDetails.name}
-        hospitalAddress={`${building}, ${streetName} ${
-          hospitalDetails.pincode
-        }`}
+        hospitalAddress={`${building}, ${streetName} ${hospitalDetails.pincode}`}
         bookingDate={getDateString(new Date(tokenDate))}
         bookingTime={token.time}
         tokenNumber={token.number}
@@ -254,10 +251,7 @@ const mapStateToProps = state => ({
   userPastBookings: state.userPastBookings
 });
 
-export default connect(
-  mapStateToProps,
-  Actions
-)(BookingHistory);
+export default connect(mapStateToProps, Actions)(BookingHistory);
 
 const styles = StyleSheet.create({
   contentStyle: {
