@@ -1,21 +1,21 @@
-import React from "react";
-import { View, StyleSheet, FlatList, Alert } from "react-native";
-import { Container, Content, Text } from "native-base";
-import Header from "../../components/HeaderDoctor";
-import Footer from "../../components/FooterDoctor";
-import { DR_SCHEDULE } from "../../constants/strings";
-import commonStyles from "../../commons/styles";
-import { VIEW_DR_SCHEDULE } from "../../constants/viewNames";
-import ConfirmationCard from "../../components/ConfirmationCard";
-import Spinner from "react-native-loading-spinner-overlay";
-import { WHITE, HELPER_TEXT_COLOR } from "../../config/colors";
-import APIService from "../../services/APIService";
-import { connect } from "react-redux";
-import * as Actions from "../../actions";
-import { isNullOrEmpty, isStringsEqual } from "../../commons/utils";
-import StausAvailability from "../../components/StatusAvailability";
-import Toast from "react-native-simple-toast";
-import { USER_DOCTOR } from "../../constants/userType";
+import React from 'react';
+import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { Container, Content, Text } from 'native-base';
+import Header from '../../components/HeaderDoctor';
+import Footer from '../../components/FooterDoctor';
+import { DR_SCHEDULE } from '../../constants/strings';
+import commonStyles from '../../commons/styles';
+import { VIEW_DR_SCHEDULE } from '../../constants/viewNames';
+import ConfirmationCard from '../../components/ConfirmationCard';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { WHITE, HELPER_TEXT_COLOR } from '../../config/colors';
+import APIService from '../../services/APIService';
+import { connect } from 'react-redux';
+import * as Actions from '../../actions';
+import { isNullOrEmpty, isStringsEqual } from '../../commons/utils';
+import StausAvailability from '../../components/StatusAvailability';
+import Toast from 'react-native-simple-toast';
+import { USER_DOCTOR } from '../../constants/userType';
 
 class Schedule extends React.Component {
   constructor(props) {
@@ -67,16 +67,19 @@ class Schedule extends React.Component {
   _renderScheduleConfirmationListItem(item) {
     const { tokenDate, schedules } = this.props.scheduleConfirmations;
     const { startTime, endTime, hospitalDetails, _id } = item;
+    const { streetName, building } = hospitalDetails.address;
     const content =
-      "Is your schedule for tomorrow " +
+      'Is your schedule for tomorrow ' +
       startTime +
-      " to " +
+      ' to ' +
       endTime +
-      " at " +
+      ' at ' +
       hospitalDetails.name +
-      ", " +
-      hospitalDetails.address +
-      " is confirmed?";
+      ', ' +
+      streetName +
+      ' ' +
+      building +
+      ' is confirmed?';
     return (
       <ConfirmationCard
         content={content}
@@ -151,16 +154,16 @@ class Schedule extends React.Component {
     } = item;
     return (
       <StausAvailability
-        hospital={hospitalName + ", " + hospitalLocation}
-        time={startTime + " - " + endTime}
+        hospital={hospitalName + ', ' + hospitalLocation}
+        time={startTime + ' - ' + endTime}
         onBlockPress={() => {
           Alert.alert(
-            "Warning!",
-            "Blocking a schedule cannot be undone! Are you sure?",
+            'Warning!',
+            'Blocking a schedule cannot be undone! Are you sure?',
             [
-              { text: "No" },
+              { text: 'No' },
               {
-                text: "Yes",
+                text: 'Yes',
                 onPress: () => {
                   APIService.blockSchedule(
                     this.props.token,
@@ -168,9 +171,9 @@ class Schedule extends React.Component {
                     USER_DOCTOR,
                     status => {
                       if (status) {
-                        Toast.show("Schedule has been blocked");
+                        Toast.show('Schedule has been blocked');
                       } else {
-                        Toast.show("Unknown error!");
+                        Toast.show('Unknown error!');
                       }
                     }
                   );
@@ -218,16 +221,13 @@ const mapStateToProps = state => ({
   confirmedSchedules: state.confirmedSchedules
 });
 
-export default connect(
-  mapStateToProps,
-  Actions
-)(Schedule);
+export default connect(mapStateToProps, Actions)(Schedule);
 
 const styles = StyleSheet.create({
   noConfirmationsText: {
-    alignSelf: "center",
+    alignSelf: 'center',
     color: HELPER_TEXT_COLOR,
-    textAlign: "center"
+    textAlign: 'center'
   },
   noConfirmationsView: { marginTop: 30 }
 });

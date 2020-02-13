@@ -89,6 +89,10 @@ class Home extends React.Component {
     }
   }
 
+  handleBackButton = () => {
+    return true;
+  };
+
   _renderSpinner() {
     return (
       <Spinner visible={this.state.spinner} textStyle={{ color: WHITE }} />
@@ -150,9 +154,6 @@ const mapStateToProps = state => ({
   bookingWithoutFeedback: state.bookingWithoutFeedback
 });
 
-export default connect(
-  mapStateToProps,
-  Actions
-)(Home);
+export default connect(mapStateToProps, Actions)(Home);
 
 const styles = StyleSheet.create({});
